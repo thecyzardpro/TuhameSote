@@ -1,0 +1,3073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b0f14">
+<title>Hamisha Chapu — Moving Made Easy</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+:root{
+  --bg:#070b10;
+  --panel:#0d131b;
+  --panel2:#111923;
+  --panel3:#151f2b;
+  --text:#f5f7fa;
+  --muted:#8996a5;
+  --line:rgba(255,255,255,.08);
+  --brand:#b7ff35;
+  --brand2:#8bd400;
+  --danger:#ff5d67;
+  --warning:#ffbf47;
+  --success:#41df91;
+  --blue:#5ca8ff;
+  --radius:22px;
+  --shadow:0 18px 60px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif}
+body{overflow-x:hidden}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+.app{min-height:100vh}
+.glass{
+  background:rgba(13,19,27,.82);
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(18px);
+}
+.toast-wrap{
+  position:fixed;right:18px;top:18px;z-index:99999;
+  display:flex;flex-direction:column;gap:10px;width:min(360px,calc(100vw - 36px))
+}
+.toast{
+  padding:15px 16px;border-radius:16px;background:#121b25;
+  border:1px solid var(--line);box-shadow:var(--shadow);
+  animation:toastIn .25s ease;
+}
+.toast.success{border-color:rgba(65,223,145,.35)}
+.toast.error{border-color:rgba(255,93,103,.4)}
+.toast strong{display:block;margin-bottom:4px}
+@keyframes toastIn{from{transform:translateY(-8px);opacity:0}to{transform:none;opacity:1}}
+
+.screen{min-height:100vh}
+.auth-screen{
+  min-height:100vh;display:grid;place-items:center;padding:24px;
+  background:
+    radial-gradient(circle at 15% 15%,rgba(183,255,53,.09),transparent 28%),
+    radial-gradient(circle at 85% 80%,rgba(92,168,255,.08),transparent 28%),
+    var(--bg);
+}
+.auth-box{width:min(1050px,100%);display:grid;grid-template-columns:1.05fr .95fr;overflow:hidden;border-radius:30px}
+.auth-brand{
+  padding:52px;background:
+    linear-gradient(145deg,rgba(183,255,53,.12),transparent 55%),
+    #0c1219;
+  display:flex;flex-direction:column;justify-content:space-between;min-height:650px;
+}
+.logo{display:flex;align-items:center;gap:11px;font-family:Manrope;font-weight:800;font-size:22px}
+.logo-mark{
+  width:40px;height:40px;border-radius:13px;background:var(--brand);color:#071000;
+  display:grid;place-items:center;font-weight:900;box-shadow:0 0 35px rgba(183,255,53,.18)
+}
+.auth-brand h1{
+  font-family:Manrope;font-size:clamp(42px,5vw,72px);line-height:.95;
+  letter-spacing:-3px;max-width:600px;margin:0 0 20px
+}
+.auth-brand h1 span{color:var(--brand)}
+.auth-brand p{color:#a6b1bd;font-size:17px;line-height:1.7;max-width:520px}
+.feature-pills{display:flex;gap:10px;flex-wrap:wrap}
+.feature-pills span{
+  padding:9px 13px;border:1px solid var(--line);border-radius:999px;color:#cbd4dd;font-size:13px
+}
+.auth-card{padding:42px;background:#0a1017;display:flex;align-items:center}
+.auth-inner{width:100%;max-width:430px;margin:auto}
+.auth-inner h2{font-family:Manrope;font-size:32px;margin:0 0 8px}
+.auth-inner .sub{color:var(--muted);margin:0 0 26px}
+.tabs{display:flex;background:#111923;border-radius:14px;padding:4px;margin-bottom:22px}
+.tabs button{
+  flex:1;border:0;background:transparent;color:var(--muted);padding:11px;border-radius:11px
+}
+.tabs button.active{background:#202b38;color:#fff}
+.form-group{margin-bottom:15px}
+.form-group label{display:block;font-size:13px;color:#a9b4c0;margin:0 0 7px}
+.input{
+  width:100%;background:#111923;border:1px solid var(--line);color:#fff;
+  border-radius:14px;padding:14px 15px;outline:none;transition:.2s
+}
+.input:focus{border-color:rgba(183,255,53,.55);box-shadow:0 0 0 4px rgba(183,255,53,.07)}
+.primary{
+  width:100%;border:0;border-radius:14px;padding:14px 18px;
+  background:var(--brand);color:#081000;font-weight:800;transition:.2s
+}
+.primary:hover{background:#c8ff62;transform:translateY(-1px)}
+.secondary{
+  width:100%;border:1px solid var(--line);background:#111923;color:#fff;
+  border-radius:14px;padding:13px 18px;font-weight:700
+}
+.text-btn{border:0;background:none;color:var(--brand);padding:0;font-weight:700}
+.auth-message{margin-top:14px;color:var(--muted);font-size:13px;line-height:1.5}
+.password-rules{font-size:12px;color:var(--muted);line-height:1.6;margin:8px 0 16px}
+.password-rules .ok{color:var(--success)}
+
+.shell{display:none;min-height:100vh}
+.topbar{
+  height:74px;position:sticky;top:0;z-index:1000;background:rgba(7,11,16,.88);
+  border-bottom:1px solid var(--line);backdrop-filter:blur(18px);
+  display:flex;align-items:center;justify-content:space-between;padding:0 24px
+}
+.top-actions{display:flex;align-items:center;gap:10px}
+.icon-btn{
+  position:relative;width:42px;height:42px;border:1px solid var(--line);
+  background:#101720;color:#fff;border-radius:13px
+}
+.badge{
+  position:absolute;right:-4px;top:-5px;min-width:18px;height:18px;border-radius:99px;
+  background:var(--danger);color:white;font-size:10px;font-weight:800;display:grid;place-items:center;
+  padding:0 5px;border:2px solid var(--bg)
+}
+.user-chip{
+  display:flex;align-items:center;gap:9px;padding:6px 10px 6px 6px;
+  background:#101720;border:1px solid var(--line);border-radius:999px
+}
+.avatar{
+  width:32px;height:32px;border-radius:50%;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--brand),#65a700);color:#071000;font-weight:900
+}
+.shell-body{display:flex;min-height:calc(100vh - 74px)}
+.sidebar{
+  width:245px;border-right:1px solid var(--line);padding:22px 14px;
+  background:#090e14;flex:none
+}
+.nav-section{font-size:11px;color:#657180;text-transform:uppercase;letter-spacing:1.3px;margin:16px 10px 8px}
+.nav-btn{
+  width:100%;border:0;background:transparent;color:#9ba7b4;text-align:left;
+  padding:12px;border-radius:13px;display:flex;align-items:center;gap:11px;margin-bottom:4px
+}
+.nav-btn:hover,.nav-btn.active{background:#131c26;color:#fff}
+.nav-btn.active{box-shadow:inset 3px 0 var(--brand)}
+.main{flex:1;padding:28px;min-width:0}
+.page{display:none;max-width:1300px;margin:auto}
+.page.active{display:block}
+.page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:25px}
+.page-head h2{font-family:Manrope;font-size:30px;margin:0 0 6px}
+.page-head p{margin:0;color:var(--muted)}
+.grid{display:grid;gap:16px}
+.grid-4{grid-template-columns:repeat(4,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.stat .label{font-size:13px;color:var(--muted)}
+.stat .value{font:800 30px Manrope;margin-top:9px}
+.stat .small{font-size:12px;color:var(--success);margin-top:6px}
+.hero{
+  border-radius:28px;padding:34px;margin-bottom:18px;
+  background:
+    radial-gradient(circle at 80% 20%,rgba(183,255,53,.18),transparent 30%),
+    linear-gradient(135deg,#111b25,#0b1118);
+  border:1px solid var(--line);position:relative;overflow:hidden
+}
+.hero h1{font:800 clamp(34px,5vw,58px)/.98 Manrope;letter-spacing:-2.5px;margin:0 0 12px;max-width:700px}
+.hero h1 span{color:var(--brand)}
+.hero p{color:#aeb8c3;max-width:650px;line-height:1.65}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.hero-actions button{width:auto;padding-inline:22px}
+.request-form{display:grid;gap:14px}
+.location-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field-title{font-size:12px;color:var(--muted);margin-bottom:7px}
+.input-wrap{position:relative}
+.input-wrap .pin{position:absolute;left:13px;top:14px}
+.input-wrap .input{padding-left:40px}
+.choice-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.choice{
+  border:1px solid var(--line);background:#101720;color:#adb8c4;padding:13px;border-radius:14px;
+  text-align:left
+}
+.choice.selected{border-color:var(--brand);background:rgba(183,255,53,.08);color:#fff}
+.items-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.item-toggle{
+  border:1px solid var(--line);background:#101720;color:#b5c0cb;border-radius:12px;padding:11px
+}
+.item-toggle.selected{border-color:rgba(183,255,53,.6);color:var(--brand)}
+.map{
+  height:340px;border-radius:20px;overflow:hidden;border:1px solid var(--line);
+  background:#0d141c
+}
+.list{display:flex;flex-direction:column;gap:10px}
+.list-item{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:15px;border:1px solid var(--line);background:#101720;border-radius:16px
+}
+.list-main{min-width:0}
+.list-main strong{display:block}
+.list-main span{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+.status{
+  display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:999px;
+  background:#16221b;color:var(--success);font-size:11px;font-weight:800
+}
+.status.pending{background:#251f13;color:var(--warning)}
+.status.danger{background:#261619;color:var(--danger)}
+.status.blue{background:#152030;color:var(--blue)}
+.amount{font-weight:800}
+.empty{text-align:center;padding:40px 15px;color:var(--muted)}
+.loading{text-align:center;padding:30px;color:var(--muted)}
+.modal-backdrop{
+  position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);
+  z-index:9000;display:none;place-items:center;padding:18px
+}
+.modal-backdrop.show{display:grid}
+.modal{
+  width:min(700px,100%);max-height:90vh;overflow:auto;background:#0d141c;
+  border:1px solid var(--line);border-radius:25px;padding:24px;box-shadow:var(--shadow)
+}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.modal-head h3{font:800 23px Manrope;margin:0}
+.close{border:0;background:#18212c;color:#fff;width:38px;height:38px;border-radius:11px}
+.chat-layout{display:grid;grid-template-columns:280px 1fr;min-height:600px;overflow:hidden}
+.chat-list{border-right:1px solid var(--line);background:#0a1017}
+.chat-list-head{padding:17px;border-bottom:1px solid var(--line);font-weight:800}
+.conversation{
+  padding:14px;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer
+}
+.conversation:hover,.conversation.active{background:#131c26}
+.conversation .name{font-weight:700}
+.conversation .preview{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:4px}
+.chat-window{display:flex;flex-direction:column;min-width:0}
+.chat-head{padding:16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
+.messages{
+  flex:1;min-height:400px;max-height:550px;overflow:auto;padding:20px;
+  display:flex;flex-direction:column;gap:9px
+}
+.bubble{
+  max-width:min(72%,520px);padding:10px 13px;border-radius:17px;background:#18222e;
+  align-self:flex-start;line-height:1.45;font-size:14px
+}
+.bubble.mine{align-self:flex-end;background:var(--brand);color:#081000;border-bottom-right-radius:5px}
+.bubble:not(.mine){border-bottom-left-radius:5px}
+.bubble-time{font-size:9px;opacity:.58;margin-top:4px}
+.chat-input{padding:13px;border-top:1px solid var(--line);display:flex;gap:9px}
+.chat-input input{flex:1}
+.chat-send{width:48px;border:0;border-radius:14px;background:var(--brand);font-weight:900}
+.online-dot{width:8px;height:8px;background:var(--success);border-radius:50%;display:inline-block}
+.mover-online{
+  display:flex;align-items:center;justify-content:space-between;padding:16px;
+  border-radius:18px;background:linear-gradient(135deg,#142018,#101720);border:1px solid rgba(65,223,145,.18)
+}
+.big-money{font:800 38px Manrope}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{text-align:left;padding:14px;border-bottom:1px solid var(--line);font-size:13px}
+th{color:#7f8c99;font-weight:600}
+.mobile-bottom{display:none}
+
+@media(max-width:1000px){
+  .grid-4{grid-template-columns:repeat(2,1fr)}
+  .sidebar{width:210px}
+}
+@media(max-width:760px){
+  .auth-box{grid-template-columns:1fr}
+  .auth-brand{display:none}
+  .auth-card{min-height:100vh;padding:25px}
+  .topbar{padding:0 14px}
+  .topbar .logo{font-size:18px}
+  .user-chip span{display:none}
+  .sidebar{display:none}
+  .main{padding:16px 14px 90px}
+  .grid-4,.grid-3,.grid-2{grid-template-columns:1fr}
+  .location-row{grid-template-columns:1fr}
+  .choice-grid{grid-template-columns:repeat(2,1fr)}
+  .items-grid{grid-template-columns:repeat(2,1fr)}
+  .hero{padding:24px}
+  .page-head{align-items:flex-start}
+  .chat-layout{grid-template-columns:1fr;min-height:calc(100vh - 160px)}
+  .chat-list{display:none}
+  .messages{max-height:none}
+  .mobile-bottom{
+    position:fixed;display:flex;left:0;right:0;bottom:0;height:68px;
+    background:rgba(8,12,17,.95);border-top:1px solid var(--line);z-index:1200;
+    justify-content:space-around;padding:7px 4px env(safe-area-inset-bottom)
+  }
+  .mobile-bottom button{border:0;background:none;color:#7f8c99;font-size:10px}
+  .mobile-bottom button.active{color:var(--brand)}
+  .mobile-bottom .mi{display:block;font-size:20px;margin-bottom:2px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- AUTH -->
+<section class="auth-screen screen" id="authScreen">
+  <div class="auth-box glass">
+    <div class="auth-brand">
+      <div>
+        <div class="logo">
+          <div class="logo-mark">H</div>
+          HAMISHA CHAPU
+        </div>
+      </div>
+
+      <div>
+        <h1>Unahama?<br><span>Tunakuhamisha.</span></h1>
+        <p>
+          Book a verified mover, truck and helping hands from one place.
+          Request now, track live and move without stress.
+        </p>
+        <div class="feature-pills">
+          <span>⚡ On-demand</span>
+          <span>📍 Live tracking</span>
+          <span>💬 Real-time chat</span>
+          <span>🛡 Verified movers</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-inner">
+
+        <div id="loginBox">
+          <h2>Welcome back</h2>
+          <p class="sub">Login to continue your move.</p>
+
+          <form id="loginForm">
+            <div class="form-group">
+              <label>Email</label>
+              <input class="input" id="loginEmail" type="email" required autocomplete="email">
+            </div>
+
+            <div class="form-group">
+              <label>Password</label>
+              <input class="input" id="loginPassword" type="password" required autocomplete="current-password">
+            </div>
+
+            <button class="primary" id="loginBtn">LOGIN</button>
+          </form>
+
+          <div style="display:flex;justify-content:space-between;margin-top:17px;font-size:13px">
+            <button class="text-btn" id="showRegister">Create account</button>
+            <button class="text-btn" id="showForgot">Forgot password?</button>
+          </div>
+        </div>
+
+        <div id="registerBox" class="hidden">
+          <h2>Create account</h2>
+          <p class="sub">Join Hamisha Chapu.</p>
+
+          <form id="registerForm">
+            <div class="form-group">
+              <label>Full name</label>
+              <input class="input" id="registerName" required>
+            </div>
+
+            <div class="form-group">
+              <label>Phone</label>
+              <input class="input" id="registerPhone" type="tel">
+            </div>
+
+            <div class="form-group">
+              <label>Email</label>
+              <input class="input" id="registerEmail" type="email" required>
+            </div>
+
+            <div class="form-group">
+              <label>Password</label>
+              <input class="input" id="registerPassword" type="password" required>
+            </div>
+
+            <div class="password-rules" id="passwordRules">
+              <div id="rLen">○ 8+ characters</div>
+              <div id="rUpper">○ Uppercase letter</div>
+              <div id="rLower">○ Lowercase letter</div>
+              <div id="rNum">○ Number</div>
+              <div id="rSym">○ Special character</div>
+            </div>
+
+            <div class="form-group">
+              <label>Account type</label>
+              <select class="input" id="registerRole">
+                <option value="customer">Customer — I need to move</option>
+                <option value="mover">Mover — I provide moving services</option>
+              </select>
+            </div>
+
+            <button class="primary" id="registerBtn">CREATE ACCOUNT</button>
+          </form>
+
+          <div style="margin-top:17px;font-size:13px">
+            <button class="text-btn" id="showLoginFromRegister">Already have an account? Login</button>
+          </div>
+        </div>
+
+        <div id="forgotBox" class="hidden">
+          <h2>Reset password</h2>
+          <p class="sub">We'll send a secure reset link to your email.</p>
+
+          <form id="forgotForm">
+            <div class="form-group">
+              <label>Email</label>
+              <input class="input" id="forgotEmail" type="email" required>
+            </div>
+            <button class="primary">SEND RESET LINK</button>
+          </form>
+
+          <div style="margin-top:17px;font-size:13px">
+            <button class="text-btn" id="showLoginFromForgot">← Back to login</button>
+          </div>
+        </div>
+
+        <div id="resetBox" class="hidden">
+          <h2>New password</h2>
+          <p class="sub">Choose a strong password for your account.</p>
+
+          <form id="resetForm">
+            <div class="form-group">
+              <label>New password</label>
+              <input class="input" id="resetPassword" type="password" required>
+            </div>
+
+            <div class="password-rules" id="resetRules">
+              <div id="rrLen">○ 8+ characters</div>
+              <div id="rrUpper">○ Uppercase letter</div>
+              <div id="rrLower">○ Lowercase letter</div>
+              <div id="rrNum">○ Number</div>
+              <div id="rrSym">○ Special character</div>
+            </div>
+
+            <div class="form-group">
+              <label>Confirm password</label>
+              <input class="input" id="resetConfirm" type="password" required>
+            </div>
+
+            <button class="primary">UPDATE PASSWORD</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN APP -->
+<section class="shell" id="appShell">
+
+  <header class="topbar">
+    <div class="logo">
+      <div class="logo-mark">H</div>
+      <span>HAMISHA CHAPU</span>
+    </div>
+
+    <div class="top-actions">
+      <button class="icon-btn" id="notificationBtn" title="Notifications">
+        🔔
+        <span class="badge hidden" id="notificationBadge">0</span>
+      </button>
+
+      <div class="user-chip">
+        <div class="avatar" id="topAvatar">A</div>
+        <span id="topName">User</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell-body">
+
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <main class="main">
+
+      <!-- CUSTOMER HOME -->
+      <section class="page" id="customerHome">
+        <div class="hero">
+          <h1>Unahama?<br><span>Tunakuhama.</span></h1>
+          <p>
+            Gari, wahamishaji na tracking — everything you need to move,
+            from one simple request.
+          </p>
+          <div class="hero-actions">
+            <button class="primary" onclick="openPage('requestPage')">⚡ HAMIA SASA</button>
+            <button class="secondary" onclick="openPage('requestPage');setScheduled()">📅 PANGA KUHAMA</button>
+          </div>
+        </div>
+
+        <div class="grid grid-3">
+          <div class="card stat">
+            <div class="label">Active move</div>
+            <div class="value" id="customerActiveCount">0</div>
+            <div class="small">Live status</div>
+          </div>
+          <div class="card stat">
+            <div class="label">Completed moves</div>
+            <div class="value" id="customerCompletedCount">0</div>
+          </div>
+          <div class="card stat">
+            <div class="label">Unread messages</div>
+            <div class="value" id="customerUnreadCount">0</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <div class="page-head" style="margin-bottom:15px">
+            <div>
+              <h2 style="font-size:20px">Recent moves</h2>
+              <p>Your latest moving activity.</p>
+            </div>
+            <button class="text-btn" onclick="openPage('ordersPage')">View all</button>
+          </div>
+          <div id="customerRecentMoves" class="list"></div>
+        </div>
+      </section>
+
+      <!-- CUSTOMER REQUEST -->
+      <section class="page" id="requestPage">
+        <div class="page-head">
+          <div>
+            <h2>Request a move</h2>
+            <p>Tell us what you're moving and where.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <form class="request-form" id="requestForm">
+
+            <div>
+              <div class="field-title">What are you moving?</div>
+              <div class="choice-grid" id="moveTypes">
+                <button type="button" class="choice selected" data-value="house">🏠 House</button>
+                <button type="button" class="choice" data-value="office">🏢 Office</button>
+                <button type="button" class="choice" data-value="business">🏪 Business</button>
+                <button type="button" class="choice" data-value="few_items">📦 Few items</button>
+              </div>
+            </div>
+
+            <div class="location-row">
+              <div>
+                <div class="field-title">Pickup location</div>
+                <div class="input-wrap">
+                  <span class="pin">📍</span>
+                  <input class="input" id="pickupAddress" placeholder="Where are you moving from?" required>
+                </div>
+              </div>
+
+              <div>
+                <div class="field-title">Destination</div>
+                <div class="input-wrap">
+                  <span class="pin">🏁</span>
+                  <input class="input" id="destinationAddress" placeholder="Where are you moving to?" required>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="field-title">What items do you have?</div>
+              <div class="items-grid" id="itemsGrid">
+                <button type="button" class="item-toggle" data-item="Sofa">🛋 Sofa</button>
+                <button type="button" class="item-toggle" data-item="Bed">🛏 Bed</button>
+                <button type="button" class="item-toggle" data-item="Fridge">🧊 Fridge</button>
+                <button type="button" class="item-toggle" data-item="TV">📺 TV</button>
+                <button type="button" class="item-toggle" data-item="Table">🪑 Table</button>
+                <button type="button" class="item-toggle" data-item="Boxes">📦 Boxes</button>
+                <button type="button" class="item-toggle" data-item="Clothes">👕 Clothes</button>
+                <button type="button" class="item-toggle" data-item="Other">➕ Other</button>
+              </div>
+            </div>
+
+            <div class="location-row">
+              <div>
+                <div class="field-title">Vehicle</div>
+                <select class="input" id="vehicleType">
+                  <option value="pickup">Pickup</option>
+                  <option value="van">Van</option>
+                  <option value="canter">Canter</option>
+                  <option value="box_truck">Box Truck</option>
+                  <option value="large_truck">Large Truck</option>
+                </select>
+              </div>
+
+              <div>
+                <div class="field-title">Movers needed</div>
+                <select class="input" id="moversRequired">
+                  <option value="0">Driver only</option>
+                  <option value="1">1 mover</option>
+                  <option value="2" selected>2 movers</option>
+                  <option value="3">3 movers</option>
+                  <option value="4">4 movers</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="location-row">
+              <div>
+                <div class="field-title">Moving date</div>
+                <input class="input" id="moveDate" type="date">
+              </div>
+              <div>
+                <div class="field-title">Preferred time</div>
+                <input class="input" id="moveTime" type="time">
+              </div>
+            </div>
+
+            <div>
+              <div class="field-title">Notes</div>
+              <textarea class="input" id="requestNotes" rows="4" placeholder="Stairs, gate instructions, fragile items, parking, etc."></textarea>
+            </div>
+
+            <div class="card" style="background:#111a23">
+              <div style="display:flex;justify-content:space-between;gap:20px;align-items:center">
+                <div>
+                  <strong>⚡ Instant matching</strong>
+                  <div style="color:var(--muted);font-size:12px;margin-top:4px">
+                    We'll look for available movers near your pickup.
+                  </div>
+                </div>
+                <span class="status"><span class="online-dot"></span> LIVE</span>
+              </div>
+            </div>
+
+            <button class="primary" style="font-size:15px;padding:16px">
+              FIND MY MOVER ⚡
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- CUSTOMER ORDERS -->
+      <section class="page" id="ordersPage">
+        <div class="page-head">
+          <div>
+            <h2>My moves</h2>
+            <p>Track every moving request.</p>
+          </div>
+        </div>
+        <div id="customerOrders" class="list"></div>
+      </section>
+
+      <!-- CUSTOMER TRACK -->
+      <section class="page" id="trackPage">
+        <div class="page-head">
+          <div>
+            <h2>Live move</h2>
+            <p>Your moving job updates in real time.</p>
+          </div>
+        </div>
+
+        <div id="activeJobContainer"></div>
+        <div id="liveMap" class="map" style="margin-top:16px"></div>
+      </section>
+
+      <!-- CHAT -->
+      <section class="page" id="chatPage">
+        <div class="page-head">
+          <div>
+            <h2>Messages</h2>
+            <p>Real-time chat — no refresh required.</p>
+          </div>
+        </div>
+
+        <div class="card chat-layout">
+          <div class="chat-list" id="conversationList">
+            <div class="chat-list-head">Conversations</div>
+            <div id="conversationItems"></div>
+          </div>
+
+          <div class="chat-window">
+            <div class="chat-head">
+              <div>
+                <strong id="chatTitle">Select a conversation</strong>
+                <div id="chatSubtitle" style="font-size:11px;color:var(--muted)">Messages appear instantly</div>
+              </div>
+              <span class="status"><span class="online-dot"></span> REALTIME</span>
+            </div>
+
+            <div class="messages" id="messages">
+              <div class="empty">Select a conversation to start chatting.</div>
+            </div>
+
+            <form class="chat-input" id="chatForm">
+              <input class="input" id="chatMessage" placeholder="Type a message..." autocomplete="off">
+              <button class="chat-send">➤</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- NOTIFICATIONS -->
+      <section class="page" id="notificationsPage">
+        <div class="page-head">
+          <div>
+            <h2>Notifications</h2>
+            <p>Everything important in one place.</p>
+          </div>
+          <button class="secondary" style="width:auto" onclick="markAllNotificationsRead()">Mark all read</button>
+        </div>
+        <div id="notificationsList" class="list"></div>
+      </section>
+
+      <!-- MOVER HOME -->
+      <section class="page" id="moverHome">
+        <div class="hero">
+          <h1>Ready to <span>move?</span></h1>
+          <p>Go online and receive moving jobs near your current location.</p>
+          <div class="hero-actions">
+            <button class="primary" id="availabilityBtn" onclick="toggleMoverAvailability()">GO ONLINE 🟢</button>
+          </div>
+        </div>
+
+        <div class="grid grid-4">
+          <div class="card stat">
+            <div class="label">Today's earnings</div>
+            <div class="value" id="moverToday">TSh 0</div>
+          </div>
+          <div class="card stat">
+            <div class="label">Completed jobs</div>
+            <div class="value" id="moverCompleted">0</div>
+          </div>
+          <div class="card stat">
+            <div class="label">Rating</div>
+            <div class="value" id="moverRating">0.0</div>
+          </div>
+          <div class="card stat">
+            <div class="label">Acceptance</div>
+            <div class="value" id="moverAcceptance">0%</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <div class="page-head" style="margin-bottom:15px">
+            <div>
+              <h2 style="font-size:20px">Nearby requests</h2>
+              <p>New requests will appear here instantly.</p>
+            </div>
+          </div>
+          <div id="moverRequests" class="list"></div>
+        </div>
+      </section>
+
+      <!-- MOVER JOBS -->
+      <section class="page" id="moverJobs">
+        <div class="page-head">
+          <div>
+            <h2>My jobs</h2>
+            <p>Manage your active and completed moves.</p>
+          </div>
+        </div>
+        <div id="moverJobsList" class="list"></div>
+      </section>
+
+      <!-- MOVER EARNINGS -->
+      <section class="page" id="moverEarnings">
+        <div class="page-head">
+          <div>
+            <h2>Earnings</h2>
+            <p>Your moving income.</p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:16px">
+          <div style="color:var(--muted);font-size:13px">Available balance</div>
+          <div class="big-money" id="availableBalance">TSh 0</div>
+          <button class="primary" style="width:auto;margin-top:15px" onclick="openWithdrawalModal()">WITHDRAW</button>
+        </div>
+
+        <div id="earningsList" class="list"></div>
+      </section>
+
+      <!-- ADMIN -->
+      <section class="page" id="adminHome">
+        <div class="page-head">
+          <div>
+            <h2>Operations dashboard</h2>
+            <p>Live Hamisha Chapu operations.</p>
+          </div>
+          <span class="status"><span class="online-dot"></span> LIVE</span>
+        </div>
+
+        <div class="grid grid-4">
+          <div class="card stat">
+            <div class="label">Users</div>
+            <div class="value" id="adminUsers">0</div>
+          </div>
+          <div class="card stat">
+            <div class="label">Pending requests</div>
+            <div class="value" id="adminPending">0</div>
+          </div>
+          <div class="card stat">
+            <div class="label">Active jobs</div>
+            <div class="value" id="adminActive">0</div>
+          </div>
+          <div class="card stat">
+            <div class="label">Unread messages</div>
+            <div class="value" id="adminUnread">0</div>
+          </div>
+        </div>
+
+        <div class="grid grid-2" style="margin-top:16px">
+          <div class="card">
+            <div class="page-head" style="margin-bottom:15px">
+              <div>
+                <h2 style="font-size:20px">Live jobs</h2>
+                <p>Updates without refreshing.</p>
+              </div>
+            </div>
+            <div id="adminLiveJobs" class="list"></div>
+          </div>
+
+          <div class="card">
+            <div class="page-head" style="margin-bottom:15px">
+              <div>
+                <h2 style="font-size:20px">Mover verification</h2>
+                <p>Review new mover applications.</p>
+              </div>
+            </div>
+            <div id="adminMovers" class="list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ADMIN USERS -->
+      <section class="page" id="adminUsersPage">
+        <div class="page-head">
+          <div>
+            <h2>Users</h2>
+            <p>Customers, movers and admins.</p>
+          </div>
+        </div>
+        <div class="card table-wrap">
+          <table>
+            <thead>
+              <tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Status</th><th>Joined</th></tr>
+            </thead>
+            <tbody id="usersTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ADMIN REQUESTS -->
+      <section class="page" id="adminRequests">
+        <div class="page-head">
+          <div>
+            <h2>Moving requests</h2>
+            <p>All customer requests.</p>
+          </div>
+        </div>
+        <div id="adminRequestsList" class="list"></div>
+      </section>
+
+      <!-- PROFILE -->
+      <section class="page" id="profilePage">
+        <div class="page-head">
+          <div>
+            <h2>Profile</h2>
+            <p>Manage your account.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <form id="profileForm">
+            <div class="form-group">
+              <label>Full name</label>
+              <input class="input" id="profileName">
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input class="input" id="profileEmail" disabled>
+            </div>
+            <div class="form-group">
+              <label>Phone</label>
+              <input class="input" id="profilePhone">
+            </div>
+            <button class="primary" style="width:auto">SAVE CHANGES</button>
+          </form>
+
+          <button class="secondary" style="margin-top:12px" onclick="logout()">LOG OUT</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <nav class="mobile-bottom" id="mobileNav"></nav>
+</section>
+
+<!-- REQUEST MODAL -->
+<div class="modal-backdrop" id="jobModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="jobModalTitle">Moving job</h3>
+      <button class="close" onclick="closeModal('jobModal')">×</button>
+    </div>
+    <div id="jobModalBody"></div>
+  </div>
+</div>
+
+<!-- NOTIFICATION MODAL -->
+<div class="modal-backdrop" id="notificationModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Notifications</h3>
+      <button class="close" onclick="closeModal('notificationModal')">×</button>
+    </div>
+    <div id="notificationModalBody"></div>
+  </div>
+</div>
+
+<script>
+/* ==========================================================
+   HAMISHA CHAPU
+   SUPABASE CONFIG
+   ========================================================== */
+
+const CONFIG = {
+  SUPABASE_URL: "https://ypduresdeyyzoxnomoum.supabase.co",
+  SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlwZHVyZXNkZXl5em94bm9tb3VtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0NzU1MDgsImV4cCI6MjEwMzA1MTUwOH0.vGeTlD-HEInc6K0GpNXHjx46wbdC4_6CdDrDS_76GLk"
+};
+
+const supabaseClient = window.supabase.createClient(
+  CONFIG.SUPABASE_URL,
+  CONFIG.SUPABASE_ANON_KEY,
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true
+    }
+  }
+);
+
+/* ==========================================================
+   APP STATE
+   ========================================================== */
+
+const state = {
+  session: null,
+  user: null,
+  profile: null,
+  role: null,
+
+  selectedMoveType: "house",
+  selectedItems: new Set(),
+
+  currentConversation: null,
+  currentConversationChannel: null,
+
+  realtimeChannels: [],
+  liveMap: null,
+  moverMarker: null,
+
+  notifications: [],
+  unreadNotifications: 0,
+
+  conversations: [],
+  messages: []
+};
+
+/* ==========================================================
+   HELPERS
+   ========================================================== */
+
+const $ = id => document.getElementById(id);
+
+function escapeHTML(value){
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function money(value){
+  return "TSh " + Number(value || 0).toLocaleString("en-TZ");
+}
+
+function dateTime(value){
+  if(!value) return "";
+  return new Date(value).toLocaleString("en-TZ",{
+    dateStyle:"medium",
+    timeStyle:"short"
+  });
+}
+
+function initials(name){
+  return String(name || "User")
+    .split(" ")
+    .filter(Boolean)
+    .slice(0,2)
+    .map(x => x[0])
+    .join("")
+    .toUpperCase();
+}
+
+function toast(message,type="success",title="Hamisha Chapu"){
+  const el=document.createElement("div");
+  el.className="toast " + type;
+  el.innerHTML=`<strong>${escapeHTML(title)}</strong><div>${escapeHTML(message)}</div>`;
+  $("toastWrap").appendChild(el);
+  setTimeout(()=>el.remove(),4200);
+}
+
+function setLoading(button,loading,text){
+  if(!button) return;
+  if(loading){
+    button.dataset.oldText=button.innerHTML;
+    button.disabled=true;
+    button.innerHTML="PLEASE WAIT...";
+  }else{
+    button.disabled=false;
+    button.innerHTML=text || button.dataset.oldText || "SUBMIT";
+  }
+}
+
+function validPassword(password){
+  return password.length >= 8 &&
+    /[A-Z]/.test(password) &&
+    /[a-z]/.test(password) &&
+    /\d/.test(password) &&
+    /[^A-Za-z0-9]/.test(password);
+}
+
+function updateRules(prefix,password){
+  const rules=[
+    [`${prefix}Len`,password.length>=8],
+    [`${prefix}Upper`,/[A-Z]/.test(password)],
+    [`${prefix}Lower`,/[a-z]/.test(password)],
+    [`${prefix}Num`,/\d/.test(password)],
+    [`${prefix}Sym`,/[^A-Za-z0-9]/.test(password)]
+  ];
+
+  rules.forEach(([id,ok])=>{
+    const el=$(id);
+    if(!el)return;
+    el.classList.toggle("ok",ok);
+    el.textContent=(ok?"✓":"○")+" "+el.textContent.slice(2);
+  });
+}
+
+/* ==========================================================
+   AUTH UI
+   ========================================================== */
+
+function showAuthBox(name){
+  ["loginBox","registerBox","forgotBox","resetBox"].forEach(id=>{
+    $(id).classList.toggle("hidden",id!==name);
+  });
+}
+
+$("showRegister").onclick=()=>showAuthBox("registerBox");
+$("showForgot").onclick=()=>showAuthBox("forgotBox");
+$("showLoginFromRegister").onclick=()=>showAuthBox("loginBox");
+$("showLoginFromForgot").onclick=()=>showAuthBox("loginBox");
+
+$("registerPassword").addEventListener("input",e=>{
+  updateRules("r",e.target.value);
+});
+
+$("resetPassword").addEventListener("input",e=>{
+  updateRules("rr",e.target.value);
+});
+
+/* ==========================================================
+   REGISTER
+   ========================================================== */
+
+$("registerForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  const btn=$("registerBtn");
+  const name=$("registerName").value.trim();
+  const phone=$("registerPhone").value.trim();
+  const email=$("registerEmail").value.trim().toLowerCase();
+  const password=$("registerPassword").value;
+  const role=$("registerRole").value;
+
+  if(!validPassword(password)){
+    toast("Password lazima iwe na 8+ characters, uppercase, lowercase, number na symbol.","error","Weak password");
+    return;
+  }
+
+  setLoading(btn,true);
+
+  const redirectTo = window.location.origin + window.location.pathname;
+
+  const {data,error}=await supabaseClient.auth.signUp({
+    email,
+    password,
+    options:{
+      emailRedirectTo:redirectTo,
+      data:{
+        full_name:name,
+        phone,
+        role
+      }
+    }
+  });
+
+  setLoading(btn,false);
+
+  if(error){
+    toast(error.message,"error","Registration failed");
+    return;
+  }
+
+  if(data.session){
+    toast("Account created successfully.");
+    await bootUser(data.session);
+  }else{
+    toast("Check your email and confirm your account before logging in.","success","Confirmation email sent");
+    $("loginEmail").value=email;
+    showAuthBox("loginBox");
+  }
+});
+
+/* ==========================================================
+   LOGIN
+   ========================================================== */
+
+$("loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  const btn=$("loginBtn");
+  const email=$("loginEmail").value.trim().toLowerCase();
+  const password=$("loginPassword").value;
+
+  setLoading(btn,true);
+
+  const {data,error}=await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  setLoading(btn,false);
+
+  if(error){
+    toast(error.message,"error","Login failed");
+    return;
+  }
+
+  await bootUser(data.session);
+});
+
+/* ==========================================================
+   FORGOT PASSWORD
+   ========================================================== */
+
+$("forgotForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  const email=$("forgotEmail").value.trim().toLowerCase();
+
+  const redirectTo =
+    window.location.origin +
+    window.location.pathname +
+    "?mode=reset";
+
+  const {error}=await supabaseClient.auth.resetPasswordForEmail(
+    email,
+    {redirectTo}
+  );
+
+  if(error){
+    toast(error.message,"error","Reset failed");
+    return;
+  }
+
+  toast(
+    "If the account exists, a password reset link has been sent.",
+    "success",
+    "Check your email"
+  );
+
+  $("loginEmail").value=email;
+});
+
+/* ==========================================================
+   RESET PASSWORD
+   ========================================================== */
+
+$("resetForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  const password=$("resetPassword").value;
+  const confirm=$("resetConfirm").value;
+
+  if(!validPassword(password)){
+    toast("Password haikidhi rules zote.","error","Invalid password");
+    return;
+  }
+
+  if(password!==confirm){
+    toast("Passwords hazifanani.","error","Check password");
+    return;
+  }
+
+  const {error}=await supabaseClient.auth.updateUser({
+    password
+  });
+
+  if(error){
+    toast(error.message,"error","Password update failed");
+    return;
+  }
+
+  const email=state.user?.email || $("loginEmail").value || "";
+
+  await supabaseClient.auth.signOut();
+
+  $("loginEmail").value=email;
+
+  showAuthBox("loginBox");
+
+  window.history.replaceState({},document.title,window.location.pathname);
+
+  toast(
+    "Password imebadilishwa. Ingiza password mpya ku-login.",
+    "success",
+    "Password updated"
+  );
+});
+
+/* ==========================================================
+   AUTH STATE
+   ========================================================== */
+
+supabaseClient.auth.onAuthStateChange(async(event,session)=>{
+  state.session=session;
+  state.user=session?.user || null;
+
+  if(event==="PASSWORD_RECOVERY"){
+    showAuthBox("resetBox");
+    $("authScreen").style.display="grid";
+    $("appShell").style.display="none";
+    return;
+  }
+
+  if(session && event!=="SIGNED_OUT"){
+    await bootUser(session);
+  }
+
+  if(!session){
+    cleanupRealtime();
+    $("appShell").style.display="none";
+    $("authScreen").style.display="grid";
+    showAuthBox("loginBox");
+  }
+});
+
+/* ==========================================================
+   BOOT USER
+   ========================================================== */
+
+async function bootUser(session){
+  if(!session?.user)return;
+
+  state.session=session;
+  state.user=session.user;
+
+  const {data,error}=await supabaseClient
+    .from("profiles")
+    .select("*")
+    .eq("id",session.user.id)
+    .maybeSingle();
+
+  if(error){
+    toast(error.message,"error","Profile error");
+    return;
+  }
+
+  state.profile=data;
+  state.role=data?.role || "customer";
+
+  $("authScreen").style.display="none";
+  $("appShell").style.display="block";
+
+  renderShell();
+
+  await loadInitialData();
+  setupRealtime();
+}
+
+/* ==========================================================
+   SHELL
+   ========================================================== */
+
+function renderShell(){
+  const name=state.profile?.full_name || state.user?.email || "User";
+
+  $("topName").textContent=name;
+  $("topAvatar").textContent=initials(name);
+
+  const nav=$("sidebar");
+  const mobile=$("mobileNav");
+
+  if(state.role==="customer"){
+    nav.innerHTML=customerNav();
+    mobile.innerHTML=mobileCustomerNav();
+    openPage("customerHome");
+  }else if(state.role==="mover"){
+    nav.innerHTML=moverNav();
+    mobile.innerHTML=mobileMoverNav();
+    openPage("moverHome");
+  }else{
+    nav.innerHTML=adminNav();
+    mobile.innerHTML=mobileAdminNav();
+    openPage("adminHome");
+  }
+
+  bindNavButtons();
+}
+
+function customerNav(){
+  return `
+    <div class="nav-section">Customer</div>
+    ${navButton("customerHome","⌂","Home")}
+    ${navButton("requestPage","⚡","Request move")}
+    ${navButton("ordersPage","🚚","My moves")}
+    ${navButton("trackPage","📍","Live tracking")}
+    ${navButton("chatPage","💬","Messages","navChatBadge")}
+    ${navButton("notificationsPage","🔔","Notifications","navNotifBadge")}
+    <div class="nav-section">Account</div>
+    ${navButton("profilePage","👤","Profile")}
+  `;
+}
+
+function moverNav(){
+  return `
+    <div class="nav-section">Mover</div>
+    ${navButton("moverHome","⌂","Dashboard")}
+    ${navButton("moverJobs","🚚","My jobs")}
+    ${navButton("chatPage","💬","Messages","navChatBadge")}
+    ${navButton("moverEarnings","💰","Earnings")}
+    ${navButton("notificationsPage","🔔","Notifications","navNotifBadge")}
+    <div class="nav-section">Account</div>
+    ${navButton("profilePage","👤","Profile")}
+  `;
+}
+
+function adminNav(){
+  return `
+    <div class="nav-section">Operations</div>
+    ${navButton("adminHome","◈","Dashboard")}
+    ${navButton("adminRequests","🚚","Moving requests")}
+    ${navButton("adminUsersPage","👥","Users")}
+    ${navButton("chatPage","💬","Messages","navChatBadge")}
+    ${navButton("notificationsPage","🔔","Notifications","navNotifBadge")}
+    <div class="nav-section">Account</div>
+    ${navButton("profilePage","👤","Profile")}
+  `;
+}
+
+function navButton(page,icon,text,badgeId){
+  return `
+    <button class="nav-btn" data-page="${page}">
+      <span style="font-size:18px">${icon}</span>
+      <span>${text}</span>
+      ${badgeId?`<span class="badge hidden" id="${badgeId}" style="position:static;margin-left:auto">0</span>`:""}
+    </button>
+  `;
+}
+
+function mobileCustomerNav(){
+  return `
+    <button data-page="customerHome"><span class="mi">⌂</span>Home</button>
+    <button data-page="requestPage"><span class="mi">⚡</span>Move</button>
+    <button data-page="trackPage"><span class="mi">📍</span>Track</button>
+    <button data-page="chatPage"><span class="mi">💬</span>Chat</button>
+    <button data-page="profilePage"><span class="mi">👤</span>Me</button>
+  `;
+}
+
+function mobileMoverNav(){
+  return `
+    <button data-page="moverHome"><span class="mi">⌂</span>Home</button>
+    <button data-page="moverJobs"><span class="mi">🚚</span>Jobs</button>
+    <button data-page="chatPage"><span class="mi">💬</span>Chat</button>
+    <button data-page="moverEarnings"><span class="mi">💰</span>Money</button>
+    <button data-page="profilePage"><span class="mi">👤</span>Me</button>
+  `;
+}
+
+function mobileAdminNav(){
+  return `
+    <button data-page="adminHome"><span class="mi">◈</span>Home</button>
+    <button data-page="adminRequests"><span class="mi">🚚</span>Jobs</button>
+    <button data-page="adminUsersPage"><span class="mi">👥</span>Users</button>
+    <button data-page="chatPage"><span class="mi">💬</span>Chat</button>
+    <button data-page="profilePage"><span class="mi">👤</span>Me</button>
+  `;
+}
+
+function bindNavButtons(){
+  document.querySelectorAll("[data-page]").forEach(btn=>{
+    btn.onclick=()=>openPage(btn.dataset.page);
+  });
+}
+
+function openPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+
+  const page=$(id);
+  if(!page)return;
+
+  page.classList.add("active");
+
+  document.querySelectorAll(".nav-btn,.mobile-bottom button").forEach(b=>{
+    b.classList.toggle("active",b.dataset.page===id);
+  });
+
+  if(id==="customerHome")loadCustomerDashboard();
+  if(id==="ordersPage")loadCustomerOrders();
+  if(id==="trackPage")loadActiveJob();
+  if(id==="chatPage")loadConversations();
+  if(id==="notificationsPage")loadNotifications();
+
+  if(id==="moverHome")loadMoverDashboard();
+  if(id==="moverJobs")loadMoverJobs();
+  if(id==="moverEarnings")loadMoverEarnings();
+
+  if(id==="adminHome")loadAdminDashboard();
+  if(id==="adminUsersPage")loadAdminUsers();
+  if(id==="adminRequests")loadAdminRequests();
+
+  if(id==="profilePage")loadProfile();
+}
+
+function setScheduled(){
+  const d=new Date();
+  d.setDate(d.getDate()+1);
+  $("moveDate").value=d.toISOString().slice(0,10);
+}
+
+/* ==========================================================
+   INITIAL DATA
+   ========================================================== */
+
+async function loadInitialData(){
+  if(state.role==="customer"){
+    await Promise.all([
+      loadCustomerDashboard(),
+      loadCustomerOrders(),
+      loadNotifications()
+    ]);
+  }
+
+  if(state.role==="mover"){
+    await Promise.all([
+      loadMoverDashboard(),
+      loadMoverJobs(),
+      loadMoverEarnings(),
+      loadNotifications()
+    ]);
+  }
+
+  if(state.role==="admin"){
+    await Promise.all([
+      loadAdminDashboard(),
+      loadAdminUsers(),
+      loadAdminRequests(),
+      loadNotifications()
+    ]);
+  }
+
+  loadProfile();
+}
+
+/* ==========================================================
+   CUSTOMER REQUEST
+   ========================================================== */
+
+document.querySelectorAll("#moveTypes .choice").forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll("#moveTypes .choice").forEach(x=>x.classList.remove("selected"));
+    btn.classList.add("selected");
+    state.selectedMoveType=btn.dataset.value;
+  };
+});
+
+document.querySelectorAll("#itemsGrid .item-toggle").forEach(btn=>{
+  btn.onclick=()=>{
+    const item=btn.dataset.item;
+
+    if(state.selectedItems.has(item)){
+      state.selectedItems.delete(item);
+      btn.classList.remove("selected");
+    }else{
+      state.selectedItems.add(item);
+      btn.classList.add("selected");
+    }
+  };
+});
+
+$("requestForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  if(!state.user){
+    toast("Please login first.","error");
+    return;
+  }
+
+  const pickup=$("pickupAddress").value.trim();
+  const destination=$("destinationAddress").value.trim();
+
+  if(!pickup || !destination){
+    toast("Pickup na destination ni lazima.","error");
+    return;
+  }
+
+  const submit=e.submitter;
+  setLoading(submit,true);
+
+  const payload={
+    customer_id:state.user.id,
+    move_type:state.selectedMoveType,
+    title:`${state.selectedMoveType.replaceAll("_"," ")} move`,
+    pickup_address:pickup,
+    destination_address:destination,
+    preferred_date:$("moveDate").value || null,
+    preferred_time:$("moveTime").value || null,
+    is_instant:!$("moveDate").value,
+    recommended_vehicle_type:$("vehicleType").value,
+    movers_required:Number($("moversRequired").value),
+    customer_notes:$("requestNotes").value.trim() || null,
+    status:"matching"
+  };
+
+  const {data,error}=await supabaseClient
+    .from("moving_requests")
+    .insert(payload)
+    .select()
+    .single();
+
+  if(error){
+    setLoading(submit,false);
+    toast(error.message,"error","Request failed");
+    return;
+  }
+
+  if(state.selectedItems.size){
+    const rows=[...state.selectedItems].map(item=>({
+      request_id:data.id,
+      item_name:item,
+      quantity:1
+    }));
+
+    const itemResult=await supabaseClient
+      .from("moving_items")
+      .insert(rows);
+
+    if(itemResult.error){
+      console.warn(itemResult.error);
+    }
+  }
+
+  setLoading(submit,false);
+
+  toast(
+    "Request yako imeingia. Tunatafuta movers walio karibu.",
+    "success",
+    "Move requested ⚡"
+  );
+
+  $("requestForm").reset();
+  state.selectedItems.clear();
+
+  document.querySelectorAll(".item-toggle").forEach(x=>x.classList.remove("selected"));
+
+  openPage("ordersPage");
+});
+
+/* ==========================================================
+   CUSTOMER DASHBOARD
+   ========================================================== */
+
+async function loadCustomerDashboard(){
+  if(!state.user)return;
+
+  const {data,error}=await supabaseClient
+    .from("moving_requests")
+    .select("*")
+    .eq("customer_id",state.user.id)
+    .order("created_at",{ascending:false})
+    .limit(5);
+
+  if(error){
+    console.error(error);
+    return;
+  }
+
+  const active=(data||[]).filter(x=>!["completed","cancelled","expired"].includes(x.status)).length;
+  const completed=(data||[]).filter(x=>x.status==="completed").length;
+
+  $("customerActiveCount").textContent=active;
+  $("customerCompletedCount").textContent=completed;
+
+  const box=$("customerRecentMoves");
+
+  if(!data?.length){
+    box.innerHTML=`<div class="empty">No moves yet. Your first move starts here. ⚡</div>`;
+    return;
+  }
+
+  box.innerHTML=data.map(requestCard).join("");
+}
+
+/* ==========================================================
+   CUSTOMER ORDERS
+   ========================================================== */
+
+async function loadCustomerOrders(){
+  if(!state.user)return;
+
+  const {data,error}=await supabaseClient
+    .from("moving_requests")
+    .select("*")
+    .eq("customer_id",state.user.id)
+    .order("created_at",{ascending:false});
+
+  if(error){
+    console.error(error);
+    return;
+  }
+
+  const box=$("customerOrders");
+
+  if(!data?.length){
+    box.innerHTML=`<div class="card empty">You haven't requested a move yet.</div>`;
+    return;
+  }
+
+  box.innerHTML=data.map(requestCard).join("");
+}
+
+function requestCard(r){
+  const statusClass=
+    ["pending","matching"].includes(r.status)?"pending":
+    ["accepted","completed"].includes(r.status)?"":"danger";
+
+  return `
+    <div class="list-item">
+      <div class="list-main">
+        <strong>${escapeHTML(r.pickup_address)} → ${escapeHTML(r.destination_address)}</strong>
+        <span>${escapeHTML(r.move_type)} · ${dateTime(r.created_at)}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:9px">
+        <span class="status ${statusClass}">${escapeHTML(r.status)}</span>
+        <button class="secondary" style="width:auto;padding:8px 11px" onclick="viewRequest('${r.id}')">VIEW</button>
+      </div>
+    </div>
+  `;
+}
+
+/* ==========================================================
+   VIEW REQUEST / JOB
+   ========================================================== */
+
+async function viewRequest(id){
+  const {data,error}=await supabaseClient
+    .from("moving_requests")
+    .select("*")
+    .eq("id",id)
+    .single();
+
+  if(error){
+    toast(error.message,"error");
+    return;
+  }
+
+  $("jobModalTitle").textContent="Moving request";
+
+  $("jobModalBody").innerHTML=`
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="field-title">Pickup</div>
+        <strong>${escapeHTML(data.pickup_address)}</strong>
+      </div>
+      <div class="card">
+        <div class="field-title">Destination</div>
+        <strong>${escapeHTML(data.destination_address)}</strong>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div style="display:flex;justify-content:space-between">
+        <span>Status</span>
+        <span class="status">${escapeHTML(data.status)}</span>
+      </div>
+      <div style="margin-top:12px;color:var(--muted);font-size:13px">
+        ${escapeHTML(data.customer_notes || "No additional notes.")}
+      </div>
+    </div>
+  `;
+
+  openModal("jobModal");
+}
+
+/* ==========================================================
+   MOVER DASHBOARD
+   ========================================================== */
+
+async function loadMoverDashboard(){
+  if(!state.user)return;
+
+  const {data,error}=await supabaseClient
+    .from("mover_profiles")
+    .select("*")
+    .eq("id",state.user.id)
+    .maybeSingle();
+
+  if(error){
+    console.error(error);
+    return;
+  }
+
+  if(!data){
+    $("moverRequests").innerHTML=`
+      <div class="empty">
+        Complete mover registration and wait for verification.
+      </div>`;
+    return;
+  }
+
+  $("moverCompleted").textContent=data.completed_jobs || 0;
+  $("moverRating").textContent=Number(data.rating||0).toFixed(1);
+  $("moverAcceptance").textContent=Math.round(data.acceptance_rate||0)+"%";
+
+  $("availabilityBtn").textContent=
+    data.is_available ? "GO OFFLINE 🔴" : "GO ONLINE 🟢";
+
+  const {data:requests,error:reqError}=await supabaseClient
+    .from("moving_requests")
+    .select("*")
+    .in("status",["pending","matching"])
+    .order("created_at",{ascending:false})
+    .limit(20);
+
+  if(reqError){
+    console.error(reqError);
+    return;
+  }
+
+  renderMoverRequests(requests||[]);
+}
+
+function renderMoverRequests(requests){
+  const box=$("moverRequests");
+
+  if(!requests.length){
+    box.innerHTML=`<div class="empty">No nearby requests right now. Stay online and we'll notify you.</div>`;
+    return;
+  }
+
+  box.innerHTML=requests.map(r=>`
+    <div class="list-item">
+      <div class="list-main">
+        <strong>${escapeHTML(r.pickup_address)} → ${escapeHTML(r.destination_address)}</strong>
+        <span>
+          ${escapeHTML(r.move_type)} ·
+          ${escapeHTML(r.recommended_vehicle_type || "Any vehicle")} ·
+          ${r.movers_required} movers
+        </span>
+      </div>
+      <button class="primary" style="width:auto;padding:9px 13px" onclick="acceptRequest('${r.id}')">
+        ACCEPT
+      </button>
+    </div>
+  `).join("");
+}
+
+async function acceptRequest(requestId){
+  if(!state.user)return;
+
+  const {data:request,error:reqError}=await supabaseClient
+    .from("moving_requests")
+    .select("*")
+    .eq("id",requestId)
+    .single();
+
+  if(reqError){
+    toast(reqError.message,"error");
+    return;
+  }
+
+  const {data:vehicle}=await supabaseClient
+    .from("vehicles")
+    .select("*")
+    .eq("mover_id",state.user.id)
+    .eq("is_active",true)
+    .eq("is_verified",true)
+    .order("is_primary",{ascending:false})
+    .limit(1)
+    .maybeSingle();
+
+  const price=
+    Number(request.estimated_max_price||0) ||
+    estimatePrice(request);
+
+  const platformFee=Math.round(price*.10);
+  const earning=price-platformFee;
+
+  const {data:job,error}=await supabaseClient
+    .from("jobs")
+    .insert({
+      request_id:requestId,
+      customer_id:request.customer_id,
+      mover_id:state.user.id,
+      vehicle_id:vehicle?.id || null,
+      agreed_price:price,
+      platform_fee:platformFee,
+      mover_earning:earning,
+      status:"accepted",
+      accepted_at:new Date().toISOString()
+    })
+    .select()
+    .single();
+
+  if(error){
+    toast(error.message,"error","Could not accept");
+    return;
+  }
+
+  await supabaseClient
+    .from("moving_requests")
+    .update({status:"accepted"})
+    .eq("id",requestId);
+
+  await supabaseClient
+    .from("mover_request_offers")
+    .upsert({
+      request_id:requestId,
+      mover_id:state.user.id,
+      offered_price:price,
+      response:"accepted",
+      responded_at:new Date().toISOString()
+    });
+
+  await supabaseClient
+    .from("conversations")
+    .insert({
+      job_id:job.id,
+      customer_id:request.customer_id,
+      mover_id:state.user.id
+    });
+
+  toast("Job accepted successfully!","success","You're booked 🚚");
+
+  openPage("moverJobs");
+}
+
+function estimatePrice(request){
+  const base={
+    pickup:35000,
+    van:45000,
+    canter:70000,
+    box_truck:90000,
+    large_truck:120000
+  }[request.recommended_vehicle_type] || 50000;
+
+  return base+(Number(request.movers_required||0)*10000);
+}
+
+/* ==========================================================
+   MOVER AVAILABILITY
+   ========================================================== */
+
+async function toggleMoverAvailability(){
+  if(!state.user)return;
+
+  const {data}=await supabaseClient
+    .from("mover_profiles")
+    .select("is_available")
+    .eq("id",state.user.id)
+    .single();
+
+  if(!data)return;
+
+  const next=!data.is_available;
+
+  const {error}=await supabaseClient
+    .from("mover_profiles")
+    .update({
+      is_available:next
+    })
+    .eq("id",state.user.id);
+
+  if(error){
+    toast(error.message,"error");
+    return;
+  }
+
+  await supabaseClient
+    .from("profiles")
+    .update({
+      is_online:next,
+      last_seen_at:new Date().toISOString()
+    })
+    .eq("id",state.user.id);
+
+  if(next){
+    toast("You're now visible to nearby customers.","success","You're online 🟢");
+  }else{
+    toast("You won't receive new requests.","success","You're offline");
+  }
+
+  loadMoverDashboard();
+}
+
+/* ==========================================================
+   MOVER JOBS
+   ========================================================== */
+
+async function loadMoverJobs(){
+  if(!state.user)return;
+
+  const {data,error}=await supabaseClient
+    .from("jobs")
+    .select(`
+      *,
+      moving_requests (
+        pickup_address,
+        destination_address,
+        move_type
+      )
+    `)
+    .eq("mover_id",state.user.id)
+    .order("created_at",{ascending:false});
+
+  if(error){
+    console.error(error);
+    return;
+  }
+
+  const box=$("moverJobsList");
+
+  if(!data?.length){
+    box.innerHTML=`<div class="card empty">No jobs yet.</div>`;
+    return;
+  }
+
+  box.innerHTML=data.map(job=>`
+    <div class="list-item">
+      <div class="list-main">
+        <strong>${escapeHTML(job.moving_requests?.pickup_address||"")} → ${escapeHTML(job.moving_requests?.destination_address||"")}</strong>
+        <span>${escapeHTML(job.moving_requests?.move_type||"")} · ${money(job.agreed_price)}</span>
+      </div>
+
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="status ${job.status==="cancelled"?"danger":""}">${escapeHTML(job.status)}</span>
+        ${!["completed","cancelled"].includes(job.status)
+          ?`<button class="secondary" style="width:auto;padding:8px" onclick="advanceJob('${job.id}','${job.status}')">NEXT</button>`
+          :""}
+      </div>
+    </div>
+  `).join("");
+}
+
+async function advanceJob(jobId,current){
+  const flow={
+    accepted:"coming",
+    coming:"arrived",
+    arrived:"loading",
+    loading:"moving",
+    moving:"delivered",
+    delivered:"completed"
+  };
+
+  const next=flow[current];
+
+  if(!next)return;
+
+  const timestamps={
+    arrived:{arrived_at:new Date().toISOString()},
+    loading:{loading_started_at:new Date().toISOString()},
+    moving:{moving_started_at:new Date().toISOString()},
+    delivered:{delivered_at:new Date().toISOString()},
+    completed:{completed_at:new Date().toISOString()}
+  };
+
+  const patch={
+    status:next,
+    ...(timestamps[next]||{})
+  };
+
+  const {error}=await supabaseClient
+    .from("jobs")
+    .update(patch)
+    .eq("id",jobId)
+    .eq("mover_id",state.user.id);
+
+  if(error){
+    toast(error.message,"error");
+    return;
+  }
+
+  toast(`Job status: ${next.toUpperCase()}`,"success","Updated live 🚚");
+
+  loadMoverJobs();
+}
+
+/* ==========================================================
+   MOVER EARNINGS
+   ========================================================== */
+
+async function loadMoverEarnings(){
+  if(!state.user)return;
+
+  const {data,error}=await supabaseClient
+    .from("mover_earnings")
+    .select("*")
+    .eq("mover_id",state.user.id)
+    .order("created_at",{ascending:false});
+
+  if(error){
+    console.error(error);
+    return;
+  }
+
+  const total=(data||[])
+    .filter(x=>x.type!=="withdrawal")
+    .reduce((sum,x)=>sum+Number(x.amount||0),0);
+
+  $("availableBalance").textContent=money(total);
+
+  const box=$("earningsList");
+
+  if(!data?.length){
+    box.innerHTML=`<div class="empty">No earnings yet.</div>`;
+    return;
+  }
+
+  box.innerHTML=data.map(e=>`
+    <div class="list-item">
+      <div class="list-main">
+        <strong>${escapeHTML(e.description||e.type)}</strong>
+        <span>${dateTime(e.created_at)}</span>
+      </div>
+      <span class="amount">${money(e.amount)}</span>
+    </div>
+  `).join("");
+}
+
+function openWithdrawalModal(){
+  $("jobModalTitle").textContent="Withdraw earnings";
+  $("jobModalBody").innerHTML=`
+    <form onsubmit="submitWithdrawal(event)">
+      <div class="form-group">
+        <label>Amount</label>
+        <input class="input" id="withdrawAmount" type="number" min="1000" required>
+      </div>
+      <div class="form-group">
+        <label>Payment method</label>
+        <select class="input" id="withdrawMethod">
+          <option value="mpesa">M-Pesa</option>
+          <option value="airtel_money">Airtel Money</option>
+          <option value="mixx">Mixx</option>
+          <option value="bank">Bank</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Account / phone number</label>
+        <input class="input" id="withdrawAccount" required>
+      </div>
+      <button class="primary">REQUEST WITHDRAWAL</button>
+    </form>
+  `;
+  openModal("jobModal");
+}
+
+async function submitWithdrawal(e){
+  e.preventDefault();
+
+  const amount=Number($("withdrawAmount").value);
+  const method=$("withdrawMethod").value;
+  const account=$("withdrawAccount").value.trim();
+
+  const {error}=await supabaseClient
+    .from("withdrawals")
+    .insert({
+      mover_id:state.user.id,
+      amount,
+      method,
+      account_number:account
+    });
+
+  if(error){
+    toast(error.message,"error");
+    return;
+  }
+
+  closeModal("jobModal");
+  toast("Withdrawal request submitted.","success","Request received");
+}
+
+/* ==========================================================
+   CHAT — REALTIME
+   ========================================================== */
+
+async function loadConversations(){
+  if(!state.user)return;
+
+  const {data,error}=await supabaseClient
+    .from("conversations")
+    .select(`
+      *,
+      customer:profiles!conversations_customer_id_fkey(id,full_name),
+      mover:mover_profiles!conversations_mover_id_fkey(
+        id,
+        profiles!mover_profiles_id_fkey(id,full_name)
+      )
+    `)
+    .or(`customer_id.eq.${state.user.id},mover_id.eq.${state.user.id}`)
+    .order("last_message_at",{ascending:false,nullsFirst:false});
+
+  if(error){
+    console.error(error);
+    $("conversationItems").innerHTML=`<div class="empty">No conversations yet.</div>`;
+    return;
+  }
+
+  state.conversations=data||[];
+
+  const box=$("conversationItems");
+
+  if(!state.conversations.length){
+    box.innerHTML=`<div class="empty">No conversations yet.</div>`;
+    return;
+  }
+
+  box.innerHTML=state.conversations.map(c=>{
+    const other=
+      c.customer_id===state.user.id
+        ? c.mover?.profiles?.full_name || "Mover"
+        : c.customer?.full_name || "Customer";
+
+    return `
+      <div class="conversation ${state.currentConversation?.id===c.id?"active":""}"
+           onclick="openConversation('${c.id}')">
+        <div class="name">${escapeHTML(other)}</div>
+        <div class="preview">${dateTime(c.last_message_at)||"Start conversation"}</div>
+      </div>
+    `;
+  }).join("");
+
+  if(state.currentConversation){
+    const exists=state.conversations.find(x=>x.id===state.currentConversation.id);
+    if(exists)openConversation(exists.id,true);
+  }
+}
+
+async function openConversation(id,silent=false){
+  const conversation=state.conversations.find(x=>x.id===id);
+
+  if(!conversation)return;
+
+  state.currentConversation=conversation;
+
+  const other=
+    conversation.customer_id===state.user.id
+      ? conversation.mover?.profiles?.full_name || "Mover"
+      : conversation.customer?.full_name || "Customer";
+
+  $("chatTitle").textContent=other;
+  $("chatSubtitle").textContent="● Real-time conversation";
+
+  await loadMessages(id);
+
+  if(state.currentConversationChannel){
+    await supabaseClient.removeChannel(state.currentConversationChannel);
+  }
+
+  state.currentConversationChannel=supabaseClient
+    .channel(`chat-${id}`)
+    .on(
+      "postgres_changes",
+      {
+        event:"INSERT",
+        schema:"public",
+        table:"messages",
+        filter:`conversation_id=eq.${id}`
+      },
+      payload=>{
+        appendMessage(payload.new);
+        scrollMessages();
+      }
+    )
+    .subscribe();
+
+  await markConversationRead(id);
+
+  if(!silent){
+    document.querySelectorAll(".conversation").forEach(x=>x.classList.remove("active"));
+  }
+}
+
+async function loadMessages(conversationId){
+  const {data,error}=await supabaseClient
+    .from("messages")
+    .select("*")
+    .eq("conversation_id",conversationId)
+    .order("created_at",{ascending:true});
+
+  if(error){
+    console.error(error);
+    return;
+  }
+
+  state.messages=data||[];
+
+  const box=$("messages");
+
+  if(!state.messages.length){
+    box.innerHTML=`<div class="empty">No messages yet. Say hello 👋</div>`;
+    return;
+  }
+
+  box.innerHTML=state.messages.map(messageHTML).join("");
+  scrollMessages();
+}
+
+function messageHTML(m){
+  const mine=m.sender_id===state.user.id;
+
+  return `
+    <div class="bubble ${mine?"mine":""}">
+      ${m.message_type==="image" && m.attachment_url
+        ?`<img src="${escapeHTML(m.attachment_url)}" style="max-width:240px;border-radius:12px">`
+        :escapeHTML(m.content||"")}
+      <div class="bubble-time">${dateTime(m.created_at)}</div>
+    </div>
+  `;
+}
+
+function appendMessage(message){
+  if(state.messages.some(x=>x.id===message.id))return;
+
+  state.messages.push(message);
+
+  const box=$("messages");
+
+  if(box.querySelector(".empty"))box.innerHTML="";
+
+  box.insertAdjacentHTML("beforeend",messageHTML(message));
+}
+
+function scrollMessages(){
+  const box=$("messages");
+  box.scrollTop=box.scrollHeight;
+}
+
+$("chatForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  const content=$("chatMessage").value.trim();
+
+  if(!content || !state.currentConversation)return;
+
+  const {error}=await supabaseClient
+    .from("messages")
+    .insert({
+      conversation_id:state.currentConversation.id,
+      sender_id:state.user.id,
+      message_type:"text",
+      content
+    });
+
+  if(error){
+    toast(error.message,"error","Message failed");
+    return;
+  }
+
+  $("chatMessage").value="";
+});
+
+async function markConversationRead(conversationId){
+  const {error}=await supabaseClient
+    .from("messages")
+    .update({
+      is_read:true,
+      read_at:new Date().toISOString()
+    })
+    .eq("conversation_id",conversationId)
+    .neq("sender_id",state.user.id)
+    .eq("is_read",false);
+
+  if(error)console.error(error);
+
+  loadUnreadCount();
+}
+
+/* ==========================================================
+   NOTIFICATIONS
+   ========================================================== */
+
+async function loadNotifications(){
+  if(!state.user)return;
+
+  const {data,error}=await supabaseClient
+    .from("notifications")
+    .select("*")
+    .eq("user_id",state.user.id)
+    .order("created_at",{ascending:false})
+    .limit(50);
+
+  if(error){
+    console.error(error);
+    return;
+  }
+
+  state.notifications=data||[];
+
+  renderNotifications();
+  loadUnreadCount();
+}
+
+function renderNotifications(){
+  const box=$("notificationsList");
+
+  if(!state.notifications.length){
+    box.innerHTML=`<div class="card empty">No notifications.</div>`;
+    return;
+  }
+
+  box.innerHTML=state.notifications.map(n=>`
+    <div class="list-item" style="${n.is_read?"opacity:.65":""}">
+      <div class="list-main">
+        <strong>${escapeHTML(n.title)}</strong>
+        <span>${escapeHTML(n.body||"")} · ${dateTime(n.created_at)}</span>
+      </div>
+      ${!n.is_read
+        ?`<button class="secondary" style="width:auto;padding:8px" onclick="markNotificationRead('${n.id}')">READ</button>`
+        :`<span style="color:var(--success);font-size:12px">✓ Read</span>`}
+    </div>
+  `).join("");
+}
+
+async function loadUnreadCount(){
+  if(!state.user)return;
+
+  const {count,error}=await supabaseClient
+    .from("notifications")
+    .select("*",{count:"exact",head:true})
+    .eq("user_id",state.user.id)
+    .eq("is_read",false);
+
+  if(error)return;
+
+  const n=count||0;
+
+  state.unreadNotifications=n;
+
+  $("notificationBadge").textContent=n;
+  $("notificationBadge").classList.toggle("hidden",n===0);
+
+  ["navNotifBadge"].forEach(id=>{
+    const el=$(id);
+    if(el){
+      el.textContent=n;
+      el.classList.toggle("hidden",n===0);
+    }
+  });
+}
+
+async function markNotificationRead(id){
+  await supabaseClient
+    .from("notifications")
+    .update({
+      is_read:true,
+      read_at:new Date().toISOString()
+    })
+    .eq("id",id)
+    .eq("user_id",state.user.id);
+
+  loadNotifications();
+}
+
+async function markAllNotificationsRead(){
+  await supabaseClient
+    .from("notifications")
+    .update({
+      is_read:true,
+      read_at:new Date().toISOString()
+    })
+    .eq("user_id",state.user.id)
+    .eq("is_read",false);
+
+  loadNotifications();
+}
+
+/* ==========================================================
+   UNREAD CHAT COUNT
+   ========================================================== */
+
+async function loadUnreadMessages(){
+  if(!state.user)return;
+
+  const {data,error}=await supabaseClient
+    .from("messages")
+    .select(`
+      id,
+      conversation_id,
+      conversations!inner(customer_id,mover_id)
+    `)
+    .eq("is_read",false)
+    .neq("sender_id",state.user.id)
+    .or(`customer_id.eq.${state.user.id},mover_id.eq.${state.user.id}`,{
+      referencedTable:"conversations"
+    });
+
+  if(error)return;
+
+  const count=data?.length||0;
+
+  $("customerUnreadCount") &&
+    ($("customerUnreadCount").textContent=count);
+
+  $("navChatBadge") &&
+    (($("navChatBadge").textContent=count),
+     $("navChatBadge").classList.toggle("hidden",count===0));
+}
+
+/* ==========================================================
+   TRACKING
+   ========================================================== */
+
+async function loadActiveJob(){
+  if(!state.user)return;
+
+  const filter=
+    state.role==="mover"
+      ?{mover_id:state.user.id}
+      :{customer_id:state.user.id};
+
+  let query=supabaseClient
+    .from("jobs")
+    .select(`
+      *,
+      moving_requests(
+        pickup_address,
+        destination_address
+      )
+    `)
+    .not("status","in",'("completed","cancelled")')
+    .order("created_at",{ascending:false})
+    .limit(1);
+
+  Object.entries(filter).forEach(([k,v])=>{
+    query=query.eq(k,v);
+  });
+
+  const {data,error}=await query;
+
+  if(error){
+    console.error(error);
+    return;
+  }
+
+  const job=data?.[0];
+
+  if(!job){
+    $("activeJobContainer").innerHTML=`<div class="card empty">No active move right now.</div>`;
+    return;
+  }
+
+  $("activeJobContainer").innerHTML=`
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+        <div>
+          <div style="font-size:12px;color:var(--muted)">Current status</div>
+          <div style="font:800 26px Manrope;margin-top:4px">${escapeHTML(job.status)}</div>
+        </div>
+        <span class="status"><span class="online-dot"></span> LIVE</span>
+      </div>
+
+      <div class="grid grid-2" style="margin-top:18px">
+        <div>
+          <div class="field-title">Pickup</div>
+          <strong>${escapeHTML(job.moving_requests?.pickup_address||"")}</strong>
+        </div>
+        <div>
+          <div class="field-title">Destination</div>
+          <strong>${escapeHTML(job.moving_requests?.destination_address||"")}</strong>
+        </div>
+      </div>
+    </div>
+  `;
+
+  if(!state.liveMap){
+    state.liveMap=L.map("liveMap").setView([-6.7924,39.2083],12);
+
+    L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {maxZoom:19,attribution:"© OpenStreetMap"}
+    ).addTo(state.liveMap);
+  }
+}
+
+/* ==========================================================
+   ADMIN
+   ========================================================== */
+
+async function loadAdminDashboard(){
+  if(state.role!=="admin")return;
+
+  const [
+    users,
+    pending,
+    active,
+    unread,
+    liveJobs,
+    movers
+  ]=await Promise.all([
+    supabaseClient.from("profiles").select("*",{count:"exact",head:true}),
+    supabaseClient.from("moving_requests").select("*",{count:"exact",head:true}).in("status",["pending","matching"]),
+    supabaseClient.from("jobs").select("*",{count:"exact",head:true}).not("status","in",'("completed","cancelled")'),
+    supabaseClient.from("messages").select("*",{count:"exact",head:true}).eq("is_read",false),
+    supabaseClient.from("jobs").select(`
+      *,
+      moving_requests(pickup_address,destination_address)
+    `).not("status","in",'("completed","cancelled")').order("created_at",{ascending:false}).limit(10),
+    supabaseClient.from("mover_profiles").select(`
+      *,
+      profiles(full_name,email,phone)
+    `).eq("verification_status","pending").limit(10)
+  ]);
+
+  $("adminUsers").textContent=users.count||0;
+  $("adminPending").textContent=pending.count||0;
+  $("adminActive").textContent=active.count||0;
+  $("adminUnread").textContent=unread.count||0;
+
+  $("adminLiveJobs").innerHTML=liveJobs.data?.length
+    ? liveJobs.data.map(j=>`
+      <div class="list-item">
+        <div class="list-main">
+          <strong>${escapeHTML(j.moving_requests?.pickup_address||"")} → ${escapeHTML(j.moving_requests?.destination_address||"")}</strong>
+          <span>${escapeHTML(j.status)} · ${money(j.agreed_price)}</span>
+        </div>
+        <span class="status blue">${escapeHTML(j.status)}</span>
+      </div>
+    `).join("")
+    : `<div class="empty">No active jobs.</div>`;
+
+  $("adminMovers").innerHTML=movers.data?.length
+    ? movers.data.map(m=>`
+      <div class="list-item">
+        <div class="list-main">
+          <strong>${escapeHTML(m.profiles?.full_name||"Mover")}</strong>
+          <span>${escapeHTML(m.profiles?.phone||m.profiles?.email||"")}</span>
+        </div>
+        <div style="display:flex;gap:7px">
+          <button class="primary" style="width:auto;padding:8px" onclick="verifyMover('${m.id}',true)">APPROVE</button>
+          <button class="secondary" style="width:auto;padding:8px" onclick="verifyMover('${m.id}',false)">REJECT</button>
+        </div>
+      </div>
+    `).join("")
+    : `<div class="empty">No pending mover verification.</div>`;
+}
+
+async function verifyMover(id,approve){
+  const {error}=await supabaseClient
+    .from("mover_profiles")
+    .update({
+      verification_status:approve?"approved":"rejected"
+    })
+    .eq("id",id);
+
+  if(error){
+    toast(error.message,"error");
+    return;
+  }
+
+  toast(approve?"Mover approved.":"Mover rejected.");
+  loadAdminDashboard();
+}
+
+async function loadAdminUsers(){
+  if(state.role!=="admin")return;
+
+  const {data,error}=await supabaseClient
+    .from("profiles")
+    .select("*")
+    .order("created_at",{ascending:false})
+    .limit(500);
+
+  if(error)return;
+
+  $("usersTable").innerHTML=(data||[]).map(u=>`
+    <tr>
+      <td>${escapeHTML(u.full_name||"—")}</td>
+      <td>${escapeHTML(u.email||"—")}</td>
+      <td>${escapeHTML(u.phone||"—")}</td>
+      <td>${escapeHTML(u.role)}</td>
+      <td><span class="status">${escapeHTML(u.account_status)}</span></td>
+      <td>${dateTime(u.created_at)}</td>
+    </tr>
+  `).join("");
+}
+
+async function loadAdminRequests(){
+  if(state.role!=="admin")return;
+
+  const {data,error}=await supabaseClient
+    .from("moving_requests")
+    .select(`
+      *,
+      profiles!moving_requests_customer_id_fkey(full_name,email,phone)
+    `)
+    .order("created_at",{ascending:false})
+    .limit(500);
+
+  if(error){
+    console.error(error);
+    return;
+  }
+
+  $("adminRequestsList").innerHTML=(data||[]).map(r=>`
+    <div class="list-item">
+      <div class="list-main">
+        <strong>${escapeHTML(r.pickup_address)} → ${escapeHTML(r.destination_address)}</strong>
+        <span>
+          ${escapeHTML(r.profiles?.full_name||"Customer")}
+          · ${escapeHTML(r.profiles?.phone||"")}
+          · ${dateTime(r.created_at)}
+        </span>
+      </div>
+      <span class="status ${r.status==="cancelled"?"danger":""}">${escapeHTML(r.status)}</span>
+    </div>
+  `).join("");
+}
+
+/* ==========================================================
+   PROFILE
+   ========================================================== */
+
+async function loadProfile(){
+  if(!state.profile)return;
+
+  $("profileName").value=state.profile.full_name||"";
+  $("profileEmail").value=state.profile.email||state.user?.email||"";
+  $("profilePhone").value=state.profile.phone||"";
+}
+
+$("profileForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  const {data,error}=await supabaseClient
+    .from("profiles")
+    .update({
+      full_name:$("profileName").value.trim(),
+      phone:$("profilePhone").value.trim()
+    })
+    .eq("id",state.user.id)
+    .select()
+    .single();
+
+  if(error){
+    toast(error.message,"error");
+    return;
+  }
+
+  state.profile=data;
+
+  $("topName").textContent=data.full_name||state.user.email;
+  $("topAvatar").textContent=initials(data.full_name);
+
+  toast("Profile updated.");
+});
+
+/* ==========================================================
+   REALTIME — CORE
+   ========================================================== */
+
+function cleanupRealtime(){
+  state.realtimeChannels.forEach(ch=>{
+    supabaseClient.removeChannel(ch);
+  });
+
+  state.realtimeChannels=[];
+
+  if(state.currentConversationChannel){
+    supabaseClient.removeChannel(state.currentConversationChannel);
+    state.currentConversationChannel=null;
+  }
+}
+
+function setupRealtime(){
+  cleanupRealtime();
+
+  /* --------------------------------------------------------
+     GLOBAL USER PROFILE CHANGES
+     -------------------------------------------------------- */
+
+  const profileChannel=supabaseClient
+    .channel(`profile-${state.user.id}`)
+    .on(
+      "postgres_changes",
+      {
+        event:"UPDATE",
+        schema:"public",
+        table:"profiles",
+        filter:`id=eq.${state.user.id}`
+      },
+      payload=>{
+        state.profile=payload.new;
+
+        $("topName").textContent=payload.new.full_name||state.user.email;
+        $("topAvatar").textContent=initials(payload.new.full_name);
+      }
+    )
+    .subscribe();
+
+  state.realtimeChannels.push(profileChannel);
+
+  /* --------------------------------------------------------
+     NOTIFICATIONS
+     -------------------------------------------------------- */
+
+  const notificationChannel=supabaseClient
+    .channel(`notifications-${state.user.id}`)
+    .on(
+      "postgres_changes",
+      {
+        event:"INSERT",
+        schema:"public",
+        table:"notifications",
+        filter:`user_id=eq.${state.user.id}`
+      },
+      payload=>{
+        state.notifications.unshift(payload.new);
+
+        loadUnreadCount();
+
+        if(payload.new.type==="message"){
+          toast(payload.new.body||"New message","success",payload.new.title||"New message");
+        }else{
+          toast(payload.new.body||"New notification","success",payload.new.title||"Notification");
+        }
+
+        if($("notificationsPage").classList.contains("active")){
+          renderNotifications();
+        }
+      }
+    )
+    .subscribe();
+
+  state.realtimeChannels.push(notificationChannel);
+
+  /* --------------------------------------------------------
+     CUSTOMER REALTIME REQUESTS/JOBS
+     -------------------------------------------------------- */
+
+  if(state.role==="customer"){
+
+    const customerRequests=supabaseClient
+      .channel(`customer-requests-${state.user.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event:"*",
+          schema:"public",
+          table:"moving_requests",
+          filter:`customer_id=eq.${state.user.id}`
+        },
+        payload=>{
+          loadCustomerDashboard();
+          loadCustomerOrders();
+          loadActiveJob();
+        }
+      )
+      .subscribe();
+
+    state.realtimeChannels.push(customerRequests);
+
+    const customerJobs=supabaseClient
+      .channel(`customer-jobs-${state.user.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event:"*",
+          schema:"public",
+          table:"jobs",
+          filter:`customer_id=eq.${state.user.id}`
+        },
+        payload=>{
+          loadCustomerOrders();
+          loadActiveJob();
+
+          if(payload.eventType==="UPDATE"){
+            toast(
+              `Your move is now ${payload.new.status}`,
+              "success",
+              "Move updated 🚚"
+            );
+          }
+        }
+      )
+      .subscribe();
+
+    state.realtimeChannels.push(customerJobs);
+  }
+
+  /* --------------------------------------------------------
+     MOVER REALTIME
+     -------------------------------------------------------- */
+
+  if(state.role==="mover"){
+
+    const moverRequests=supabaseClient
+      .channel(`mover-requests-${state.user.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event:"*",
+          schema:"public",
+          table:"moving_requests"
+        },
+        payload=>{
+          loadMoverDashboard();
+        }
+      )
+      .subscribe();
+
+    state.realtimeChannels.push(moverRequests);
+
+    const moverJobs=supabaseClient
+      .channel(`mover-jobs-${state.user.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event:"*",
+          schema:"public",
+          table:"jobs",
+          filter:`mover_id=eq.${state.user.id}`
+        },
+        payload=>{
+          loadMoverJobs();
+          loadMoverEarnings();
+          loadActiveJob();
+        }
+      )
+      .subscribe();
+
+    state.realtimeChannels.push(moverJobs);
+  }
+
+  /* --------------------------------------------------------
+     ADMIN REALTIME
+     -------------------------------------------------------- */
+
+  if(state.role==="admin"){
+
+    const adminChannel=supabaseClient
+      .channel("admin-live-operations")
+      .on(
+        "postgres_changes",
+        {
+          event:"*",
+          schema:"public",
+          table:"profiles"
+        },
+        ()=>loadAdminDashboard()
+      )
+      .on(
+        "postgres_changes",
+        {
+          event:"*",
+          schema:"public",
+          table:"moving_requests"
+        },
+        ()=>{
+          loadAdminDashboard();
+          loadAdminRequests();
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event:"*",
+          schema:"public",
+          table:"jobs"
+        },
+        ()=>loadAdminDashboard()
+      )
+      .on(
+        "postgres_changes",
+        {
+          event:"*",
+          schema:"public",
+          table:"messages"
+        },
+        ()=>loadAdminDashboard()
+      )
+      .subscribe();
+
+    state.realtimeChannels.push(adminChannel);
+  }
+
+  /* --------------------------------------------------------
+     UNREAD CHAT COUNT REFRESH
+     -------------------------------------------------------- */
+
+  const messageCounter=supabaseClient
+    .channel(`message-counter-${state.user.id}`)
+    .on(
+      "postgres_changes",
+      {
+        event:"*",
+        schema:"public",
+        table:"messages"
+      },
+      ()=>{
+        loadUnreadMessages();
+      }
+    )
+    .subscribe();
+
+  state.realtimeChannels.push(messageCounter);
+
+  loadUnreadMessages();
+  loadUnreadCount();
+}
+
+/* ==========================================================
+   NOTIFICATION BUTTON
+   ========================================================== */
+
+$("notificationBtn").onclick=()=>{
+  openPage("notificationsPage");
+};
+
+/* ==========================================================
+   MODALS
+   ========================================================== */
+
+function openModal(id){
+  $(id).classList.add("show");
+}
+
+function closeModal(id){
+  $(id).classList.remove("show");
+}
+
+document.querySelectorAll(".modal-backdrop").forEach(backdrop=>{
+  backdrop.addEventListener("click",e=>{
+    if(e.target===backdrop)backdrop.classList.remove("show");
+  });
+});
+
+/* ==========================================================
+   LOGOUT
+   ========================================================== */
+
+async function logout(){
+  cleanupRealtime();
+
+  const {error}=await supabaseClient.auth.signOut();
+
+  if(error){
+    toast(error.message,"error");
+    return;
+  }
+
+  state.session=null;
+  state.user=null;
+  state.profile=null;
+  state.role=null;
+
+  $("appShell").style.display="none";
+  $("authScreen").style.display="grid";
+
+  $("loginPassword").value="";
+
+  showAuthBox("loginBox");
+
+  toast("You have been logged out.","success","Logged out");
+}
+
+/* ==========================================================
+   PASSWORD RECOVERY URL DETECTION
+   ========================================================== */
+
+(function detectRecovery(){
+  const params=new URLSearchParams(window.location.search);
+
+  if(params.get("mode")==="reset"){
+    showAuthBox("resetBox");
+    return;
+  }
+
+  if(
+    window.location.hash.includes("type=recovery") ||
+    params.get("type")==="recovery"
+  ){
+    showAuthBox("resetBox");
+  }
+})();
+
+/* ==========================================================
+   INITIAL SESSION CHECK
+   ========================================================== */
+
+(async function init(){
+
+  if(
+    CONFIG.SUPABASE_URL==="YOUR_SUPABASE_URL" ||
+    CONFIG.SUPABASE_ANON_KEY==="YOUR_SUPABASE_ANON_KEY"
+  ){
+    console.warn(
+      "HAMISHA CHAPU: Add your Supabase URL and anon key in CONFIG."
+    );
+  }
+
+  const {data}=await supabaseClient.auth.getSession();
+
+  if(data?.session){
+    await bootUser(data.session);
+  }else{
+    $("authScreen").style.display="grid";
+    showAuthBox(
+      window.location.search.includes("mode=reset")
+        ? "resetBox"
+        : "loginBox"
+    );
+  }
+
+})();
+
+/* ==========================================================
+   CLEANUP
+   ========================================================== */
+
+window.addEventListener("beforeunload",()=>{
+  cleanupRealtime();
+});
+
+/* ==========================================================
+   EXPOSE SAFE UI FUNCTIONS
+   ========================================================== */
+
+window.openPage=openPage;
+window.openConversation=openConversation;
+window.viewRequest=viewRequest;
+window.acceptRequest=acceptRequest;
+window.advanceJob=advanceJob;
+window.toggleMoverAvailability=toggleMoverAvailability;
+window.markNotificationRead=markNotificationRead;
+window.markAllNotificationsRead=markAllNotificationsRead;
+window.openWithdrawalModal=openWithdrawalModal;
+window.submitWithdrawal=submitWithdrawal;
+window.verifyMover=verifyMover;
+window.logout=logout;
+window.closeModal=closeModal;
+window.setScheduled=setScheduled;
+
+</script>
+</body>
+</html>
