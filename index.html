@@ -374,6 +374,62 @@ th{color:#7f8c99;font-weight:600}
 #customerRequestLockBanner{margin-bottom:12px}
 #customerRequestLockBanner .customer-move-lock{margin:0}
 
+
+/* ==========================================================
+   PROFESSIONAL MATCHING / CHAT / JOB PROGRESS
+   ========================================================== */
+.matching-request{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:18px;
+  padding:18px;
+  border:1px solid #dbe5ef;
+  border-radius:18px;
+  background:#fff;
+  box-shadow:0 10px 28px rgba(15,23,42,.06);
+  transition:.2s ease;
+}
+.matching-request:hover{transform:translateY(-1px);border-color:#b9d6ff;box-shadow:0 15px 34px rgba(11,107,255,.10)}
+.matching-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+.matching-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:6px 9px;border-radius:999px;
+  background:#f3f7fb;color:#526174;font-size:10px;font-weight:800;
+}
+.matching-pill.blue{background:#eaf3ff;color:#0b5bd3}
+.matching-pill.green{background:#eaf8f1;color:#137a50}
+.matching-price{font:900 22px Manrope;color:#0b5bd3;white-space:nowrap}
+.matching-actions{display:flex;align-items:center;gap:8px;justify-content:flex-end;margin-top:13px}
+.matching-empty{padding:28px;text-align:center;color:#718096;border:1px dashed #cbd5e1;border-radius:16px;background:#fafcff}
+.identity-line{display:flex;align-items:center;gap:9px;min-width:0}
+.identity-avatar{
+  width:34px;height:34px;border-radius:50%;
+  display:grid;place-items:center;flex:0 0 34px;
+  background:#eaf3ff;color:#0b5bd3;font-weight:900;font-size:11px;
+}
+.identity-copy{min-width:0}
+.identity-copy strong{display:block;color:#102033;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.identity-copy span{display:block;color:#718096;font-size:10px;margin-top:2px}
+.conversation{padding:12px!important;border-radius:14px!important}
+.conversation .name{font-weight:850!important;color:#102033!important}
+.conversation .preview{color:#718096!important}
+.chat-person-name{font-size:10px;font-weight:850;color:#64748b;margin:0 0 5px}
+.bubble.mine .chat-person-name{color:#dceaff}
+.job-progress{
+  display:flex;flex-wrap:wrap;gap:7px;margin-top:16px;
+}
+.job-progress-step{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 10px;border-radius:999px;
+  background:#f3f6fa;color:#7a8797;font-size:10px;font-weight:850;
+}
+.job-progress-step.done{background:#eaf8f1;color:#147a50}
+.job-progress-step.current{background:#eaf3ff;color:#0b5bd3;box-shadow:inset 0 0 0 1px #b9d6ff}
+.job-action{
+  min-width:145px!important;width:auto!important;
+  border-radius:12px!important;
+}
+
 /* ==========================================================
    POLISH PASS — CONTRAST, LIVE STATUS, CHAT & AGREEMENTS
    ========================================================== */
@@ -388,6 +444,8 @@ th{color:#7f8c99;font-weight:600}
 .price-agreement{padding:15px 16px;border-radius:15px;background:#f5f9ff;border:1px solid #c9dcf6}.price-agreement .price{font:800 24px Manrope;color:#0b5bd3}.price-agreement .label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#64748b}
 .selected-job-card{border:1px solid #b9d6ff!important;background:#f7fbff!important}.selected-job-card .status{background:#eaf3ff!important;color:#0b5bd3!important}
 .chat-person-name{font-size:10px;font-weight:800;color:#64748b;margin:0 0 4px}.bubble.mine .chat-person-name{color:#dceaff}.chat-head strong{color:#102033}#chatSubtitle{color:#64748b!important}
+#chatTitle{color:#102033!important;font-weight:900}
+#chatTitle .verified-badge{vertical-align:middle;margin-left:5px}
 .mover-verify-card .input{background:#fff!important;color:#102033!important}.mover-verify-card label{color:#526174!important}.mover-verify-card textarea::placeholder,.mover-verify-card input::placeholder{color:#94a3b8!important}.section-label{font-size:10px;font-weight:900;letter-spacing:.08em;color:#718096}
 
 /* ==========================================================
@@ -2348,6 +2406,63 @@ async function viewRequest(id){
    MOVER DASHBOARD
    ========================================================== */
 
+
+function compatibleVehicle(requestType, vehicleType){
+  const r=String(requestType||"").toLowerCase();
+  const v=String(vehicleType||"").toLowerCase();
+  if(!r || r==="any" || r==="any vehicle") return true;
+  if(!v) return true;
+  if(r===v) return true;
+  const aliases={
+    pickup:["pickup","small_truck","small-truck","truck"],
+    van:["van","minivan"],
+    canter:["canter","medium_truck","truck"],
+    box_truck:["box_truck","box-truck","box","large_van","truck"],
+    large_truck:["large_truck","large-truck","lorry","truck"]
+  };
+  return (aliases[r]||[r]).some(x=>v.includes(x)) || v.includes("truck") && r.includes("truck");
+}
+
+function moverDisplayName(row){
+  return row?.profiles?.full_name || row?.full_name || row?.name || "Mover";
+}
+
+function customerDisplayName(row){
+  return row?.full_name || row?.name || "Customer";
+}
+
+function jobProgressHTML(status){
+  const flow=[
+    ["accepted","Accepted"],
+    ["coming","On the way"],
+    ["arrived","Arrived"],
+    ["loading","Loading"],
+    ["moving","Moving"],
+    ["delivered","Delivered"],
+    ["completed","Completed"]
+  ];
+  const idx=flow.findIndex(x=>x[0]===String(status||"").toLowerCase());
+  return `<div class="job-progress">${
+    flow.map(([key,label],i)=>`
+      <span class="job-progress-step ${i<idx?"done":""} ${i===idx?"current":""}">
+        ${i<idx?"✓":i===idx?"●":"○"} ${label}
+      </span>
+    `).join("")
+  }</div>`;
+}
+
+function nextJobAction(status){
+  const actions={
+    accepted:["coming","I'M ON THE WAY 🚚"],
+    coming:["arrived","I'M HERE 📍"],
+    arrived:["loading","START LOADING 📦"],
+    loading:["moving","MOVE STARTED 🚛"],
+    moving:["delivered","MARK DELIVERED 📦"],
+    delivered:["completed","COMPLETE JOB ✓"]
+  };
+  return actions[String(status||"").toLowerCase()]||null;
+}
+
 async function loadMoverDashboard(){
   if(!state.user)return;
 
@@ -2357,45 +2472,139 @@ async function loadMoverDashboard(){
     .eq("id",state.user.id)
     .maybeSingle();
 
-  if(error){
-    console.error(error);
-    return;
-  }
+  if(error){console.error(error);return;}
 
   if(!data){
-    $("moverRequests").innerHTML=`
-      <div class="empty">
-        Complete mover registration and wait for verification.
-      </div>`;
+    $("moverRequests").innerHTML=`<div class="matching-empty">Complete mover registration and wait for verification.</div>`;
     return;
   }
 
-  $("moverCompleted").textContent=data.completed_jobs || 0;
+  $("moverCompleted").textContent=data.completed_jobs||0;
   $("moverRating").textContent=Number(data.rating||0).toFixed(1);
   $("moverAcceptance").textContent=Math.round(data.acceptance_rate||0)+"%";
+  $("availabilityBtn").textContent=data.is_available?"GO OFFLINE 🔴":"GO ONLINE 🟢";
 
-  $("availabilityBtn").textContent=
-    data.is_available ? "GO OFFLINE 🔴" : "GO ONLINE 🟢";
+  const {data:vehicle}=await supabaseClient
+    .from("vehicles")
+    .select("*")
+    .eq("mover_id",state.user.id)
+    .eq("is_active",true)
+    .eq("is_verified",true)
+    .order("is_primary",{ascending:false})
+    .limit(1)
+    .maybeSingle();
 
-  const {data:requests,error:reqError}=await supabaseClient.from("moving_requests").select("*").in("status",["pending","matching"]).order("created_at",{ascending:false}).limit(20);
+  const {data:requests,error:reqError}=await supabaseClient
+    .from("moving_requests")
+    .select("*")
+    .in("status",["pending","matching"])
+    .order("created_at",{ascending:false})
+    .limit(40);
+
   if(reqError){console.error(reqError);return;}
-  const {data:selectedJobs}=await supabaseClient.from("jobs").select(`id,request_id,agreed_price,status,accepted_at,moving_requests(pickup_address,destination_address,move_type)`).eq("mover_id",state.user.id).not("status","in",'("completed","cancelled")').order("created_at",{ascending:false}).limit(10);
-  renderMoverRequests(requests||[],selectedJobs||[]);
+
+  const {data:selectedJobs}=await supabaseClient
+    .from("jobs")
+    .select(`id,request_id,agreed_price,status,accepted_at,moving_requests(pickup_address,destination_address,move_type,recommended_vehicle_type)`)
+    .eq("mover_id",state.user.id)
+    .not("status","in",'("completed","cancelled")')
+    .order("created_at",{ascending:false})
+    .limit(10);
+
+  const activeRequestIds=new Set((selectedJobs||[]).map(j=>j.request_id));
+  const eligible=(requests||[]).filter(r=>{
+    if(activeRequestIds.has(r.id))return false;
+    return compatibleVehicle(r.recommended_vehicle_type,vehicle?.vehicle_type);
+  });
+
+  renderMoverRequests(eligible,selectedJobs||[],vehicle);
 }
 
-function renderMoverRequests(requests,selectedJobs=[]){
+function renderMoverRequests(requests,selectedJobs=[],vehicle=null){
   const box=$("moverRequests");
-  const pendingHtml=requests.length?requests.map(r=>`<div class="list-item"><div class="list-main"><strong>${escapeHTML(r.pickup_address)} → ${escapeHTML(r.destination_address)}</strong><span>${escapeHTML(r.move_type)} · ${escapeHTML(r.recommended_vehicle_type||"Any vehicle")} · ${r.movers_required} movers</span></div><button class="primary" style="width:auto;padding:9px 13px" onclick="openAcceptRequestModal('${r.id}')">REVIEW & ACCEPT</button></div>`).join(""): `<div class="empty">No pending requests right now. Stay online and we'll notify you.</div>`;
-  const selectedHtml=selectedJobs.length?selectedJobs.map(job=>`<div class="list-item selected-job-card"><div class="list-main"><strong>${escapeHTML(job.moving_requests?.pickup_address||"")} → ${escapeHTML(job.moving_requests?.destination_address||"")}</strong><span>${escapeHTML(job.moving_requests?.move_type||"")} · ${escapeHTML(job.status)}</span><span style="display:block;margin-top:5px;color:#0b5bd3;font-weight:800">✓ SELECTED · Agreed price: ${money(job.agreed_price)}</span></div><div style="display:flex;gap:8px;align-items:center"><span class="status blue">${escapeHTML(job.status)}</span><button class="secondary" style="width:auto;padding:8px" onclick="openPage('moverJobs')">OPEN JOB</button></div></div>`).join(""): `<div class="empty">No selected jobs yet.</div>`;
-  box.innerHTML=`<div><div class="section-label" style="margin:4px 0 8px">PENDING REQUESTS</div>${pendingHtml}</div><div style="margin-top:18px"><div class="section-label" style="margin:4px 0 8px;color:#0b5bd3">SELECTED JOBS</div>${selectedHtml}</div>`;
+  const vehicleName=vehicle?.vehicle_type||"Your verified vehicle";
+
+  const pendingHtml=requests.length
+    ? requests.map(r=>`
+      <div class="matching-request">
+        <div>
+          <div class="identity-line">
+            <div class="identity-avatar">📦</div>
+            <div class="identity-copy">
+              <strong>Move request</strong>
+              <span>Matches your ${escapeHTML(vehicleName)} setup</span>
+            </div>
+          </div>
+          <div style="margin-top:13px;font-weight:850;color:#102033">
+            ${escapeHTML(r.pickup_address)} <span style="color:#0b6bff">→</span> ${escapeHTML(r.destination_address)}
+          </div>
+          <div class="matching-meta">
+            <span class="matching-pill blue">${escapeHTML(r.move_type)}</span>
+            <span class="matching-pill">${escapeHTML(r.recommended_vehicle_type||"Any vehicle")}</span>
+            <span class="matching-pill">${escapeHTML(String(r.movers_required||1))} mover${Number(r.movers_required||1)>1?"s":""}</span>
+            <span class="matching-pill">${dateTime(r.created_at)}</span>
+          </div>
+        </div>
+        <div style="min-width:155px;text-align:right">
+          <div style="font-size:10px;color:#718096;font-weight:800">ESTIMATED AGREEMENT</div>
+          <div class="matching-price">${money(Number(r.estimated_max_price||0)||estimatePrice(r))}</div>
+          <div class="matching-actions">
+            <button class="primary job-action" onclick="openAcceptRequestModal('${r.id}')">REVIEW & SELECT</button>
+          </div>
+        </div>
+      </div>
+    `).join("")
+    : `<div class="matching-empty">
+         <div style="font-size:24px;margin-bottom:8px">✨</div>
+         <strong style="color:#102033">No matching requests right now</strong>
+         <div style="font-size:12px;margin-top:5px">New requests that fit your verified vehicle will appear here automatically.</div>
+       </div>`;
+
+  const selectedHtml=selectedJobs.length
+    ? selectedJobs.map(job=>`
+      <div class="matching-request selected-job-card">
+        <div>
+          <div class="identity-line">
+            <div class="identity-avatar">✓</div>
+            <div class="identity-copy">
+              <strong>Selected job</strong>
+              <span>Customer has been matched with you</span>
+            </div>
+          </div>
+          <div style="margin-top:13px;font-weight:850;color:#102033">
+            ${escapeHTML(job.moving_requests?.pickup_address||"")} <span style="color:#0b6bff">→</span> ${escapeHTML(job.moving_requests?.destination_address||"")}
+          </div>
+          ${jobProgressHTML(job.status)}
+        </div>
+        <div style="min-width:165px;text-align:right">
+          <div style="font-size:10px;color:#718096;font-weight:800">AGREED PRICE</div>
+          <div class="matching-price">${money(job.agreed_price)}</div>
+          <span class="status blue">${escapeHTML(job.status)}</span>
+          <div class="matching-actions">
+            <button class="secondary job-action" onclick="openPage('moverJobs')">MANAGE JOB</button>
+          </div>
+        </div>
+      </div>
+    `).join("")
+    : `<div class="matching-empty">No selected jobs yet.</div>`;
+
+  box.innerHTML=`
+    <div>
+      <div class="section-label" style="margin:4px 0 9px">MATCHED FOR YOU</div>
+      ${pendingHtml}
+    </div>
+    <div style="margin-top:22px">
+      <div class="section-label" style="margin:4px 0 9px;color:#0b5bd3">YOUR SELECTED JOBS</div>
+      ${selectedHtml}
+    </div>`;
 }
 
 async function openAcceptRequestModal(requestId){
   const {data:request,error}=await supabaseClient.from("moving_requests").select("*").eq("id",requestId).single();
   if(error){toast(error.message,"error","Could not load request");return;}
   const price=Number(request.estimated_max_price||0)||estimatePrice(request); const platformFee=Math.round(price*.10); const earning=price-platformFee;
-  $("jobModalTitle").textContent="Confirm price agreement";
-  $("jobModalBody").innerHTML=`<div class="system-note"><strong>Before accepting:</strong> review the price below. This amount will be saved as the agreed price for the job.</div><div class="price-agreement" style="margin-top:14px"><div class="label">Agreed customer price</div><div class="price">${money(price)}</div><div style="margin-top:8px;font-size:12px;color:#526174">Mover earnings after 10% platform fee: <b>${money(earning)}</b></div></div><div class="admin-review-grid" style="margin-top:14px"><div class="admin-review-field"><span>Pickup</span><strong>${escapeHTML(request.pickup_address)}</strong></div><div class="admin-review-field"><span>Destination</span><strong>${escapeHTML(request.destination_address)}</strong></div><div class="admin-review-field"><span>Vehicle</span><strong>${escapeHTML(request.recommended_vehicle_type||"Any vehicle")}</strong></div><div class="admin-review-field"><span>Movers needed</span><strong>${escapeHTML(String(request.movers_required||0))}</strong></div></div><div class="admin-review-actions"><button class="primary" type="button" style="width:auto" onclick="acceptRequest('${requestId}')">✓ ACCEPT AT ${money(price)}</button><button class="secondary" type="button" style="width:auto" onclick="closeModal('jobModal')">CANCEL</button></div>`;
+  $("jobModalTitle").textContent="Select this moving job";
+  $("jobModalBody").innerHTML=`<div class="system-note"><strong>Before selecting:</strong> review the job, vehicle requirement and agreed price below. This amount will be saved as the agreed price for the job.</div><div class="price-agreement" style="margin-top:14px"><div class="label">Agreed customer price</div><div class="price">${money(price)}</div><div style="margin-top:8px;font-size:12px;color:#526174">Mover earnings after 10% platform fee: <b>${money(earning)}</b></div></div><div class="admin-review-grid" style="margin-top:14px"><div class="admin-review-field"><span>Pickup</span><strong>${escapeHTML(request.pickup_address)}</strong></div><div class="admin-review-field"><span>Destination</span><strong>${escapeHTML(request.destination_address)}</strong></div><div class="admin-review-field"><span>Vehicle</span><strong>${escapeHTML(request.recommended_vehicle_type||"Any vehicle")}</strong></div><div class="admin-review-field"><span>Movers needed</span><strong>${escapeHTML(String(request.movers_required||0))}</strong></div></div><div class="admin-review-actions"><button class="primary" type="button" style="width:auto" onclick="acceptRequest('${requestId}')">✓ ACCEPT AT ${money(price)}</button><button class="secondary" type="button" style="width:auto" onclick="closeModal('jobModal')">CANCEL</button></div>`;
   openModal("jobModal");
 }
 
@@ -2476,8 +2685,8 @@ async function acceptRequest(requestId){
     });
 
   closeModal("jobModal");
-  toast(`You selected this job at ${money(price)}. The customer can now see you and the agreed price.`,"success","Job selected 🚚");
-
+  toast(`Job selected at ${money(price)}. It has moved from matching into your Jobs automatically.`,"success","Job selected 🚚");
+  await Promise.all([loadMoverDashboard(),loadMoverJobs()]);
   openPage("moverJobs");
 }
 
@@ -2597,19 +2806,12 @@ async function loadMoverJobs(){
     .from("jobs")
     .select(`
       *,
-      moving_requests (
-        pickup_address,
-        destination_address,
-        move_type
-      )
+      moving_requests(pickup_address,destination_address,move_type)
     `)
     .eq("mover_id",state.user.id)
     .order("created_at",{ascending:false});
 
-  if(error){
-    console.error(error);
-    return;
-  }
+  if(error){console.error(error);return;}
 
   const box=$("moverJobsList");
 
@@ -2618,21 +2820,40 @@ async function loadMoverJobs(){
     return;
   }
 
-  box.innerHTML=data.map(job=>`
-    <div class="list-item">
-      <div class="list-main">
-        <strong>${escapeHTML(job.moving_requests?.pickup_address||"")} → ${escapeHTML(job.moving_requests?.destination_address||"")}</strong>
-        <span>${escapeHTML(job.moving_requests?.move_type||"")} · ${money(job.agreed_price)}</span>
+  box.innerHTML=data.map(job=>{
+    const action=nextJobAction(job.status);
+    return `
+      <div class="matching-request ${["completed","cancelled"].includes(job.status)?"":"selected-job-card"}">
+        <div>
+          <div class="identity-line">
+            <div class="identity-avatar">${job.status==="completed"?"✓":"🚚"}</div>
+            <div class="identity-copy">
+              <strong>${job.status==="completed"?"Completed move":"Active move"}</strong>
+              <span>${dateTime(job.created_at)}</span>
+            </div>
+          </div>
+          <div style="margin-top:13px;font-weight:850;color:#102033">
+            ${escapeHTML(job.moving_requests?.pickup_address||"")} <span style="color:#0b6bff">→</span> ${escapeHTML(job.moving_requests?.destination_address||"")}
+          </div>
+          <div class="matching-meta">
+            <span class="matching-pill blue">${escapeHTML(job.moving_requests?.move_type||"Move")}</span>
+            <span class="matching-pill green">${money(job.agreed_price)}</span>
+            <span class="matching-pill">${escapeHTML(job.status)}</span>
+          </div>
+          ${jobProgressHTML(job.status)}
+        </div>
+        <div style="min-width:160px;text-align:right">
+          <div style="font-size:10px;color:#718096;font-weight:800">AGREED PRICE</div>
+          <div class="matching-price">${money(job.agreed_price)}</div>
+          ${action?`
+            <div class="matching-actions">
+              <button class="primary job-action" onclick="advanceJob('${job.id}','${job.status}')">${action[1]}</button>
+            </div>
+          `:`<span class="status ${job.status==="cancelled"?"danger":""}">${escapeHTML(job.status)}</span>`}
+        </div>
       </div>
-
-      <div style="display:flex;gap:8px;align-items:center">
-        <span class="status ${job.status==="cancelled"?"danger":""}">${escapeHTML(job.status)}</span>
-        ${!["completed","cancelled"].includes(job.status)
-          ?`<button class="secondary" style="width:auto;padding:8px" onclick="advanceJob('${job.id}','${job.status}')">NEXT</button>`
-          :""}
-      </div>
-    </div>
-  `).join("");
+    `;
+  }).join("");
 }
 
 async function advanceJob(jobId,current){
@@ -2644,9 +2865,7 @@ async function advanceJob(jobId,current){
     moving:"delivered",
     delivered:"completed"
   };
-
   const next=flow[current];
-
   if(!next)return;
 
   const timestamps={
@@ -2657,25 +2876,25 @@ async function advanceJob(jobId,current){
     completed:{completed_at:new Date().toISOString()}
   };
 
-  const patch={
-    status:next,
-    ...(timestamps[next]||{})
-  };
-
   const {error}=await supabaseClient
     .from("jobs")
-    .update(patch)
+    .update({status:next,...(timestamps[next]||{})})
     .eq("id",jobId)
     .eq("mover_id",state.user.id);
 
-  if(error){
-    toast(error.message,"error");
-    return;
-  }
+  if(error){toast(error.message,"error","Could not update job");return;}
 
-  toast(`Job status: ${next.toUpperCase()}`,"success","Updated live 🚚");
+  const labels={
+    coming:"You're on the way.",
+    arrived:"You've arrived at pickup.",
+    loading:"Loading has started.",
+    moving:"The move is now in progress.",
+    delivered:"Delivery marked.",
+    completed:"Move completed successfully."
+  };
 
-  loadMoverJobs();
+  toast(labels[next]||`Job updated to ${next}.`,"success","Move updated 🚚");
+  await Promise.all([loadMoverJobs(),loadMoverDashboard(),loadActiveJob()]);
 }
 
 /* ==========================================================
@@ -2781,14 +3000,7 @@ async function loadConversations(){
 
   const {data,error}=await supabaseClient
     .from("conversations")
-    .select(`
-      *,
-      customer:profiles!conversations_customer_id_fkey(id,full_name),
-      mover:mover_profiles!conversations_mover_id_fkey(
-        id,
-        profiles!mover_profiles_id_fkey(id,full_name)
-      )
-    `)
+    .select("*")
     .or(`customer_id.eq.${state.user.id},mover_id.eq.${state.user.id}`)
     .order("last_message_at",{ascending:false,nullsFirst:false});
 
@@ -2798,7 +3010,25 @@ async function loadConversations(){
     return;
   }
 
-  state.conversations=data||[];
+  const rows=data||[];
+  const ids=[...new Set(rows.flatMap(c=>[c.customer_id,c.mover_id]).filter(Boolean))];
+
+  let people=[];
+  if(ids.length){
+    const result=await supabaseClient.from("profiles").select("id,full_name").in("id",ids);
+    people=result.data||[];
+  }
+
+  const peopleMap=new Map(people.map(p=>[p.id,p.full_name||"User"]));
+
+  state.conversations=rows.map(c=>({
+    ...c,
+    customer_profile:{id:c.customer_id,full_name:peopleMap.get(c.customer_id)||"Customer"},
+    mover_profile:{id:c.mover_id,full_name:peopleMap.get(c.mover_id)||"Mover"},
+    other_name:c.customer_id===state.user.id
+      ? peopleMap.get(c.mover_id)||"Mover"
+      : peopleMap.get(c.customer_id)||"Customer"
+  }));
 
   const box=$("conversationItems");
 
@@ -2807,20 +3037,18 @@ async function loadConversations(){
     return;
   }
 
-  box.innerHTML=state.conversations.map(c=>{
-    const other=
-      c.customer_id===state.user.id
-        ? c.mover?.profiles?.full_name || "Mover"
-        : c.customer?.full_name || "Customer";
-
-    return `
-      <div class="conversation ${state.currentConversation?.id===c.id?"active":""}"
-           onclick="openConversation('${c.id}')">
-        <div class="name">${escapeHTML(other)}</div>
-        <div class="preview">${dateTime(c.last_message_at)||"Start conversation"}</div>
+  box.innerHTML=state.conversations.map(c=>`
+    <div class="conversation ${state.currentConversation?.id===c.id?"active":""}"
+         onclick="openConversation('${c.id}')">
+      <div class="identity-line">
+        <div class="identity-avatar">${escapeHTML(initials(c.other_name))}</div>
+        <div class="identity-copy">
+          <strong>${escapeHTML(c.other_name)}</strong>
+          <span>${c.customer_id===state.user.id?"Mover":"Customer"} · ${dateTime(c.last_message_at)||"Start conversation"}</span>
+        </div>
       </div>
-    `;
-  }).join("");
+    </div>
+  `).join("");
 
   if(state.currentConversation){
     const exists=state.conversations.find(x=>x.id===state.currentConversation.id);
@@ -2835,12 +3063,12 @@ async function openConversation(id,silent=false){
 
   state.currentConversation=conversation;
 
-  const other=
-    conversation.customer_id===state.user.id
-      ? conversation.mover?.profiles?.full_name || "Mover"
-      : conversation.customer?.full_name || "Customer";
+  const other=conversation.other_name ||
+    (conversation.customer_id===state.user.id
+      ? conversation.mover_profile?.full_name || "Mover"
+      : conversation.customer_profile?.full_name || "Customer");
 
-  $("chatTitle").textContent=other;
+  $("chatTitle").innerHTML=`${escapeHTML(other)} ${conversation.customer_id===state.user.id?moverVerifiedBadge(true):""}`;
   $("chatSubtitle").textContent="● Real-time conversation";
 
   await loadMessages(id);
@@ -2860,8 +3088,7 @@ async function openConversation(id,silent=false){
         filter:`conversation_id=eq.${id}`
       },
       payload=>{
-        appendMessage(payload.new);
-        scrollMessages();
+        appendMessage(payload.new).then(scrollMessages);
       }
     )
     .subscribe();
@@ -2915,15 +3142,23 @@ function messageHTML(m){
   `;
 }
 
-function appendMessage(message){
+async function appendMessage(message){
   if(state.messages.some(x=>x.id===message.id))return;
 
   state.messages.push(message);
 
+  if(message.sender_id && !state.chatPeople?.[message.sender_id]){
+    const {data:person}=await supabaseClient
+      .from("profiles")
+      .select("id,full_name")
+      .eq("id",message.sender_id)
+      .maybeSingle();
+
+    state.chatPeople[message.sender_id]=person?.full_name||"User";
+  }
+
   const box=$("messages");
-
   if(box.querySelector(".empty"))box.innerHTML="";
-
   box.insertAdjacentHTML("beforeend",messageHTML(message));
 }
 
