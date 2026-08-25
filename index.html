@@ -354,6 +354,39 @@ th{color:#7f8c99;font-weight:600}
 }
 
 
+
+/* ==========================================================
+   MOVER VERIFICATION + ACCESSIBLE SYSTEM MESSAGES
+   Additive overrides: existing UI remains intact.
+   ========================================================== */
+.toast strong{color:#ffffff!important}
+.toast div{color:#dbe7f3!important}
+.toast.success{background:#0b3d2b!important;border-color:#35c98a!important}
+.toast.error{background:#4a171d!important;border-color:#ff6b76!important}
+.toast.warning{background:#4a3512!important;border-color:#f1b84b!important}
+.toast.success::before{background:#35c98a!important}
+.toast.error::before{background:#ff6b76!important}
+.toast.warning::before{background:#f1b84b!important}
+.toast-close{color:#dbe7f3!important}
+.system-note{margin-top:10px;padding:12px 14px;border-radius:13px;background:#eef6ff;border:1px solid #bfdbfe;color:#163b67;font-size:12px;line-height:1.55}
+.system-note strong{color:#0b4fb7}
+.mover-verify-card{margin-top:16px;border:1px solid #dbe5f0;background:#fff}
+.mover-verify-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:14px}
+.mover-verify-status{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;font-size:11px;font-weight:900}
+.mover-verify-status.pending{background:#fff7e6;color:#9a6200;border:1px solid #f4d28c}
+.mover-verify-status.approved{background:#eaf3ff;color:#0b5bd3;border:1px solid #b9d6ff}
+.mover-verify-status.rejected{background:#fff0f1;color:#c5303b;border:1px solid #ffc2c8}
+.verified-badge{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#1d9bf0;color:#fff;font-size:11px;font-weight:900;vertical-align:middle;margin-left:5px;box-shadow:0 2px 6px rgba(29,155,240,.25)}
+.verified-badge.small{width:16px;height:16px;font-size:10px}
+.admin-mover-review{cursor:pointer;transition:.18s ease}
+.admin-mover-review:hover{border-color:#b9d6ff;box-shadow:0 8px 24px rgba(11,107,255,.08)}
+.admin-review-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.admin-review-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.admin-review-field{padding:12px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc}
+.admin-review-field span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#718096;margin-bottom:4px}
+.admin-review-field strong{display:block;font-size:13px;color:#102033;word-break:break-word}
+@media(max-width:620px){.admin-review-grid{grid-template-columns:1fr}.mover-verify-head{align-items:flex-start;flex-direction:column}}
+
 /* ==========================================================
    PROFESSIONAL INTERNATIONAL UI
    ========================================================== */
@@ -755,7 +788,7 @@ body{background:var(--bg);color:var(--text)}
               <textarea class="input" id="requestNotes" rows="4" placeholder="Stairs, gate instructions, fragile items, parking, etc."></textarea>
             </div>
 
-            <div class="card" style="background:#111a23">
+            <div class="card" style="background:#f8fafc;border-color:#dfe6ee">
               <div style="display:flex;justify-content:space-between;gap:20px;align-items:center">
                 <div>
                   <strong>⚡ Instant matching</strong>
@@ -849,7 +882,7 @@ body{background:var(--bg);color:var(--text)}
       <!-- MOVER HOME -->
       <section class="page" id="moverHome">
         <div class="hero">
-          <h1>Ready to <span>move?</span></h1>
+          <h1>Ready to <span>move?</span> <span id="moverDashboardVerifiedBadge"></span></h1>
           <p>Go online and receive moving jobs near your current location.</p>
           <div class="hero-actions">
             <button class="primary" id="availabilityBtn" onclick="toggleMoverAvailability()">GO ONLINE 🟢</button>
@@ -1000,7 +1033,7 @@ body{background:var(--bg);color:var(--text)}
       <section class="page" id="profilePage">
         <div class="page-head">
           <div>
-            <h2>Profile</h2>
+            <h2>Profile <span id="profileVerifiedBadge"></span></h2>
             <p>Manage your account.</p>
           </div>
         </div>
@@ -1023,6 +1056,84 @@ body{background:var(--bg);color:var(--text)}
           </form>
 
           <button class="secondary" style="margin-top:12px" onclick="logout()">LOG OUT</button>
+        </div>
+
+        <div class="card mover-verify-card hidden" id="moverVerificationCard">
+          <div class="mover-verify-head">
+            <div>
+              <h2 style="font-size:20px;margin:0 0 5px">Mover verification</h2>
+              <p style="margin:0;color:var(--muted);font-size:12px">Complete these details before submitting your mover application.</p>
+            </div>
+            <span id="moverVerificationStatus" class="mover-verify-status pending">PENDING</span>
+          </div>
+
+          <div id="moverVerificationNotice" class="system-note hidden"></div>
+
+          <form id="moverVerificationForm">
+            <div class="location-row">
+              <div class="form-group">
+                <label>Legal full name *</label>
+                <input class="input" id="moverLegalName" required>
+              </div>
+              <div class="form-group">
+                <label>National ID / NIDA number *</label>
+                <input class="input" id="moverNationalId" required>
+              </div>
+            </div>
+
+            <div class="location-row">
+              <div class="form-group">
+                <label>Driver's licence number *</label>
+                <input class="input" id="moverLicenseNo" required>
+              </div>
+              <div class="form-group">
+                <label>Years of moving experience *</label>
+                <input class="input" id="moverExperienceYears" type="number" min="0" max="60" required>
+              </div>
+            </div>
+
+            <div class="location-row">
+              <div class="form-group">
+                <label>Vehicle type *</label>
+                <select class="input" id="moverVehicleType" required>
+                  <option value="">Select vehicle</option>
+                  <option value="pickup">Pickup</option>
+                  <option value="van">Van</option>
+                  <option value="canter">Canter</option>
+                  <option value="box_truck">Box Truck</option>
+                  <option value="large_truck">Large Truck</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Vehicle registration / plate *</label>
+                <input class="input" id="moverPlateNumber" required>
+              </div>
+            </div>
+
+            <div class="location-row">
+              <div class="form-group">
+                <label>Main service area *</label>
+                <input class="input" id="moverServiceArea" placeholder="e.g. Dar es Salaam and nearby areas" required>
+              </div>
+              <div class="form-group">
+                <label>Emergency contact phone *</label>
+                <input class="input" id="moverEmergencyPhone" type="tel" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>About your moving service *</label>
+              <textarea class="input" id="moverBio" rows="4" maxlength="500" placeholder="Briefly describe your moving experience and services." required></textarea>
+            </div>
+
+            <div class="system-note">
+              <strong>Verification:</strong> After you submit, your application will be sent to an admin for review. You can only go online after approval.
+            </div>
+
+            <button class="primary" id="submitMoverVerificationBtn" type="submit" style="margin-top:14px">
+              SUBMIT FOR VERIFICATION
+            </button>
+          </form>
         </div>
       </section>
 
@@ -1552,7 +1663,7 @@ async function bootUser(session){
 function renderShell(){
   const name=state.profile?.full_name || state.user?.email || "User";
 
-  $("topName").textContent=name;
+  $("topName").innerHTML=escapeHTML(name);
   $("topAvatar").textContent=initials(name);
 
   const nav=$("sidebar");
@@ -3031,14 +3142,14 @@ async function loadAdminDashboard(){
 
   $("adminMovers").innerHTML=movers.data?.length
     ? movers.data.map(m=>`
-      <div class="list-item">
+      <div class="list-item admin-mover-review" onclick="reviewMover('${m.id}')">
         <div class="list-main">
           <strong>${escapeHTML(m.profiles?.full_name||"Mover")}</strong>
-          <span>${escapeHTML(m.profiles?.phone||m.profiles?.email||"")}</span>
+          <span>${escapeHTML(m.profiles?.phone||m.profiles?.email||"")} · <b style="color:#9a6200">PENDING VERIFICATION</b></span>
         </div>
-        <div style="display:flex;gap:7px">
-          <button class="primary" style="width:auto;padding:8px" onclick="verifyMover('${m.id}',true)">APPROVE</button>
-          <button class="secondary" style="width:auto;padding:8px" onclick="verifyMover('${m.id}',false)">REJECT</button>
+        <div style="display:flex;gap:7px;align-items:center">
+          <span class="status pending">PENDING</span>
+          <button class="primary" style="width:auto;padding:8px" onclick="event.stopPropagation();reviewMover('${m.id}')">REVIEW</button>
         </div>
       </div>
     `).join("")
@@ -3046,20 +3157,44 @@ async function loadAdminDashboard(){
 }
 
 async function verifyMover(id,approve){
-  const {error}=await supabaseClient
+  const status=approve?"approved":"rejected";
+
+  const {error:profileError}=await supabaseClient
     .from("mover_profiles")
     .update({
-      verification_status:approve?"approved":"rejected"
+      verification_status:status,
+      is_available:false
     })
     .eq("id",id);
 
-  if(error){
-    toast(error.message,"error");
+  if(profileError){
+    toast(profileError.message,"error","Verification update failed");
     return;
   }
 
-  toast(approve?"Mover approved.":"Mover rejected.");
-  loadAdminDashboard();
+  const {error:applicationError}=await supabaseClient
+    .from("mover_verification")
+    .update({
+      status,
+      reviewed_at:new Date().toISOString(),
+      reviewed_by:state.user?.id||null
+    })
+    .eq("mover_id",id);
+
+  if(applicationError){
+    toast(applicationError.message,"warning","Mover approved, application log not updated");
+  }else{
+    toast(
+      approve
+        ? "Mover is now verified and can go online."
+        : "Mover application has been rejected.",
+      approve?"success":"warning",
+      approve?"Mover verified ✓":"Verification rejected"
+    );
+  }
+
+  closeModal("jobModal");
+  await loadAdminDashboard();
 }
 
 async function loadAdminUsers(){
@@ -3128,6 +3263,15 @@ async function loadProfile(){
   $("profileName").value=state.profile.full_name||"";
   $("profileEmail").value=state.profile.email||state.user?.email||"";
   $("profilePhone").value=state.profile.phone||"";
+
+  const moverCard=$("moverVerificationCard");
+  if(state.role!=="mover"){
+    moverCard?.classList.add("hidden");
+    return;
+  }
+
+  moverCard?.classList.remove("hidden");
+  await loadMoverVerificationProfile();
 }
 
 $("profileForm").addEventListener("submit",async e=>{
@@ -3153,6 +3297,214 @@ $("profileForm").addEventListener("submit",async e=>{
 
   toast("Profile updated.");
 });
+
+
+/* ==========================================================
+   MOVER VERIFICATION APPLICATION
+   Uses a dedicated table so existing mover_profiles/jobs logic
+   remains backward-compatible.
+   ========================================================== */
+
+function moverVerifiedBadge(large=false){
+  return `<span class="verified-badge ${large?"":"small"}" title="Verified mover" aria-label="Verified mover">✓</span>`;
+}
+
+function moverVerificationStatusLabel(status){
+  const s=String(status||"pending").toLowerCase();
+  if(s==="approved")return "VERIFIED";
+  if(s==="rejected")return "REJECTED";
+  return "PENDING VERIFICATION";
+}
+
+function setMoverVerificationStatus(status){
+  const s=String(status||"pending").toLowerCase();
+  const el=$("moverVerificationStatus");
+  if(!el)return;
+  el.className="mover-verify-status "+(s==="approved"?"approved":s==="rejected"?"rejected":"pending");
+  el.textContent=moverVerificationStatusLabel(s);
+}
+
+async function loadMoverVerificationProfile(){
+  if(state.role!=="mover" || !state.user)return;
+
+  const {data,error}=await supabaseClient
+    .from("mover_verification")
+    .select("*")
+    .eq("mover_id",state.user.id)
+    .maybeSingle();
+
+  if(error){
+    console.warn("Mover verification table:",error.message);
+    $("moverVerificationNotice").classList.remove("hidden");
+    $("moverVerificationNotice").innerHTML="<strong>Verification setup:</strong> Complete the database migration for mover verification before submitting applications.";
+    setMoverVerificationStatus("pending");
+    return;
+  }
+
+  const moverProfile=await supabaseClient
+    .from("mover_profiles")
+    .select("verification_status")
+    .eq("id",state.user.id)
+    .maybeSingle();
+
+  const status=moverProfile.data?.verification_status || data?.status || "pending";
+  setMoverVerificationStatus(status);
+
+  $("moverLegalName").value=data?.legal_name||state.profile?.full_name||"";
+  $("moverNationalId").value=data?.national_id||"";
+  $("moverLicenseNo").value=data?.license_number||"";
+  $("moverExperienceYears").value=data?.experience_years ?? "";
+  $("moverVehicleType").value=data?.vehicle_type||"";
+  $("moverPlateNumber").value=data?.plate_number||"";
+  $("moverServiceArea").value=data?.service_area||"";
+  $("moverEmergencyPhone").value=data?.emergency_phone||"";
+  $("moverBio").value=data?.bio||"";
+
+  const notice=$("moverVerificationNotice");
+  if(status==="approved"){
+    notice.classList.remove("hidden");
+    notice.innerHTML="<strong>Verified mover:</strong> Your application has been approved. You can now go online.";
+    $("submitMoverVerificationBtn").classList.add("hidden");
+  }else if(status==="pending" && data?.submitted_at){
+    notice.classList.remove("hidden");
+    notice.innerHTML="<strong>Application submitted:</strong> Your mover verification is pending admin review. You will be able to go online after approval.";
+    $("submitMoverVerificationBtn").textContent="UPDATE APPLICATION";
+  }else if(status==="rejected"){
+    notice.classList.remove("hidden");
+    notice.innerHTML="<strong>Application needs attention:</strong> Your previous verification was rejected. Update your details and submit again.";
+    $("submitMoverVerificationBtn").classList.remove("hidden");
+    $("submitMoverVerificationBtn").textContent="RESUBMIT FOR VERIFICATION";
+  }else{
+    notice.classList.add("hidden");
+  }
+
+  const badge=$("profileVerifiedBadge");
+  const dashBadge=$("moverDashboardVerifiedBadge");
+  if(badge)badge.innerHTML=status==="approved"?moverVerifiedBadge(true):"";
+  if(dashBadge)dashBadge.innerHTML=status==="approved"?moverVerifiedBadge(true):"";
+}
+
+$("moverVerificationForm")?.addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(state.role!=="mover" || !state.user)return;
+
+  const btn=$("submitMoverVerificationBtn");
+  const payload={
+    mover_id:state.user.id,
+    legal_name:$("moverLegalName").value.trim(),
+    national_id:$("moverNationalId").value.trim(),
+    license_number:$("moverLicenseNo").value.trim(),
+    experience_years:Number($("moverExperienceYears").value||0),
+    vehicle_type:$("moverVehicleType").value,
+    plate_number:$("moverPlateNumber").value.trim().toUpperCase(),
+    service_area:$("moverServiceArea").value.trim(),
+    emergency_phone:$("moverEmergencyPhone").value.trim(),
+    bio:$("moverBio").value.trim(),
+    status:"pending",
+    submitted_at:new Date().toISOString()
+  };
+
+  const required=[
+    payload.legal_name,payload.national_id,payload.license_number,
+    payload.vehicle_type,payload.plate_number,payload.service_area,
+    payload.emergency_phone,payload.bio
+  ];
+  if(required.some(v=>!v) || payload.experience_years<0){
+    toast("Please complete all required mover verification fields.","error","Missing information");
+    return;
+  }
+
+  setLoading(btn,true);
+
+  const {error:profileError}=await supabaseClient
+    .from("mover_profiles")
+    .upsert({
+      id:state.user.id,
+      verification_status:"pending",
+      is_available:false
+    },{onConflict:"id"});
+
+  if(profileError){
+    setLoading(btn,false);
+    toast(profileError.message,"error","Mover profile setup failed");
+    return;
+  }
+
+  const {error}=await supabaseClient
+    .from("mover_verification")
+    .upsert(payload,{onConflict:"mover_id"});
+
+  setLoading(btn,false);
+
+  if(error){
+    toast(error.message,"error","Verification submission failed");
+    return;
+  }
+
+  $("submitMoverVerificationBtn").textContent="UPDATE APPLICATION";
+  $("moverVerificationNotice").classList.remove("hidden");
+  $("moverVerificationNotice").innerHTML="<strong>Submitted successfully:</strong> Your application is now pending admin verification.";
+  setMoverVerificationStatus("pending");
+  toast("Your mover application has been submitted for admin review.","success","Verification submitted");
+});
+
+async function reviewMover(id){
+  if(state.role!=="admin")return;
+
+  const {data,error}=await supabaseClient
+    .from("mover_verification")
+    .select("*")
+    .eq("mover_id",id)
+    .maybeSingle();
+
+  if(error){
+    toast(error.message,"error","Could not load application");
+    return;
+  }
+
+  const {data:profileData,error:profileError}=await supabaseClient
+    .from("profiles")
+    .select("full_name,email,phone")
+    .eq("id",id)
+    .maybeSingle();
+
+  if(profileError){
+    toast(profileError.message,"error","Could not load mover profile");
+    return;
+  }
+
+  const moverData=data||{};
+  const profile=profileData||{};
+  $("jobModalTitle").textContent="Mover verification review";
+  $("jobModalBody").innerHTML=`
+    <div class="system-note">
+      <strong>Pending verification:</strong> Review the mover's submitted information before approving access to Go Online.
+    </div>
+    <div class="admin-review-grid" style="margin-top:14px">
+      <div class="admin-review-field"><span>Full name</span><strong>${escapeHTML(moverData.legal_name||profile.full_name||"—")}</strong></div>
+      <div class="admin-review-field"><span>Phone</span><strong>${escapeHTML(profile.phone||"—")}</strong></div>
+      <div class="admin-review-field"><span>Email</span><strong>${escapeHTML(profile.email||"—")}</strong></div>
+      <div class="admin-review-field"><span>National ID</span><strong>${escapeHTML(moverData.national_id||"—")}</strong></div>
+      <div class="admin-review-field"><span>Driver's licence</span><strong>${escapeHTML(moverData.license_number||"—")}</strong></div>
+      <div class="admin-review-field"><span>Experience</span><strong>${escapeHTML(String(moverData.experience_years??"—"))} years</strong></div>
+      <div class="admin-review-field"><span>Vehicle</span><strong>${escapeHTML(moverData.vehicle_type||"—")}</strong></div>
+      <div class="admin-review-field"><span>Plate number</span><strong>${escapeHTML(moverData.plate_number||"—")}</strong></div>
+      <div class="admin-review-field"><span>Service area</span><strong>${escapeHTML(moverData.service_area||"—")}</strong></div>
+      <div class="admin-review-field"><span>Emergency contact</span><strong>${escapeHTML(moverData.emergency_phone||"—")}</strong></div>
+    </div>
+    <div class="admin-review-field" style="margin-top:12px">
+      <span>About the mover</span>
+      <strong style="font-weight:600;line-height:1.6">${escapeHTML(moverData.bio||"—")}</strong>
+    </div>
+    <div class="admin-review-actions">
+      <button class="primary" type="button" style="width:auto" onclick="verifyMover('${id}',true)">✓ VERIFY MOVER</button>
+      <button class="secondary" type="button" style="width:auto" onclick="verifyMover('${id}',false)">REJECT</button>
+      <button class="secondary" type="button" style="width:auto" onclick="closeModal('jobModal')">CLOSE</button>
+    </div>
+  `;
+  openModal("jobModal");
+}
+
 
 /* ==========================================================
    REALTIME — CORE
@@ -3193,6 +3545,7 @@ function setupRealtime(){
 
         $("topName").textContent=payload.new.full_name||state.user.email;
         $("topAvatar").textContent=initials(payload.new.full_name);
+        if(state.role==="mover")loadMoverVerificationProfile();
       }
     )
     .subscribe();
@@ -3522,6 +3875,7 @@ window.markAllNotificationsRead=markAllNotificationsRead;
 window.openWithdrawalModal=openWithdrawalModal;
 window.submitWithdrawal=submitWithdrawal;
 window.verifyMover=verifyMover;
+window.reviewMover=reviewMover;
 window.logout=logout;
 window.closeModal=closeModal;
 window.setScheduled=setScheduled;
