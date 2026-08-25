@@ -119,6 +119,59 @@ button{cursor:pointer}
 .password-rules .ok{color:var(--success)}
 
 .shell{display:none;min-height:100vh}
+
+/* ==========================================================
+   PREMIUM ACCOUNT MENU + NOTIFICATION TOASTS
+   ========================================================== */
+.user-menu-wrap{position:relative}
+.user-chip{border:1px solid var(--line);background:rgba(255,255,255,.035);color:var(--text);display:flex;align-items:center;gap:10px;padding:6px 10px 6px 6px;border-radius:999px;transition:.2s ease}
+.user-chip:hover{background:rgba(255,255,255,.07);border-color:rgba(183,255,53,.28)}
+.user-chevron{font-size:16px;color:var(--muted);margin-left:2px;line-height:1}
+.user-dropdown{position:absolute;right:0;top:calc(100% + 10px);width:280px;padding:10px;border:1px solid rgba(255,255,255,.10);border-radius:18px;background:rgba(13,19,27,.98);box-shadow:0 24px 70px rgba(0,0,0,.48);backdrop-filter:blur(22px);z-index:100001;opacity:0;transform:translateY(-6px) scale(.98);pointer-events:none;transition:.18s ease}
+.user-dropdown.open{opacity:1;transform:none;pointer-events:auto}
+.user-dropdown-head{display:flex;align-items:center;gap:11px;padding:8px 8px 12px}
+.avatar.large{width:42px;height:42px;font-size:14px}
+.user-dropdown-meta{min-width:0;display:flex;flex-direction:column;gap:3px}
+.user-dropdown-meta strong{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-dropdown-meta span{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-dropdown-line{height:1px;background:var(--line);margin:0 2px 7px}
+.user-menu-item{width:100%;display:flex;align-items:center;gap:11px;border:0;background:transparent;color:var(--text);padding:11px 10px;border-radius:12px;text-align:left;font-size:13px;font-weight:700}
+.user-menu-item:hover{background:rgba(255,255,255,.06)}
+.user-menu-item span:first-child{width:22px;text-align:center}
+.user-menu-item .menu-badge{margin-left:auto;width:auto;height:20px;min-width:20px;padding:0 6px;border-radius:999px;background:var(--brand);color:#071006;display:grid;place-items:center;font-size:10px;font-weight:900}
+.user-menu-item .menu-badge.hidden{display:none}
+.danger-item{color:#ff8b92}
+
+.toast-wrap{top:20px;right:20px;width:min(390px,calc(100vw - 40px));gap:12px}
+.toast{position:relative;display:grid;grid-template-columns:4px 1fr auto;gap:12px;align-items:start;padding:15px 15px 15px 0;border-radius:15px;background:rgba(16,23,32,.98);border:1px solid rgba(255,255,255,.10);box-shadow:0 20px 55px rgba(0,0,0,.38);overflow:hidden}
+.toast::before{content:"";display:block;width:4px;height:100%;min-height:48px;background:var(--brand);border-radius:0 5px 5px 0}
+.toast.success::before{background:var(--success)}
+.toast.error::before{background:var(--danger)}
+.toast.warning::before{background:var(--warning)}
+.toast strong{font:700 13px/1.3 "DM Sans",sans-serif;letter-spacing:.01em;margin:0 0 4px}
+.toast div{font:500 12px/1.5 "DM Sans",sans-serif;color:#b8c2ce}
+.toast-close{border:0;background:transparent;color:#8190a0;font-size:17px;line-height:1;padding:0 2px;cursor:pointer}
+.toast-close:hover{color:#fff}
+
+/* Professional notification cards */
+.notification-item{position:relative;display:flex;align-items:flex-start;gap:13px;padding:14px 15px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.025);margin-bottom:9px;transition:.18s ease}
+.notification-item:hover{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.12)}
+.notification-item.unread{background:rgba(183,255,53,.045);border-color:rgba(183,255,53,.16)}
+.notification-icon{width:36px;height:36px;display:grid;place-items:center;flex:0 0 auto;border-radius:11px;background:rgba(183,255,53,.10);font-size:16px}
+.notification-content{min-width:0;flex:1}
+.notification-title{font-size:13px;font-weight:800;line-height:1.3;margin-bottom:4px}
+.notification-body{font-size:12px;color:var(--muted);line-height:1.5}
+.notification-time{font-size:10px;color:#6f7d8d;margin-top:7px}
+.notification-read{font-size:10px;font-weight:800;letter-spacing:.04em;color:var(--success);white-space:nowrap}
+
+/* Mover readiness modal */
+.readiness-list{display:grid;gap:9px;margin:14px 0}
+.readiness-item{display:flex;gap:10px;align-items:flex-start;padding:11px 12px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.025)}
+.readiness-icon{width:22px;height:22px;display:grid;place-items:center;border-radius:50%;background:rgba(183,255,53,.12);color:var(--brand);font-size:12px;font-weight:900;flex:0 0 auto}
+.readiness-item strong{display:block;font-size:12px;margin-bottom:2px}
+.readiness-item span{display:block;color:var(--muted);font-size:11px;line-height:1.45}
+@media(max-width:620px){.user-dropdown{right:-4px;width:260px}.toast-wrap{top:12px;right:12px;width:calc(100vw - 24px)}}
+
 .topbar{
   height:74px;position:sticky;top:0;z-index:1000;background:rgba(7,11,16,.88);
   border-bottom:1px solid var(--line);backdrop-filter:blur(18px);
@@ -519,9 +572,25 @@ body{background:var(--bg);color:var(--text)}
         <span class="badge hidden" id="notificationBadge">0</span>
       </button>
 
-      <div class="user-chip">
-        <div class="avatar" id="topAvatar">A</div>
-        <span id="topName">User</span>
+      <div class="user-menu-wrap">
+        <button class="user-chip" id="userMenuBtn" type="button" aria-expanded="false" title="Account menu">
+          <div class="avatar" id="topAvatar">A</div>
+          <span id="topName">User</span>
+          <span class="user-chevron">⌄</span>
+        </button>
+        <div class="user-dropdown" id="userDropdown">
+          <div class="user-dropdown-head">
+            <div class="avatar large" id="menuAvatar">A</div>
+            <div class="user-dropdown-meta">
+              <strong id="menuName">User</strong>
+              <span id="menuEmail">Account</span>
+            </div>
+          </div>
+          <div class="user-dropdown-line"></div>
+          <button type="button" class="user-menu-item" data-profile-shortcut="true"><span>👤</span><span>Profile</span></button>
+          <button type="button" class="user-menu-item" data-notification-shortcut="true"><span>🔔</span><span>Notifications</span><span class="menu-badge hidden" id="menuNotifBadge">0</span></button>
+          <button type="button" class="user-menu-item danger-item" onclick="logout()"><span>↪</span><span>Log out</span></button>
+        </div>
       </div>
     </div>
   </header>
@@ -1119,9 +1188,10 @@ function initials(name){
 function toast(message,type="success",title="Hamisha Chapu"){
   const el=document.createElement("div");
   el.className="toast " + type;
-  el.innerHTML=`<strong>${escapeHTML(title)}</strong><div>${escapeHTML(message)}</div>`;
+  el.innerHTML=`<span aria-hidden="true"></span><div><strong>${escapeHTML(title)}</strong><div>${escapeHTML(message)}</div></div><button class="toast-close" type="button" aria-label="Close notification">×</button>`;
+  el.querySelector(".toast-close").onclick=()=>el.remove();
   $("toastWrap").appendChild(el);
-  setTimeout(()=>el.remove(),4200);
+  setTimeout(()=>el.remove(),5200);
 }
 
 function setLoading(button,loading,text){
@@ -1590,6 +1660,37 @@ function bindNavButtons(){
     btn.onclick=()=>openPage(btn.dataset.page);
   });
 }
+
+function updateAccountMenu(){
+  const name=state.profile?.full_name||state.user?.email||"User";
+  const email=state.user?.email||state.profile?.email||"Account";
+  $("topName").textContent=name;
+  $("topAvatar").textContent=initials(name);
+  $("menuName").textContent=name;
+  $("menuEmail").textContent=email;
+  $("menuAvatar").textContent=initials(name);
+}
+
+function closeAccountMenu(){
+  $("userDropdown")?.classList.remove("open");
+  $("userMenuBtn")?.setAttribute("aria-expanded","false");
+}
+
+function bindAccountMenu(){
+  const btn=$("userMenuBtn"), menu=$("userDropdown");
+  if(!btn||!menu)return;
+  btn.onclick=e=>{
+    e.stopPropagation();
+    const open=menu.classList.toggle("open");
+    btn.setAttribute("aria-expanded",String(open));
+  };
+  document.addEventListener("click",e=>{
+    if(!e.target.closest(".user-menu-wrap"))closeAccountMenu();
+  });
+  document.querySelectorAll("[data-profile-shortcut]").forEach(x=>x.onclick=()=>{closeAccountMenu();openPage("profilePage")});
+  document.querySelectorAll("[data-notification-shortcut]").forEach(x=>x.onclick=()=>{closeAccountMenu();openPage("notificationsPage")});
+}
+
 
 function openPage(id){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
@@ -2207,18 +2308,29 @@ async function toggleMoverAvailability(){
 
   const {data,error:readError}=await supabaseClient
     .from("mover_profiles")
-    .select("is_available,verification_status")
+    .select("id,is_available,verification_status")
     .eq("id",state.user.id)
     .maybeSingle();
 
   if(readError){
-    toast(readError.message,"error","Availability error");return;
+    toast(readError.message,"error","Could not check mover profile");
+    return;
   }
+
+  /*
+     GO ONLINE currently requires two things in the existing schema: 
+     1) a mover_profiles row for this user, and
+     2) verification_status = approved.
+     A vehicle is checked later when accepting a job, not when going online.
+  */
   if(!data){
-    toast("Mover profile haijapatikana. Kamilisha mover registration kwanza.","error","Mover profile missing");return;
+    showMoverReadinessModal({missingProfile:true,verification:false});
+    return;
   }
-  if(data.verification_status && data.verification_status!=="approved"){
-    toast("Account yako bado haija-approveiwa na admin.","error","Verification required");return;
+
+  if(String(data.verification_status||"").toLowerCase()!=="approved"){
+    showMoverReadinessModal({missingProfile:false,verification:data.verification_status||"pending"});
+    return;
   }
 
   const next=!Boolean(data.is_available);
@@ -2230,21 +2342,54 @@ async function toggleMoverAvailability(){
     .maybeSingle();
 
   if(error){
-    toast(error.message,"error","Could not change status");return;
+    toast(error.message,"error","Could not change status");
+    return;
   }
   if(!updated){
-    toast("Status haikubadilika. Angalia permissions za mover_profiles.","error","Update blocked");return;
+    toast("The mover status was not updated. Please check your mover_profiles permissions/RLS policy.","error","Update blocked");
+    return;
   }
 
   const profileUpdate=await supabaseClient
     .from("profiles")
     .update({is_online:next,last_seen_at:new Date().toISOString()})
     .eq("id",state.user.id);
-  if(profileUpdate.error)console.warn("Profile online sync:",profileUpdate.error.message);
+
+  if(profileUpdate.error){
+    toast(profileUpdate.error.message,"warning","Online sync warning");
+  }
 
   $("availabilityBtn").textContent=next?"GO OFFLINE 🔴":"GO ONLINE 🟢";
-  toast(next?"You're now visible to nearby customers.":"You won't receive new requests.","success",next?"You're online 🟢":"You're offline");
+  toast(next?"Customers can now see you as available.":"You will no longer receive new moving requests.","success",next?"You're online":"You're offline");
   loadMoverDashboard();
+}
+
+function showMoverReadinessModal(info={}){
+  const missing=!!info.missingProfile;
+  const approved=String(info.verification||"").toLowerCase()==="approved";
+  $("jobModalTitle").textContent="Mover account readiness";
+  $("jobModalBody").innerHTML=`
+    <div class="card" style="background:rgba(183,255,53,.045);border-color:rgba(183,255,53,.14)">
+      <strong style="font-size:16px">Before you go online</strong>
+      <div style="color:var(--muted);font-size:12px;line-height:1.55;margin-top:5px">Your account must be set up and approved before Hamisha Chapu can show you to customers.</div>
+    </div>
+    <div class="readiness-list">
+      <div class="readiness-item">
+        <div class="readiness-icon">${missing?"!":"✓"}</div>
+        <div><strong>Mover profile</strong><span>${missing?"Your mover_profiles record is missing. Complete/create the mover profile first.":"Mover profile found."}</span></div>
+      </div>
+      <div class="readiness-item">
+        <div class="readiness-icon">${approved?"✓":"!"}</div>
+        <div><strong>Admin verification</strong><span>${approved?"Your mover profile is approved.":`Current verification status: ${escapeHTML(info.verification||"not submitted")}. Admin approval is required before going online.`}</span></div>
+      </div>
+      <div class="readiness-item">
+        <div class="readiness-icon">✓</div>
+        <div><strong>Vehicle verification</strong><span>A verified active vehicle is required when accepting a job. It is not the condition currently blocking the Go Online button.</span></div>
+      </div>
+    </div>
+    <button class="primary" type="button" onclick="closeModal('jobModal');openPage('profilePage')">OPEN PROFILE</button>
+  `;
+  openModal("jobModal");
 }
 
 /* ==========================================================
@@ -2663,14 +2808,16 @@ function renderNotifications(){
   }
 
   box.innerHTML=state.notifications.map(n=>`
-    <div class="list-item" style="${n.is_read?"opacity:.65":""}">
-      <div class="list-main">
-        <strong>${escapeHTML(n.title)}</strong>
-        <span>${escapeHTML(n.body||"")} · ${dateTime(n.created_at)}</span>
+    <div class="notification-item ${n.is_read?"":"unread"}">
+      <div class="notification-icon">${n.is_read?"✓":"●"}</div>
+      <div class="notification-content">
+        <div class="notification-title">${escapeHTML(n.title||"Notification")}</div>
+        <div class="notification-body">${escapeHTML(n.body||"")}</div>
+        <div class="notification-time">${dateTime(n.created_at)}</div>
       </div>
       ${!n.is_read
-        ?`<button class="secondary" style="width:auto;padding:8px" onclick="markNotificationRead('${n.id}')">READ</button>`
-        :`<span style="color:var(--success);font-size:12px">✓ Read</span>`}
+        ?`<button class="secondary" style="width:auto;padding:7px 10px;font-size:10px" onclick="markNotificationRead('${n.id}')">MARK READ</button>`
+        :`<span class="notification-read">READ</span>`}
     </div>
   `).join("");
 }
@@ -2693,7 +2840,7 @@ async function loadUnreadCount(){
   $("notificationBadge").textContent=n;
   $("notificationBadge").classList.toggle("hidden",n===0);
 
-  ["navNotifBadge"].forEach(id=>{
+  ["navNotifBadge","menuNotifBadge"].forEach(id=>{
     const el=$(id);
     if(el){
       el.textContent=n;
@@ -2976,6 +3123,7 @@ async function loadAdminRequests(){
 
 async function loadProfile(){
   if(!state.profile)return;
+  updateAccountMenu();
 
   $("profileName").value=state.profile.full_name||"";
   $("profileEmail").value=state.profile.email||state.user?.email||"";
@@ -3001,9 +3149,7 @@ $("profileForm").addEventListener("submit",async e=>{
   }
 
   state.profile=data;
-
-  $("topName").textContent=data.full_name||state.user.email;
-  $("topAvatar").textContent=initials(data.full_name);
+  updateAccountMenu();
 
   toast("Profile updated.");
 });
@@ -3326,6 +3472,8 @@ async function logout(){
     enterRecoveryMode();
   }
 })();
+
+bindAccountMenu();
 
 /* ==========================================================
    INITIAL SESSION CHECK
