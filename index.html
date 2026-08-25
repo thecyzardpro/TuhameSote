@@ -15,21 +15,21 @@
 
 <style>
 :root{
-  --bg:#070b10;
-  --panel:#0d131b;
-  --panel2:#111923;
-  --panel3:#151f2b;
-  --text:#f5f7fa;
-  --muted:#8996a5;
-  --line:rgba(255,255,255,.08);
-  --brand:#b7ff35;
-  --brand2:#8bd400;
-  --danger:#ff5d67;
-  --warning:#ffbf47;
-  --success:#41df91;
-  --blue:#5ca8ff;
-  --radius:22px;
-  --shadow:0 18px 60px rgba(0,0,0,.35);
+  --bg:#f4f7fb;
+  --panel:#ffffff;
+  --panel2:#f8fafc;
+  --panel3:#eef3f8;
+  --text:#102033;
+  --muted:#64748b;
+  --line:#e2e8f0;
+  --brand:#0b6bff;
+  --brand2:#0757d9;
+  --danger:#dc3545;
+  --warning:#b7791f;
+  --success:#16865b;
+  --blue:#2563eb;
+  --radius:18px;
+  --shadow:0 16px 45px rgba(15,23,42,.08);
 }
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif}
@@ -299,6 +299,53 @@ th{color:#7f8c99;font-weight:600}
   .mobile-bottom button.active{color:var(--brand)}
   .mobile-bottom .mi{display:block;font-size:20px;margin-bottom:2px}
 }
+
+
+/* ==========================================================
+   PROFESSIONAL INTERNATIONAL UI
+   ========================================================== */
+body{background:var(--bg);color:var(--text)}
+.glass{background:rgba(255,255,255,.94);border-color:var(--line);box-shadow:var(--shadow);backdrop-filter:blur(14px)}
+.auth-screen{background:radial-gradient(circle at 12% 10%,rgba(11,107,255,.10),transparent 30%),radial-gradient(circle at 88% 85%,rgba(37,99,235,.08),transparent 28%),var(--bg)}
+.auth-brand{background:linear-gradient(145deg,#0b1f3a,#102f59);color:#fff}
+.auth-brand p{color:#cbd8e8}.auth-brand h1 span{color:#8fc2ff}
+.logo-mark{background:var(--brand);color:#fff;box-shadow:0 0 30px rgba(11,107,255,.24)}
+.auth-card{background:#fff}.auth-inner h2,.page-head h2,.hero h1,.modal-head h3{color:var(--text)}
+.tabs{background:#f1f5f9}.tabs button{color:#64748b}
+.tabs button.active{background:#fff;color:#102033;box-shadow:0 2px 10px rgba(15,23,42,.07)}
+.input{background:#fff;color:var(--text);border-color:#d9e1ea}
+.input:focus{border-color:rgba(11,107,255,.5);box-shadow:0 0 0 4px rgba(11,107,255,.08)}
+.primary{background:var(--brand);color:#fff;box-shadow:0 8px 18px rgba(11,107,255,.18)}
+.primary:hover{background:var(--brand2)}.secondary{background:#fff;color:var(--text);border-color:#d9e1ea}.text-btn{color:var(--brand)}
+.topbar{background:rgba(255,255,255,.94);border-color:var(--line)}
+.icon-btn,.user-chip{background:#fff;color:var(--text);border-color:#dfe6ee}
+.avatar{background:linear-gradient(135deg,#0b6bff,#4c9aff);color:#fff}
+.sidebar{background:#fff;border-color:var(--line)}.nav-btn{color:#64748b}
+.nav-btn:hover,.nav-btn.active{background:#eff6ff;color:#0b4fb7}.nav-btn.active{box-shadow:inset 3px 0 var(--brand)}
+.card{background:#fff;border-color:var(--line);box-shadow:0 8px 28px rgba(15,23,42,.035)}
+.hero{background:linear-gradient(135deg,#0b1f3a,#123d70);border-color:#164b86;box-shadow:0 18px 45px rgba(11,31,58,.14)}
+.hero h1,.hero p{color:#fff}.hero p{color:#d5e2f1}.hero h1 span{color:#8fc2ff}
+.choice,.item-toggle{background:#f8fafc;color:#526174;border-color:#dfe6ee}
+.choice.selected,.item-toggle.selected{border-color:var(--brand);background:#eff6ff;color:#0b4fb7}
+.status{background:#eaf8f2;color:#16865b}.status.pending{background:#fff7e6;color:#a46300}.status.danger{background:#fff0f1;color:#c5303b}.status.blue{background:#edf4ff;color:#2563eb}
+.list-item{background:#fff;border-color:#e2e8f0}.modal-backdrop{background:rgba(15,23,42,.55)}.modal{background:#fff;border-color:#e2e8f0}.close{background:#f1f5f9;color:#102033}
+.chat-list{background:#f8fafc}.conversation:hover,.conversation.active{background:#eef5ff}.chat-head{background:#fff}
+.bubble{background:#edf2f7;color:#102033}.bubble.mine{background:#0b6bff;color:#fff}.chat-input{background:#fff}.chat-send{background:#0b6bff;color:#fff}
+.mover-online{background:#effaf5;border-color:#ccefe0}.mobile-bottom{background:rgba(255,255,255,.97);border-color:#e2e8f0}
+.mobile-bottom button{color:#64748b}.mobile-bottom button.active{color:#0b6bff}
+.page-footer{margin:34px auto 0;max-width:1300px;padding:34px 0 20px;border-top:1px solid var(--line)}
+.footer-grid{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:28px}
+.footer-brand{font:800 20px Manrope;color:var(--text);display:flex;gap:10px;align-items:center}.footer-brand .logo-mark{width:34px;height:34px;border-radius:10px;font-size:15px}
+.footer-copy{color:var(--muted);line-height:1.7;font-size:13px;max-width:360px;margin-top:12px}.footer-title{font:800 13px Manrope;text-transform:uppercase;letter-spacing:.08em;color:var(--text);margin-bottom:12px}
+.footer-links{display:flex;flex-direction:column;gap:9px}.footer-links button,.footer-links a{border:0;background:none;padding:0;text-align:left;color:var(--muted);text-decoration:none;font-size:13px;cursor:pointer}.footer-links button:hover,.footer-links a:hover{color:var(--brand)}
+.footer-bottom{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-top:28px;padding-top:18px;border-top:1px solid var(--line);color:#8491a1;font-size:12px}
+.location-picker{display:grid;grid-template-columns:1fr 300px;gap:14px}.map-side{padding:16px;border:1px solid var(--line);border-radius:18px;background:#f8fafc}
+.map-side h3{margin:0 0 8px;font:800 17px Manrope}.map-side p{margin:0;color:var(--muted);font-size:12px;line-height:1.6}
+.map-mode{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.map-mode button{border:1px solid #dbe3ec;background:#fff;border-radius:12px;padding:10px;color:#526174;font-weight:700}
+.map-mode button.active{border-color:#0b6bff;background:#edf4ff;color:#0b4fb7}.location-coords{font-size:11px;color:#7b8794;margin-top:12px;line-height:1.5}
+.route-summary{margin-top:12px;padding:12px;border-radius:13px;background:#fff;border:1px solid #e2e8f0;color:#475569;font-size:12px}
+@media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr}.location-picker{grid-template-columns:1fr}}
+@media(max-width:760px){.footer-grid{grid-template-columns:1fr}.footer-bottom{flex-direction:column;align-items:flex-start}.page-footer{padding-bottom:82px}}
 </style>
 </head>
 
@@ -563,6 +610,24 @@ th{color:#7f8c99;font-weight:600}
                 <div class="input-wrap">
                   <span class="pin">🏁</span>
                   <input class="input" id="destinationAddress" placeholder="Where are you moving to?" required>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="field-title">Choose exact locations on the map</div>
+              <div class="location-picker">
+                <div><div id="requestMap" class="map"></div></div>
+                <div class="map-side">
+                  <h3>Route locations</h3>
+                  <p>Select a mode, then tap or drag the marker on the map. The address fields will update automatically.</p>
+                  <div class="map-mode">
+                    <button type="button" id="pickupMapMode" class="active">📍 Pickup</button>
+                    <button type="button" id="destinationMapMode">🏁 Destination</button>
+                  </div>
+                  <div class="location-coords" id="locationCoords">No map location selected yet.</div>
+                  <div class="route-summary" id="routeSummary">Choose both locations to preview the route.</div>
+                  <button type="button" class="secondary" style="margin-top:10px" id="useMyLocationBtn">◎ Use my location</button>
                 </div>
               </div>
             </div>
@@ -895,6 +960,42 @@ th{color:#7f8c99;font-weight:600}
     </main>
   </div>
 
+  <footer class="page-footer">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand"><span class="logo-mark">H</span> HAMISHA CHAPU</div>
+        <div class="footer-copy">A professional on-demand moving platform connecting customers with verified movers, vehicles and moving support.</div>
+      </div>
+      <div>
+        <div class="footer-title">Platform</div>
+        <div class="footer-links">
+          <button type="button" onclick="openPage(state.role==='customer'?'requestPage':state.role==='mover'?'moverHome':'adminHome')">Dashboard</button>
+          <button type="button" onclick="openPage(state.role==='customer'?'ordersPage':state.role==='mover'?'moverJobs':'adminRequests')">Moving requests</button>
+          <button type="button" onclick="openPage('chatPage')">Messages</button>
+        </div>
+      </div>
+      <div>
+        <div class="footer-title">Support</div>
+        <div class="footer-links">
+          <button type="button" onclick="toast('For support, please use the Messages section to contact the Hamisha Chapu team.','success','Support')">Help centre</button>
+          <button type="button" onclick="toast('Your privacy and account security are important to us.','success','Privacy')">Privacy</button>
+          <button type="button" onclick="toast('Use of Hamisha Chapu is subject to our service terms.','success','Terms')">Terms of service</button>
+        </div>
+      </div>
+      <div>
+        <div class="footer-title">Account</div>
+        <div class="footer-links">
+          <button type="button" onclick="openPage('profilePage')">Profile</button>
+          <button type="button" onclick="logout()">Log out</button>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Hamisha Chapu. All rights reserved.</span>
+      <span>Move smarter. Move with confidence.</span>
+    </div>
+  </footer>
+
   <nav class="mobile-bottom" id="mobileNav"></nav>
 </section>
 
@@ -962,12 +1063,20 @@ const state = {
   realtimeChannels: [],
   liveMap: null,
   moverMarker: null,
+  requestMap: null,
+  pickupMarker: null,
+  destinationMarker: null,
+  mapMode: "pickup",
+  pickupCoords: null,
+  destinationCoords: null,
+  routeLayer: null,
 
   notifications: [],
   unreadNotifications: 0,
 
   conversations: [],
-  messages: []
+  messages: [],
+  recoveryMode: false
 };
 
 /* ==========================================================
@@ -1086,6 +1195,11 @@ $("registerForm").addEventListener("submit",async e=>{
   const name=$("registerName").value.trim();
   const phone=$("registerPhone").value.trim();
   const email=$("registerEmail").value.trim().toLowerCase();
+
+  if(!phone){
+    toast("Phone number is required.","error","Missing phone");
+    return;
+  }
   const password=$("registerPassword").value;
   const role=$("registerRole").value;
 
@@ -1119,6 +1233,7 @@ $("registerForm").addEventListener("submit",async e=>{
   }
 
   if(data.session){
+    await syncProfileFromAuth(data.session.user);
     toast("Account created successfully.");
     await bootUser(data.session);
   }else{
@@ -1196,11 +1311,12 @@ $("forgotForm").addEventListener("submit",async e=>{
 $("resetForm").addEventListener("submit",async e=>{
   e.preventDefault();
 
+  const btn=e.submitter;
   const password=$("resetPassword").value;
   const confirm=$("resetConfirm").value;
 
   if(!validPassword(password)){
-    toast("Password haikidhi rules zote.","error","Invalid password");
+    toast("Password lazima iwe na 8+ characters, uppercase, lowercase, number na symbol.","error","Invalid password");
     return;
   }
 
@@ -1209,65 +1325,113 @@ $("resetForm").addEventListener("submit",async e=>{
     return;
   }
 
-  const {error}=await supabaseClient.auth.updateUser({
-    password
-  });
+  setLoading(btn,true);
+
+  const {data,error}=await supabaseClient.auth.updateUser({password});
+
+  setLoading(btn,false);
 
   if(error){
     toast(error.message,"error","Password update failed");
     return;
   }
 
-  const email=state.user?.email || $("loginEmail").value || "";
+  const email=data?.user?.email || state.user?.email || $("loginEmail").value || "";
+  state.recoveryMode=false;
+  state.session=null;
+  state.user=null;
+
+  // Remove the recovery marker before SIGNED_OUT fires so the auth listener
+  // cannot reopen the reset screen.
+  window.history.replaceState({},document.title,window.location.pathname);
 
   await supabaseClient.auth.signOut();
 
   $("loginEmail").value=email;
+  $("loginPassword").value="";
+  $("resetPassword").value="";
+  $("resetConfirm").value="";
 
+  $("appShell").style.display="none";
+  $("authScreen").style.display="grid";
   showAuthBox("loginBox");
 
-  window.history.replaceState({},document.title,window.location.pathname);
-
-  toast(
-    "Password imebadilishwa. Ingiza password mpya ku-login.",
-    "success",
-    "Password updated"
-  );
+  toast("Password imebadilishwa. Ingiza password mpya ku-login.","success","Password updated");
 });
 
 /* ==========================================================
    AUTH STATE
    ========================================================== */
 
+function isRecoveryUrl(){
+  const params=new URLSearchParams(window.location.search);
+  const hash=window.location.hash||"";
+  return params.get("mode")==="reset" ||
+    params.get("type")==="recovery" ||
+    /(?:^|[&#])type=recovery(?:&|$)/i.test(hash);
+}
+
+function enterRecoveryMode(){
+  state.recoveryMode=true;
+  $("appShell").style.display="none";
+  $("authScreen").style.display="grid";
+  showAuthBox("resetBox");
+}
+
 supabaseClient.auth.onAuthStateChange(async(event,session)=>{
   state.session=session;
   state.user=session?.user || null;
 
-  if(event==="PASSWORD_RECOVERY"){
-    showAuthBox("resetBox");
-    $("authScreen").style.display="grid";
-    $("appShell").style.display="none";
+  if(event==="PASSWORD_RECOVERY" || isRecoveryUrl()){
+    enterRecoveryMode();
     return;
   }
 
-  if(session && event!=="SIGNED_OUT"){
+  if(session && event!=="SIGNED_OUT" && !state.recoveryMode){
     await bootUser(session);
+    return;
   }
 
   if(!session){
     cleanupRealtime();
+    state.session=null;
+    state.user=null;
     $("appShell").style.display="none";
     $("authScreen").style.display="grid";
-    showAuthBox("loginBox");
+    if(!state.recoveryMode)showAuthBox("loginBox");
   }
 });
+
+/* ==========================================================
+   PROFILE SYNC
+   ========================================================== */
+
+async function syncProfileFromAuth(user){
+  if(!user?.id)return;
+
+  const meta=user.user_metadata||{};
+  const patch={};
+  if(meta.full_name)patch.full_name=String(meta.full_name).trim();
+  if(meta.phone)patch.phone=String(meta.phone).trim();
+  if(meta.role && ["customer","mover","admin"].includes(meta.role))patch.role=meta.role;
+  if(user.email)patch.email=user.email;
+
+  if(!Object.keys(patch).length)return;
+
+  const {error}=await supabaseClient
+    .from("profiles")
+    .update(patch)
+    .eq("id",user.id);
+
+  if(error)console.warn("Profile sync:",error.message);
+}
 
 /* ==========================================================
    BOOT USER
    ========================================================== */
 
 async function bootUser(session){
-  if(!session?.user)return;
+  if(!session?.user || state.recoveryMode || isRecoveryUrl())return;
 
   state.session=session;
   state.user=session.user;
@@ -1284,7 +1448,23 @@ async function bootUser(session){
   }
 
   state.profile=data;
-  state.role=data?.role || "customer";
+  state.role=data?.role || session.user.user_metadata?.role || "customer";
+
+  const meta=session.user.user_metadata||{};
+  const profilePatch={};
+  if(!data?.full_name && meta.full_name)profilePatch.full_name=meta.full_name;
+  if(!data?.phone && meta.phone)profilePatch.phone=meta.phone;
+  if(!data?.email && session.user.email)profilePatch.email=session.user.email;
+  if(!data?.role && meta.role)profilePatch.role=meta.role;
+  if(Object.keys(profilePatch).length){
+    const {data:updated}=await supabaseClient
+      .from("profiles")
+      .update(profilePatch)
+      .eq("id",session.user.id)
+      .select()
+      .maybeSingle();
+    if(updated){state.profile=updated;state.role=updated.role||state.role;}
+  }
 
   $("authScreen").style.display="none";
   $("appShell").style.display="block";
@@ -1423,6 +1603,7 @@ function openPage(id){
     b.classList.toggle("active",b.dataset.page===id);
   });
 
+  if(id==="requestPage")initRequestMap();
   if(id==="customerHome")loadCustomerDashboard();
   if(id==="ordersPage")loadCustomerOrders();
   if(id==="trackPage")loadActiveJob();
@@ -1478,6 +1659,142 @@ async function loadInitialData(){
   }
 
   loadProfile();
+}
+
+/* ==========================================================
+   REQUEST MAP — PICKUP / DESTINATION
+   ========================================================== */
+
+function initRequestMap(){
+  if(!window.L)return;
+
+  if(!state.requestMap){
+    state.requestMap=L.map("requestMap").setView([-6.7924,39.2083],12);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+      maxZoom:19,attribution:"© OpenStreetMap contributors"
+    }).addTo(state.requestMap);
+
+    state.requestMap.on("click",e=>setMapLocation(e.latlng.lat,e.latlng.lng,state.mapMode,true));
+
+    $("pickupMapMode").onclick=()=>{
+      state.mapMode="pickup";
+      $("pickupMapMode").classList.add("active");
+      $("destinationMapMode").classList.remove("active");
+    };
+    $("destinationMapMode").onclick=()=>{
+      state.mapMode="destination";
+      $("destinationMapMode").classList.add("active");
+      $("pickupMapMode").classList.remove("active");
+    };
+    $("useMyLocationBtn").onclick=useMyLocation;
+
+    ["pickupAddress","destinationAddress"].forEach(id=>{
+      $(id).addEventListener("change",()=>{
+        const value=$(id).value.trim();
+        if(value)geocodeAddress(value,id==="pickupAddress"?"pickup":"destination",false);
+      });
+    });
+  }
+
+  setTimeout(()=>state.requestMap?.invalidateSize(),100);
+}
+
+async function geocodeAddress(address,type,fit=true){
+  try{
+    const url="https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=tz&q="+encodeURIComponent(address);
+    const res=await fetch(url,{headers:{"Accept":"application/json"}});
+    if(!res.ok)throw new Error("Geocoding unavailable");
+    const data=await res.json();
+    if(!data?.length)return false;
+    await setMapLocation(Number(data[0].lat),Number(data[0].lon),type,fit);
+    return true;
+  }catch(err){console.warn(err);return false;}
+}
+
+async function reverseGeocode(lat,lng){
+  try{
+    const url=`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lng)}`;
+    const res=await fetch(url,{headers:{"Accept":"application/json"}});
+    if(!res.ok)throw new Error("Reverse geocoding unavailable");
+    const data=await res.json();
+    return data?.display_name||`${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+  }catch(err){return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;}
+}
+
+async function setMapLocation(lat,lng,type,fit=true){
+  if(!state.requestMap)return;
+
+  const point=[lat,lng];
+  const icon=L.divIcon({
+    className:"",
+    html:`<div style="width:30px;height:30px;border-radius:50%;background:${type==="pickup"?"#0b6bff":"#102033"};border:4px solid #fff;box-shadow:0 5px 16px rgba(15,23,42,.28);position:relative"><span style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:#fff;font-size:13px">${type==="pickup"?"P":"D"}</span></div>`,
+    iconSize:[30,30],iconAnchor:[15,15]
+  });
+
+  const existing=type==="pickup"?state.pickupMarker:state.destinationMarker;
+  if(existing){
+    existing.setLatLng(point);existing.setIcon(icon);
+  }else{
+    const marker=L.marker(point,{draggable:true,icon}).addTo(state.requestMap);
+    marker.on("dragend",async ()=>{
+      const p=marker.getLatLng();
+      await setMapLocation(p.lat,p.lng,type,true);
+    });
+    if(type==="pickup")state.pickupMarker=marker;else state.destinationMarker=marker;
+  }
+
+  if(type==="pickup")state.pickupCoords={lat,lng};else state.destinationCoords={lat,lng};
+
+  const address=await reverseGeocode(lat,lng);
+  if(type==="pickup")$("pickupAddress").value=address;else $("destinationAddress").value=address;
+
+  if(fit){
+    if(state.pickupCoords&&state.destinationCoords){
+      const bounds=L.latLngBounds([[state.pickupCoords.lat,state.pickupCoords.lng],[state.destinationCoords.lat,state.destinationCoords.lng]]);
+      state.requestMap.fitBounds(bounds.pad(.25),{maxZoom:15});
+    }else state.requestMap.setView(point,15);
+  }
+  updateRoutePreview();
+}
+
+async function updateRoutePreview(){
+  const coords=state.pickupCoords&&state.destinationCoords;
+  if(!coords){
+    $("routeSummary").textContent="Choose both locations to preview the route.";
+    $("locationCoords").textContent=state.pickupCoords
+      ?`Pickup: ${state.pickupCoords.lat.toFixed(6)}, ${state.pickupCoords.lng.toFixed(6)}`
+      :state.destinationCoords
+        ?`Destination: ${state.destinationCoords.lat.toFixed(6)}, ${state.destinationCoords.lng.toFixed(6)}`
+        :"No map location selected yet.";
+    return;
+  }
+
+  $("locationCoords").textContent=`Pickup: ${state.pickupCoords.lat.toFixed(6)}, ${state.pickupCoords.lng.toFixed(6)} · Destination: ${state.destinationCoords.lat.toFixed(6)}, ${state.destinationCoords.lng.toFixed(6)}`;
+
+  const a=state.pickupCoords,b=state.destinationCoords;
+  try{
+    const url=`https://router.project-osrm.org/route/v1/driving/${a.lng},${a.lat};${b.lng},${b.lat}?overview=full&geometries=geojson`;
+    const res=await fetch(url);const data=await res.json();
+    if(data.code!=="Ok"||!data.routes?.length)throw new Error("Route unavailable");
+    const route=data.routes[0];
+    $("routeSummary").textContent=`Estimated route: ${(route.distance/1000).toFixed(1)} km · about ${Math.round(route.duration/60)} min driving`;
+    if(state.routeLayer)state.requestMap.removeLayer(state.routeLayer);
+    state.routeLayer=L.geoJSON(route.geometry,{style:{color:"#0b6bff",weight:5,opacity:.82}}).addTo(state.requestMap);
+  }catch(err){
+    const approx=Math.sqrt(Math.pow((b.lat-a.lat)*111,2)+Math.pow((b.lng-a.lng)*111*Math.cos(a.lat*Math.PI/180),2)).toFixed(1);
+    $("routeSummary").textContent=`Approximate distance: ${approx} km. Live route preview unavailable right now.`;
+  }
+}
+
+function useMyLocation(){
+  if(!navigator.geolocation){
+    toast("Your browser does not support location services.","error","Location unavailable");return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    pos=>setMapLocation(pos.coords.latitude,pos.coords.longitude,state.mapMode,true),
+    ()=>toast("Could not access your location. Please choose a point on the map.","error","Location unavailable"),
+    {enableHighAccuracy:true,timeout:12000,maximumAge:60000}
+  );
 }
 
 /* ==========================================================
@@ -1578,6 +1895,12 @@ $("requestForm").addEventListener("submit",async e=>{
 
   $("requestForm").reset();
   state.selectedItems.clear();
+  state.pickupCoords=null; state.destinationCoords=null;
+  if(state.pickupMarker){state.requestMap?.removeLayer(state.pickupMarker);state.pickupMarker=null;}
+  if(state.destinationMarker){state.requestMap?.removeLayer(state.destinationMarker);state.destinationMarker=null;}
+  if(state.routeLayer){state.requestMap?.removeLayer(state.routeLayer);state.routeLayer=null;}
+  $("routeSummary").textContent="Choose both locations to preview the route.";
+  $("locationCoords").textContent="No map location selected yet.";
 
   document.querySelectorAll(".item-toggle").forEach(x=>x.classList.remove("selected"));
 
@@ -1882,42 +2205,45 @@ function estimatePrice(request){
 async function toggleMoverAvailability(){
   if(!state.user)return;
 
-  const {data}=await supabaseClient
+  const {data,error:readError}=await supabaseClient
     .from("mover_profiles")
-    .select("is_available")
+    .select("is_available,verification_status")
     .eq("id",state.user.id)
-    .single();
+    .maybeSingle();
 
-  if(!data)return;
+  if(readError){
+    toast(readError.message,"error","Availability error");return;
+  }
+  if(!data){
+    toast("Mover profile haijapatikana. Kamilisha mover registration kwanza.","error","Mover profile missing");return;
+  }
+  if(data.verification_status && data.verification_status!=="approved"){
+    toast("Account yako bado haija-approveiwa na admin.","error","Verification required");return;
+  }
 
-  const next=!data.is_available;
-
-  const {error}=await supabaseClient
+  const next=!Boolean(data.is_available);
+  const {data:updated,error}=await supabaseClient
     .from("mover_profiles")
-    .update({
-      is_available:next
-    })
-    .eq("id",state.user.id);
+    .update({is_available:next})
+    .eq("id",state.user.id)
+    .select("is_available")
+    .maybeSingle();
 
   if(error){
-    toast(error.message,"error");
-    return;
+    toast(error.message,"error","Could not change status");return;
+  }
+  if(!updated){
+    toast("Status haikubadilika. Angalia permissions za mover_profiles.","error","Update blocked");return;
   }
 
-  await supabaseClient
+  const profileUpdate=await supabaseClient
     .from("profiles")
-    .update({
-      is_online:next,
-      last_seen_at:new Date().toISOString()
-    })
+    .update({is_online:next,last_seen_at:new Date().toISOString()})
     .eq("id",state.user.id);
+  if(profileUpdate.error)console.warn("Profile online sync:",profileUpdate.error.message);
 
-  if(next){
-    toast("You're now visible to nearby customers.","success","You're online 🟢");
-  }else{
-    toast("You won't receive new requests.","success","You're offline");
-  }
-
+  $("availabilityBtn").textContent=next?"GO OFFLINE 🔴":"GO ONLINE 🟢";
+  toast(next?"You're now visible to nearby customers.":"You won't receive new requests.","success",next?"You're online 🟢":"You're offline");
   loadMoverDashboard();
 }
 
@@ -2996,18 +3322,8 @@ async function logout(){
    ========================================================== */
 
 (function detectRecovery(){
-  const params=new URLSearchParams(window.location.search);
-
-  if(params.get("mode")==="reset"){
-    showAuthBox("resetBox");
-    return;
-  }
-
-  if(
-    window.location.hash.includes("type=recovery") ||
-    params.get("type")==="recovery"
-  ){
-    showAuthBox("resetBox");
+  if(isRecoveryUrl()){
+    enterRecoveryMode();
   }
 })();
 
@@ -3016,14 +3332,13 @@ async function logout(){
    ========================================================== */
 
 (async function init(){
+  if(CONFIG.SUPABASE_URL==="YOUR_SUPABASE_URL" || CONFIG.SUPABASE_ANON_KEY==="YOUR_SUPABASE_ANON_KEY"){
+    console.warn("HAMISHA CHAPU: Add your Supabase URL and anon key in CONFIG.");
+  }
 
-  if(
-    CONFIG.SUPABASE_URL==="YOUR_SUPABASE_URL" ||
-    CONFIG.SUPABASE_ANON_KEY==="YOUR_SUPABASE_ANON_KEY"
-  ){
-    console.warn(
-      "HAMISHA CHAPU: Add your Supabase URL and anon key in CONFIG."
-    );
+  if(isRecoveryUrl()){
+    enterRecoveryMode();
+    return;
   }
 
   const {data}=await supabaseClient.auth.getSession();
@@ -3032,13 +3347,8 @@ async function logout(){
     await bootUser(data.session);
   }else{
     $("authScreen").style.display="grid";
-    showAuthBox(
-      window.location.search.includes("mode=reset")
-        ? "resetBox"
-        : "loginBox"
-    );
+    showAuthBox("loginBox");
   }
-
 })();
 
 /* ==========================================================
@@ -3067,6 +3377,8 @@ window.verifyMover=verifyMover;
 window.logout=logout;
 window.closeModal=closeModal;
 window.setScheduled=setScheduled;
+window.initRequestMap=initRequestMap;
+window.useMyLocation=useMyLocation;
 
 </script>
 </body>
