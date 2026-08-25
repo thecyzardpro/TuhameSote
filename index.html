@@ -355,6 +355,41 @@ th{color:#7f8c99;font-weight:600}
 
 
 
+
+.customer-move-lock{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(135deg,#f8fbff,#eef6ff)!important;
+  border-color:#b9d6ff!important;
+}
+.customer-move-lock:before{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:4px;
+  background:#0b6bff;
+}
+
+
+#customerRequestLockBanner{margin-bottom:12px}
+#customerRequestLockBanner .customer-move-lock{margin:0}
+
+/* ==========================================================
+   POLISH PASS — CONTRAST, LIVE STATUS, CHAT & AGREEMENTS
+   ========================================================== */
+.user-dropdown{background:#fff!important;border:1px solid #d8e1eb!important;box-shadow:0 24px 70px rgba(15,23,42,.20)!important}
+.user-dropdown-meta strong{color:#102033!important}.user-dropdown-meta span{color:#64748b!important}.user-dropdown-line{background:#e2e8f0!important}
+.user-menu-item{color:#102033!important}.user-menu-item:hover{background:#eef5ff!important;color:#0757d9!important}.user-menu-item.danger-item{color:#c5303b!important}.user-menu-item .menu-badge{background:#0b6bff!important;color:#fff!important}
+.toast{background:#fff!important;border:1px solid #d9e2ec!important;box-shadow:0 18px 50px rgba(15,23,42,.16)!important}.toast strong{color:#102033!important}.toast div{color:#475569!important}.toast-close{color:#64748b!important}.toast-close:hover{color:#102033!important}.toast.success{border-color:#9ddfc1!important}.toast.error{border-color:#f2a8af!important}.toast.warning{border-color:#f0cf8b!important}
+.notification-item{background:#fff!important;color:#102033!important}.notification-item:hover{background:#f8fbff!important;border-color:#c8d8ea!important}.notification-item.unread{background:#f2f7ff!important;border-color:#b9d6ff!important}.notification-title{color:#102033!important}.notification-body{color:#526174!important}.notification-time{color:#718096!important}
+.system-note{background:#eef6ff!important;color:#163b67!important;border-color:#bfdbfe!important}.system-note strong{color:#0b4fb7!important}
+.live-status-card{background:linear-gradient(135deg,#fff,#f7fbff);border:1px solid #d8e7f7;box-shadow:0 14px 35px rgba(11,107,255,.08)}
+.live-status-dot{width:10px;height:10px;border-radius:50%;background:#16a36d;box-shadow:0 0 0 7px rgba(22,163,109,.10);animation:livePulse 1.8s infinite}@keyframes livePulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.18);opacity:.72}}
+.price-agreement{padding:15px 16px;border-radius:15px;background:#f5f9ff;border:1px solid #c9dcf6}.price-agreement .price{font:800 24px Manrope;color:#0b5bd3}.price-agreement .label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#64748b}
+.selected-job-card{border:1px solid #b9d6ff!important;background:#f7fbff!important}.selected-job-card .status{background:#eaf3ff!important;color:#0b5bd3!important}
+.chat-person-name{font-size:10px;font-weight:800;color:#64748b;margin:0 0 4px}.bubble.mine .chat-person-name{color:#dceaff}.chat-head strong{color:#102033}#chatSubtitle{color:#64748b!important}
+.mover-verify-card .input{background:#fff!important;color:#102033!important}.mover-verify-card label{color:#526174!important}.mover-verify-card textarea::placeholder,.mover-verify-card input::placeholder{color:#94a3b8!important}.section-label{font-size:10px;font-weight:900;letter-spacing:.08em;color:#718096}
+
 /* ==========================================================
    MOVER VERIFICATION + ACCESSIBLE SYSTEM MESSAGES
    Additive overrides: existing UI remains intact.
@@ -672,7 +707,8 @@ body{background:var(--bg);color:var(--text)}
             </div>
             <button class="text-btn" onclick="openPage('ordersPage')">View all</button>
           </div>
-          <div id="customerRecentMoves" class="list"></div>
+          <div id="customerMoveLock" style="display:none"></div>
+  <div id="customerRecentMoves" class="list"></div>
         </div>
       </section>
 
@@ -1243,6 +1279,10 @@ const state = {
   realtimeChannels: [],
   liveMap: null,
   moverMarker: null,
+  liveJobId: null,
+  liveMoverId: null,
+  moverLocationWatchId: null,
+  lastVerificationStatus: null,
   requestMap: null,
   pickupMarker: null,
   destinationMarker: null,
@@ -1256,6 +1296,7 @@ const state = {
 
   conversations: [],
   messages: [],
+  chatPeople: {},
   recoveryMode: false
 };
 
@@ -1779,6 +1820,8 @@ function updateAccountMenu(){
   $("topAvatar").textContent=initials(name);
   $("menuName").textContent=name;
   $("menuEmail").textContent=email;
+  $("menuName").style.color="#102033";
+  $("menuEmail").style.color="#64748b";
   $("menuAvatar").textContent=initials(name);
 }
 
@@ -2038,6 +2081,8 @@ document.querySelectorAll("#itemsGrid .item-toggle").forEach(btn=>{
 $("requestForm").addEventListener("submit",async e=>{
   e.preventDefault();
 
+  if(!(await guardCustomerCanRequestMove())) return;
+
   if(!state.user){
     toast("Please login first.","error");
     return;
@@ -2125,33 +2170,123 @@ $("requestForm").addEventListener("submit",async e=>{
 
 async function loadCustomerDashboard(){
   if(!state.user)return;
+  const {data,error}=await supabaseClient.from("moving_requests").select("*").eq("customer_id",state.user.id).order("created_at",{ascending:false}).limit(5);
+  if(error){console.error(error);return;}
+  const enriched=await enrichCustomerRequests(data||[]);
+  const active=enriched.filter(x=>!["completed","cancelled","expired"].includes(x.status)).length;
+  const completed=enriched.filter(x=>x.status==="completed").length;
+  $("customerActiveCount").textContent=active; $("customerCompletedCount").textContent=completed;
+  const box=$("customerRecentMoves");
+  if(!enriched.length){box.innerHTML=`<div class="empty">No moves yet. Your first move starts here. ⚡</div>`;return;}
+  box.innerHTML=enriched.map(requestCard).join("");
+}
+
+
+async function getCustomerActiveMove(){
+  if(!state.user || state.role!=="customer") return null;
 
   const {data,error}=await supabaseClient
-    .from("moving_requests")
-    .select("*")
+    .from("jobs")
+    .select("id,request_id,mover_id,status,agreed_price,created_at")
     .eq("customer_id",state.user.id)
+    .not("status","in",'("completed","cancelled")')
     .order("created_at",{ascending:false})
-    .limit(5);
+    .limit(1)
+    .maybeSingle();
 
   if(error){
-    console.error(error);
-    return;
+    console.warn("Active move check:",error.message);
+    return null;
+  }
+  return data||null;
+}
+
+
+async function refreshCustomerRequestLock(){
+  if(state.role!=="customer") return;
+
+  const lock=await getCustomerActiveMove();
+  const form=document.getElementById("requestForm");
+  const page=document.getElementById("customerRequest");
+
+  if(!form)return;
+
+  const locked=!!lock;
+  form.classList.toggle("customer-request-locked",locked);
+
+  const submit=form.querySelector('button[type="submit"]');
+  if(submit){
+    submit.disabled=locked;
+    submit.textContent=locked ? "🔒 ACTIVE MOVE IN PROGRESS" : "REQUEST MOVER";
   }
 
-  const active=(data||[]).filter(x=>!["completed","cancelled","expired"].includes(x.status)).length;
-  const completed=(data||[]).filter(x=>x.status==="completed").length;
-
-  $("customerActiveCount").textContent=active;
-  $("customerCompletedCount").textContent=completed;
-
-  const box=$("customerRecentMoves");
-
-  if(!data?.length){
-    box.innerHTML=`<div class="empty">No moves yet. Your first move starts here. ⚡</div>`;
-    return;
+  let banner=document.getElementById("customerRequestLockBanner");
+  if(locked){
+    if(!banner){
+      banner=document.createElement("div");
+      banner.id="customerRequestLockBanner";
+      form.parentNode.insertBefore(banner,form);
+    }
+    banner.innerHTML=renderCustomerMoveLock(lock);
+  }else if(banner){
+    banner.remove();
   }
+}
 
-  box.innerHTML=data.map(requestCard).join("");
+function activeMoveBlockMessage(job){
+  const started=["coming","arrived","loading","moving","delivered"]
+    .includes(String(job?.status||"").toLowerCase());
+
+  return started
+    ? "Move yako tayari imeanza. Maliza hii move kwanza kabla ya kutafuta mover mwingine."
+    : "Umesha-kubaliwa na mover. Huwezi kuomba mover mwingine mpaka hii move iishe au icancelwe.";
+}
+
+async function guardCustomerCanRequestMove(){
+  const active=await getCustomerActiveMove();
+  if(active){
+    toast(activeMoveBlockMessage(active),"warning","Move tayari inaendelea");
+    await loadActiveJob();
+    return false;
+  }
+  return true;
+}
+
+function renderCustomerMoveLock(job){
+  if(!job)return "";
+  const started=["coming","arrived","loading","moving","delivered"]
+    .includes(String(job.status||"").toLowerCase());
+
+  return `
+    <div class="card live-status-card customer-move-lock">
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <div style="font-size:24px">🔒</div>
+        <div>
+          <strong style="color:#102033">You already have an active move</strong>
+          <div style="margin-top:5px;color:#526174;font-size:13px">
+            ${started
+              ?"Your move has started. You cannot request another mover until this move is finished."
+              :"A mover has accepted your request. Please wait for this move to finish before creating another request."}
+          </div>
+          <button class="secondary" style="width:auto;margin-top:10px" onclick="loadActiveJob()">
+            VIEW ACTIVE MOVE
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function enrichCustomerRequests(requests){
+  if(!requests?.length)return [];
+  const ids=requests.map(r=>r.id);
+  const {data:jobs}=await supabaseClient.from("jobs").select("id,request_id,mover_id,agreed_price,status,accepted_at").in("request_id",ids).order("created_at",{ascending:false});
+  const moverIds=[...new Set((jobs||[]).map(j=>j.mover_id).filter(Boolean))];
+  let profiles=[];
+  if(moverIds.length){const result=await supabaseClient.from("profiles").select("id,full_name,phone").in("id",moverIds);profiles=result.data||[];}
+  const profileMap=new Map(profiles.map(x=>[x.id,x])); const jobMap=new Map();
+  (jobs||[]).forEach(j=>{if(!jobMap.has(j.request_id))jobMap.set(j.request_id,j)});
+  return requests.map(r=>{const job=jobMap.get(r.id)||null;return {...r,selected_job:job,selected_mover:job?profileMap.get(job.mover_id)||null:null};});
 }
 
 /* ==========================================================
@@ -2160,45 +2295,22 @@ async function loadCustomerDashboard(){
 
 async function loadCustomerOrders(){
   if(!state.user)return;
-
-  const {data,error}=await supabaseClient
-    .from("moving_requests")
-    .select("*")
-    .eq("customer_id",state.user.id)
-    .order("created_at",{ascending:false});
-
-  if(error){
-    console.error(error);
-    return;
-  }
-
+  const {data,error}=await supabaseClient.from("moving_requests").select("*").eq("customer_id",state.user.id).order("created_at",{ascending:false});
+  if(error){console.error(error);return;}
   const box=$("customerOrders");
-
-  if(!data?.length){
-    box.innerHTML=`<div class="card empty">You haven't requested a move yet.</div>`;
-    return;
-  }
-
-  box.innerHTML=data.map(requestCard).join("");
+  if(!data?.length){box.innerHTML=`<div class="card empty">You haven't requested a move yet.</div>`;return;}
+  const enriched=await enrichCustomerRequests(data); box.innerHTML=enriched.map(requestCard).join("");
 }
 
 function requestCard(r){
-  const statusClass=
-    ["pending","matching"].includes(r.status)?"pending":
-    ["accepted","completed"].includes(r.status)?"":"danger";
-
-  return `
-    <div class="list-item">
-      <div class="list-main">
-        <strong>${escapeHTML(r.pickup_address)} → ${escapeHTML(r.destination_address)}</strong>
-        <span>${escapeHTML(r.move_type)} · ${dateTime(r.created_at)}</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:9px">
-        <span class="status ${statusClass}">${escapeHTML(r.status)}</span>
-        <button class="secondary" style="width:auto;padding:8px 11px" onclick="viewRequest('${r.id}')">VIEW</button>
-      </div>
-    </div>
-  `;
+  const selected=r.selected_job;
+  const statusClass=["pending","matching"].includes(r.status)?"pending":["accepted","completed"].includes(r.status)?"":"danger";
+  const selectedMover=r.selected_mover; const isSelected=!!selected&&["accepted","coming","arrived","loading","moving","delivered"].includes(selected.status||r.status);
+  return `<div class="list-item ${isSelected?"selected-job-card":""}">
+    <div class="list-main"><strong>${escapeHTML(r.pickup_address)} → ${escapeHTML(r.destination_address)}</strong><span>${escapeHTML(r.move_type)} · ${dateTime(r.created_at)}</span>
+      ${isSelected?`<span style="display:block;margin-top:7px;color:#0b5bd3;font-weight:800">✓ Mover selected: ${escapeHTML(selectedMover?.full_name||"Verified mover")}</span><span style="display:block;margin-top:3px;color:#526174">Agreed price: <b style="color:#0b5bd3">${money(selected?.agreed_price)}</b></span>`:""}
+    </div><div style="display:flex;align-items:center;gap:9px"><span class="status ${statusClass}">${escapeHTML(r.status)}</span><button class="secondary" style="width:auto;padding:8px 11px" onclick="viewRequest('${r.id}')">VIEW</button></div>
+  </div>`;
 }
 
 /* ==========================================================
@@ -2219,28 +2331,15 @@ async function viewRequest(id){
 
   $("jobModalTitle").textContent="Moving request";
 
+  const {data:job}=await supabaseClient.from("jobs").select("id,mover_id,agreed_price,status,accepted_at").eq("request_id",id).order("created_at",{ascending:false}).limit(1).maybeSingle();
+  let moverName="";
+  if(job?.mover_id){const {data:moverProfile}=await supabaseClient.from("profiles").select("full_name").eq("id",job.mover_id).maybeSingle();moverName=moverProfile?.full_name||"Verified mover";}
   $("jobModalBody").innerHTML=`
-    <div class="grid grid-2">
-      <div class="card">
-        <div class="field-title">Pickup</div>
-        <strong>${escapeHTML(data.pickup_address)}</strong>
-      </div>
-      <div class="card">
-        <div class="field-title">Destination</div>
-        <strong>${escapeHTML(data.destination_address)}</strong>
-      </div>
-    </div>
-
-    <div class="card" style="margin-top:12px">
-      <div style="display:flex;justify-content:space-between">
-        <span>Status</span>
-        <span class="status">${escapeHTML(data.status)}</span>
-      </div>
-      <div style="margin-top:12px;color:var(--muted);font-size:13px">
-        ${escapeHTML(data.customer_notes || "No additional notes.")}
-      </div>
-    </div>
-  `;
+    <div class="grid grid-2"><div class="card"><div class="field-title">Pickup</div><strong>${escapeHTML(data.pickup_address)}</strong></div><div class="card"><div class="field-title">Destination</div><strong>${escapeHTML(data.destination_address)}</strong></div></div>
+    <div class="card live-status-card" style="margin-top:12px"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><div class="field-title">Move status</div><strong>${escapeHTML(data.status)}</strong></div><span class="status ${job?"blue":""}">${job?"MOVER SELECTED":"WAITING FOR MOVER"}</span></div>
+      ${job?`<div style="margin-top:14px"><div class="field-title">Selected mover</div><strong>${escapeHTML(moverName)} ${moverVerifiedBadge(true)}</strong></div><div class="price-agreement" style="margin-top:14px"><div class="label">Agreed price</div><div class="price">${money(job.agreed_price)}</div><div style="font-size:11px;color:#526174;margin-top:4px">Price recorded when the mover accepted the job.</div></div>`:""}
+      <div style="margin-top:12px;color:#526174;font-size:13px">${escapeHTML(data.customer_notes || "No additional notes.")}</div>
+    </div>`;
 
   openModal("jobModal");
 }
@@ -2278,44 +2377,26 @@ async function loadMoverDashboard(){
   $("availabilityBtn").textContent=
     data.is_available ? "GO OFFLINE 🔴" : "GO ONLINE 🟢";
 
-  const {data:requests,error:reqError}=await supabaseClient
-    .from("moving_requests")
-    .select("*")
-    .in("status",["pending","matching"])
-    .order("created_at",{ascending:false})
-    .limit(20);
-
-  if(reqError){
-    console.error(reqError);
-    return;
-  }
-
-  renderMoverRequests(requests||[]);
+  const {data:requests,error:reqError}=await supabaseClient.from("moving_requests").select("*").in("status",["pending","matching"]).order("created_at",{ascending:false}).limit(20);
+  if(reqError){console.error(reqError);return;}
+  const {data:selectedJobs}=await supabaseClient.from("jobs").select(`id,request_id,agreed_price,status,accepted_at,moving_requests(pickup_address,destination_address,move_type)`).eq("mover_id",state.user.id).not("status","in",'("completed","cancelled")').order("created_at",{ascending:false}).limit(10);
+  renderMoverRequests(requests||[],selectedJobs||[]);
 }
 
-function renderMoverRequests(requests){
+function renderMoverRequests(requests,selectedJobs=[]){
   const box=$("moverRequests");
+  const pendingHtml=requests.length?requests.map(r=>`<div class="list-item"><div class="list-main"><strong>${escapeHTML(r.pickup_address)} → ${escapeHTML(r.destination_address)}</strong><span>${escapeHTML(r.move_type)} · ${escapeHTML(r.recommended_vehicle_type||"Any vehicle")} · ${r.movers_required} movers</span></div><button class="primary" style="width:auto;padding:9px 13px" onclick="openAcceptRequestModal('${r.id}')">REVIEW & ACCEPT</button></div>`).join(""): `<div class="empty">No pending requests right now. Stay online and we'll notify you.</div>`;
+  const selectedHtml=selectedJobs.length?selectedJobs.map(job=>`<div class="list-item selected-job-card"><div class="list-main"><strong>${escapeHTML(job.moving_requests?.pickup_address||"")} → ${escapeHTML(job.moving_requests?.destination_address||"")}</strong><span>${escapeHTML(job.moving_requests?.move_type||"")} · ${escapeHTML(job.status)}</span><span style="display:block;margin-top:5px;color:#0b5bd3;font-weight:800">✓ SELECTED · Agreed price: ${money(job.agreed_price)}</span></div><div style="display:flex;gap:8px;align-items:center"><span class="status blue">${escapeHTML(job.status)}</span><button class="secondary" style="width:auto;padding:8px" onclick="openPage('moverJobs')">OPEN JOB</button></div></div>`).join(""): `<div class="empty">No selected jobs yet.</div>`;
+  box.innerHTML=`<div><div class="section-label" style="margin:4px 0 8px">PENDING REQUESTS</div>${pendingHtml}</div><div style="margin-top:18px"><div class="section-label" style="margin:4px 0 8px;color:#0b5bd3">SELECTED JOBS</div>${selectedHtml}</div>`;
+}
 
-  if(!requests.length){
-    box.innerHTML=`<div class="empty">No nearby requests right now. Stay online and we'll notify you.</div>`;
-    return;
-  }
-
-  box.innerHTML=requests.map(r=>`
-    <div class="list-item">
-      <div class="list-main">
-        <strong>${escapeHTML(r.pickup_address)} → ${escapeHTML(r.destination_address)}</strong>
-        <span>
-          ${escapeHTML(r.move_type)} ·
-          ${escapeHTML(r.recommended_vehicle_type || "Any vehicle")} ·
-          ${r.movers_required} movers
-        </span>
-      </div>
-      <button class="primary" style="width:auto;padding:9px 13px" onclick="acceptRequest('${r.id}')">
-        ACCEPT
-      </button>
-    </div>
-  `).join("");
+async function openAcceptRequestModal(requestId){
+  const {data:request,error}=await supabaseClient.from("moving_requests").select("*").eq("id",requestId).single();
+  if(error){toast(error.message,"error","Could not load request");return;}
+  const price=Number(request.estimated_max_price||0)||estimatePrice(request); const platformFee=Math.round(price*.10); const earning=price-platformFee;
+  $("jobModalTitle").textContent="Confirm price agreement";
+  $("jobModalBody").innerHTML=`<div class="system-note"><strong>Before accepting:</strong> review the price below. This amount will be saved as the agreed price for the job.</div><div class="price-agreement" style="margin-top:14px"><div class="label">Agreed customer price</div><div class="price">${money(price)}</div><div style="margin-top:8px;font-size:12px;color:#526174">Mover earnings after 10% platform fee: <b>${money(earning)}</b></div></div><div class="admin-review-grid" style="margin-top:14px"><div class="admin-review-field"><span>Pickup</span><strong>${escapeHTML(request.pickup_address)}</strong></div><div class="admin-review-field"><span>Destination</span><strong>${escapeHTML(request.destination_address)}</strong></div><div class="admin-review-field"><span>Vehicle</span><strong>${escapeHTML(request.recommended_vehicle_type||"Any vehicle")}</strong></div><div class="admin-review-field"><span>Movers needed</span><strong>${escapeHTML(String(request.movers_required||0))}</strong></div></div><div class="admin-review-actions"><button class="primary" type="button" style="width:auto" onclick="acceptRequest('${requestId}')">✓ ACCEPT AT ${money(price)}</button><button class="secondary" type="button" style="width:auto" onclick="closeModal('jobModal')">CANCEL</button></div>`;
+  openModal("jobModal");
 }
 
 async function acceptRequest(requestId){
@@ -2331,6 +2412,7 @@ async function acceptRequest(requestId){
     toast(reqError.message,"error");
     return;
   }
+  if(!["pending","matching"].includes(String(request.status))){closeModal("jobModal");toast("This request has already been selected by another mover.","warning","Request no longer available");loadMoverDashboard();return;}
 
   const {data:vehicle}=await supabaseClient
     .from("vehicles")
@@ -2393,7 +2475,8 @@ async function acceptRequest(requestId){
       mover_id:state.user.id
     });
 
-  toast("Job accepted successfully!","success","You're booked 🚚");
+  closeModal("jobModal");
+  toast(`You selected this job at ${money(price)}. The customer can now see you and the agreed price.`,"success","Job selected 🚚");
 
   openPage("moverJobs");
 }
@@ -2471,8 +2554,8 @@ async function toggleMoverAvailability(){
   }
 
   $("availabilityBtn").textContent=next?"GO OFFLINE 🔴":"GO ONLINE 🟢";
-  toast(next?"Customers can now see you as available.":"You will no longer receive new moving requests.","success",next?"You're online":"You're offline");
-  loadMoverDashboard();
+  if(next){toast("Customers can now see you as available.","success","You're online");startMoverLocationTracking();}else{stopMoverLocationTracking();toast("You will no longer receive new moving requests.","success","You're offline");}
+  await loadMoverDashboard();
 }
 
 function showMoverReadinessModal(info={}){
@@ -2803,6 +2886,8 @@ async function loadMessages(conversationId){
   }
 
   state.messages=data||[];
+  const senderIds=[...new Set(state.messages.map(m=>m.sender_id).filter(Boolean))]; state.chatPeople={};
+  if(senderIds.length){const {data:people}=await supabaseClient.from("profiles").select("id,full_name").in("id",senderIds);(people||[]).forEach(person=>state.chatPeople[person.id]=person.full_name||"User");}
 
   const box=$("messages");
 
@@ -2817,9 +2902,11 @@ async function loadMessages(conversationId){
 
 function messageHTML(m){
   const mine=m.sender_id===state.user.id;
+  const senderName=mine?"You":(state.chatPeople?.[m.sender_id]||"User");
 
   return `
     <div class="bubble ${mine?"mine":""}">
+      <div class="chat-person-name">${escapeHTML(senderName)}</div>
       ${m.message_type==="image" && m.attachment_url
         ?`<img src="${escapeHTML(m.attachment_url)}" style="max-width:240px;border-radius:12px">`
         :escapeHTML(m.content||"")}
@@ -3024,74 +3111,34 @@ async function loadUnreadMessages(){
 
 async function loadActiveJob(){
   if(!state.user)return;
-
-  const filter=
-    state.role==="mover"
-      ?{mover_id:state.user.id}
-      :{customer_id:state.user.id};
-
-  let query=supabaseClient
-    .from("jobs")
-    .select(`
-      *,
-      moving_requests(
-        pickup_address,
-        destination_address
-      )
-    `)
-    .not("status","in",'("completed","cancelled")')
-    .order("created_at",{ascending:false})
-    .limit(1);
-
-  Object.entries(filter).forEach(([k,v])=>{
-    query=query.eq(k,v);
-  });
-
-  const {data,error}=await query;
-
-  if(error){
-    console.error(error);
-    return;
-  }
-
+  const filter=state.role==="mover"?{mover_id:state.user.id}:{customer_id:state.user.id};
+  let query=supabaseClient.from("jobs").select(`*,moving_requests(pickup_address,destination_address)`).not("status","in",'("completed","cancelled")').order("created_at",{ascending:false}).limit(1);
+  Object.entries(filter).forEach(([k,v])=>{query=query.eq(k,v)});
+  const {data,error}=await query; if(error){console.error(error);return;}
   const job=data?.[0];
+  if(!job){$("activeJobContainer").innerHTML=`<div class="card empty">No active move right now.</div>`;stopMoverLocationTracking();return;}
+  state.liveJobId=job.id; state.liveMoverId=job.mover_id;
+  let moverName=""; if(job.mover_id){const {data:person}=await supabaseClient.from("profiles").select("full_name").eq("id",job.mover_id).maybeSingle();moverName=person?.full_name||"Mover";}
+  $("activeJobContainer").innerHTML=`<div class="card live-status-card"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><div style="font-size:12px;color:#64748b">Current status</div><div style="font:800 26px Manrope;margin-top:4px;color:#102033">${escapeHTML(job.status)}</div></div><div style="display:flex;align-items:center;gap:9px;color:#16865b;font-weight:800;font-size:11px"><span class="live-status-dot"></span> LIVE</div></div>${job.mover_id?`<div style="margin-top:15px;display:flex;align-items:center;gap:8px"><span style="font-size:12px;color:#64748b">Mover:</span><strong>${escapeHTML(moverName)}</strong>${moverVerifiedBadge(true)}</div><div class="price-agreement" style="margin-top:12px"><div class="label">Agreed price</div><div class="price">${money(job.agreed_price)}</div></div>`:""}<div class="grid grid-2" style="margin-top:18px"><div><div class="field-title">Pickup</div><strong>${escapeHTML(job.moving_requests?.pickup_address||"")}</strong></div><div><div class="field-title">Destination</div><strong>${escapeHTML(job.moving_requests?.destination_address||"")}</strong></div></div></div>`;
+  if(!state.liveMap){state.liveMap=L.map("liveMap").setView([-6.7924,39.2083],12);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(state.liveMap);}
+  setTimeout(()=>state.liveMap?.invalidateSize(),100);
+  if(state.role==="mover")startMoverLocationTracking();else subscribeToMoverLocation(job.mover_id);
+}
 
-  if(!job){
-    $("activeJobContainer").innerHTML=`<div class="card empty">No active move right now.</div>`;
-    return;
-  }
-
-  $("activeJobContainer").innerHTML=`
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
-        <div>
-          <div style="font-size:12px;color:var(--muted)">Current status</div>
-          <div style="font:800 26px Manrope;margin-top:4px">${escapeHTML(job.status)}</div>
-        </div>
-        <span class="status"><span class="online-dot"></span> LIVE</span>
-      </div>
-
-      <div class="grid grid-2" style="margin-top:18px">
-        <div>
-          <div class="field-title">Pickup</div>
-          <strong>${escapeHTML(job.moving_requests?.pickup_address||"")}</strong>
-        </div>
-        <div>
-          <div class="field-title">Destination</div>
-          <strong>${escapeHTML(job.moving_requests?.destination_address||"")}</strong>
-        </div>
-      </div>
-    </div>
-  `;
-
-  if(!state.liveMap){
-    state.liveMap=L.map("liveMap").setView([-6.7924,39.2083],12);
-
-    L.tileLayer(
-      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      {maxZoom:19,attribution:"© OpenStreetMap"}
-    ).addTo(state.liveMap);
-  }
+function startMoverLocationTracking(){
+  if(state.role!=="mover"||!state.user||!navigator.geolocation||state.moverLocationWatchId!==null)return;
+  state.moverLocationWatchId=navigator.geolocation.watchPosition(async pos=>{const payload={mover_id:state.user.id,latitude:pos.coords.latitude,longitude:pos.coords.longitude,accuracy:pos.coords.accuracy||null,updated_at:new Date().toISOString()};const {error}=await supabaseClient.from("mover_locations").upsert(payload,{onConflict:"mover_id"});if(error)console.warn("Live location:",error.message);updateLiveMoverMarker(payload.latitude,payload.longitude,true)},err=>console.warn("Location permission:",err.message),{enableHighAccuracy:true,maximumAge:5000,timeout:10000});
+}
+function stopMoverLocationTracking(){if(state.moverLocationWatchId!==null&&navigator.geolocation){navigator.geolocation.clearWatch(state.moverLocationWatchId);state.moverLocationWatchId=null;}}
+async function subscribeToMoverLocation(moverId){
+  if(!moverId)return; const channelName=`mover-location-${state.user.id}`; if(state.realtimeChannels.some(ch=>ch.__locationChannel===channelName))return;
+  const {data}=await supabaseClient.from("mover_locations").select("latitude,longitude,updated_at").eq("mover_id",moverId).maybeSingle(); if(data)updateLiveMoverMarker(data.latitude,data.longitude,false);
+  const channel=supabaseClient.channel(channelName).on("postgres_changes",{event:"*",schema:"public",table:"mover_locations",filter:`mover_id=eq.${moverId}`},payload=>{const row=payload.new||payload.old;if(row?.latitude!=null&&row?.longitude!=null)updateLiveMoverMarker(row.latitude,row.longitude,false)}).subscribe(); channel.__locationChannel=channelName; state.realtimeChannels.push(channel);
+}
+function updateLiveMoverMarker(lat,lng,center=false){
+  if(!state.liveMap||!window.L)return; const point=[Number(lat),Number(lng)]; if(!Number.isFinite(point[0])||!Number.isFinite(point[1]))return;
+  if(!state.moverMarker){const icon=L.divIcon({className:"",html:`<div style="width:34px;height:34px;border-radius:50%;background:#0b6bff;border:4px solid #fff;box-shadow:0 5px 18px rgba(11,107,255,.35);display:grid;place-items:center;color:#fff;font-weight:900">🚚</div>`,iconSize:[34,34],iconAnchor:[17,17]});state.moverMarker=L.marker(point,{icon,zIndexOffset:1000}).addTo(state.liveMap);}else{state.moverMarker.setLatLng(point)}
+  if(center)state.liveMap.setView(point,14,{animate:true,duration:.6});
 }
 
 /* ==========================================================
@@ -3552,6 +3599,11 @@ function setupRealtime(){
 
   state.realtimeChannels.push(profileChannel);
 
+  if(state.role==="mover"){
+    const moverProfileChannel=supabaseClient.channel(`mover-profile-live-${state.user.id}`).on("postgres_changes",{event:"UPDATE",schema:"public",table:"mover_profiles",filter:`id=eq.${state.user.id}`},payload=>{const next=String(payload.new?.verification_status||"pending").toLowerCase();const previous=String(state.lastVerificationStatus||payload.old?.verification_status||"pending").toLowerCase();state.lastVerificationStatus=next;loadMoverDashboard();loadMoverVerificationProfile();if(next==="approved"&&previous!=="approved"){toast("Hongera! Admin amekuthibitisha. Sasa wewe ni Verified Mover na unaweza kwenda online.","success","🎉 Ume-Verified!");openPage("moverHome");}}).subscribe();
+    state.realtimeChannels.push(moverProfileChannel);
+  }
+
   /* --------------------------------------------------------
      NOTIFICATIONS
      -------------------------------------------------------- */
@@ -3638,6 +3690,8 @@ function setupRealtime(){
       .subscribe();
 
     state.realtimeChannels.push(customerJobs);
+    const customerLocationRefresh=supabaseClient.channel(`customer-location-refresh-${state.user.id}`).on("postgres_changes",{event:"*",schema:"public",table:"jobs",filter:`customer_id=eq.${state.user.id}`},()=>loadActiveJob()).subscribe();
+    state.realtimeChannels.push(customerLocationRefresh);
   }
 
   /* --------------------------------------------------------
@@ -3792,6 +3846,7 @@ document.querySelectorAll(".modal-backdrop").forEach(backdrop=>{
    ========================================================== */
 
 async function logout(){
+  stopMoverLocationTracking();
   cleanupRealtime();
 
   const {error}=await supabaseClient.auth.signOut();
@@ -3857,6 +3912,7 @@ bindAccountMenu();
    ========================================================== */
 
 window.addEventListener("beforeunload",()=>{
+  stopMoverLocationTracking();
   cleanupRealtime();
 });
 
