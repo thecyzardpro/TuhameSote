@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0b0f14">
-<title> 🚛 TuhameSote™</title>
+<title>Hamisha Chapu — Moving Made Easy</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -430,6 +430,60 @@ th{color:#7f8c99;font-weight:600}
   border-radius:12px!important;
 }
 
+
+/* ==========================================================
+   ADMIN COMMAND CENTER — additive professional UI
+   ========================================================== */
+.admin-command-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:14px 0}
+.admin-stat{background:#fff;border:1px solid #dbe5ef;border-radius:18px;padding:17px;box-shadow:0 10px 26px rgba(15,23,42,.06)}
+.admin-stat .k{font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#718096}
+.admin-stat .v{font:900 28px Manrope;color:#102033;margin-top:7px}
+.admin-stat .s{font-size:11px;color:#64748b;margin-top:4px}
+.admin-section{background:#fff;border:1px solid #dbe5ef;border-radius:18px;padding:16px;margin-top:16px;box-shadow:0 10px 28px rgba(15,23,42,.05)}
+.admin-section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.admin-section-head h3{margin:0;color:#102033;font:800 16px Manrope}
+.admin-tabs{display:flex;gap:7px;flex-wrap:wrap}
+.admin-tab{border:1px solid #d6e0ea;background:#fff;color:#526174;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:800;cursor:pointer}
+.admin-tab.active,.admin-tab:hover{background:#0b6bff;color:#fff;border-color:#0b6bff}
+.admin-table-wrap{overflow:auto;border:1px solid #e2e8f0;border-radius:14px}
+.admin-table{width:100%;border-collapse:collapse;min-width:760px}
+.admin-table th{background:#f7faff;color:#526174;text-align:left;padding:11px 12px;font-size:10px;text-transform:uppercase;letter-spacing:.06em}
+.admin-table td{padding:12px;border-top:1px solid #edf1f5;color:#102033;font-size:12px;vertical-align:middle}
+.admin-person{display:flex;align-items:center;gap:9px}
+.admin-avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#eaf3ff;color:#0b5bd3;font-size:11px;font-weight:900}
+.admin-person strong{display:block;font-size:12px}.admin-person span{display:block;color:#718096;font-size:10px;margin-top:2px}
+.admin-status-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border-radius:999px;background:#f1f5f9;color:#526174;font-size:10px;font-weight:900;text-transform:uppercase}
+.admin-status-pill.online,.admin-status-pill.verified,.admin-status-pill.completed{background:#eafaf1;color:#14845a}
+.admin-status-pill.pending,.admin-status-pill.matching{background:#fff7df;color:#9a6a00}
+.admin-status-pill.rejected,.admin-status-pill.cancelled{background:#fff0f1;color:#bf3443}
+.admin-status-pill.live,.admin-status-pill.accepted,.admin-status-pill.coming,.admin-status-pill.arrived,.admin-status-pill.loading,.admin-status-pill.moving,.admin-status-pill.delivered{background:#eaf3ff;color:#0b5bd3}
+.admin-kanban{display:grid;grid-template-columns:repeat(3,minmax(220px,1fr));gap:12px;overflow:auto;padding-bottom:4px}
+.admin-lane{min-width:220px;background:#f8fafc;border:1px solid #e1e8ef;border-radius:15px;padding:10px}
+.admin-lane-title{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:900;color:#334155;margin-bottom:9px}
+.admin-count{background:#e8eef5;border-radius:999px;padding:3px 7px;font-size:10px}
+.admin-job-mini{background:#fff;border:1px solid #e0e7ef;border-radius:12px;padding:10px;margin-top:8px}
+.admin-job-mini strong{display:block;font-size:11px;color:#102033;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.admin-job-mini span{display:block;font-size:10px;color:#718096;margin-top:4px}
+.admin-live{display:inline-flex;align-items:center;gap:6px;color:#16865b;font-size:10px;font-weight:900}
+.admin-live-dot{width:7px;height:7px;border-radius:50%;background:#16a36d;box-shadow:0 0 0 5px rgba(22,163,109,.10)}
+.admin-chat-layout{display:grid;grid-template-columns:minmax(250px,.8fr) minmax(0,1.5fr);min-height:500px;border:1px solid #dce5ee;border-radius:17px;overflow:hidden}
+.admin-chat-list{border-right:1px solid #dce5ee;background:#fbfdff;overflow:auto}
+.admin-chat-row{padding:12px;border-bottom:1px solid #edf1f5;cursor:pointer}
+.admin-chat-row:hover,.admin-chat-row.active{background:#eef6ff}
+.admin-chat-row-top{display:flex;justify-content:space-between;gap:10px}.admin-chat-row strong{font-size:12px;color:#102033}.admin-chat-row time{font-size:9px;color:#94a3b8}
+.admin-chat-pair{font-size:10px;color:#0b5bd3;font-weight:800;margin-top:3px}
+.admin-chat-preview{font-size:11px;color:#64748b;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.admin-chat-thread{display:flex;flex-direction:column;background:#fff;min-width:0}
+.admin-chat-thread-head{padding:14px 16px;border-bottom:1px solid #e8eef4}.admin-chat-thread-head strong{color:#102033}.admin-chat-thread-head span{display:block;font-size:10px;color:#64748b;margin-top:3px}
+.admin-chat-messages{flex:1;padding:16px;overflow:auto;background:linear-gradient(180deg,#fbfdff,#fff)}
+.admin-chat-msg{max-width:76%;padding:10px 12px;border-radius:14px;border:1px solid #e2e8f0;margin:7px 0;background:#fff;color:#102033;font-size:12px}
+.admin-chat-msg.mine{margin-left:auto;background:#eaf3ff;border-color:#cfe0fb}
+.admin-chat-msg .who{font-size:9px;font-weight:900;color:#0b5bd3;margin-bottom:4px}.admin-chat-msg .when{font-size:9px;color:#94a3b8;margin-top:5px}
+.admin-empty-chat{display:grid;place-items:center;flex:1;color:#718096;font-size:12px;padding:30px;text-align:center}
+.admin-detail-modal .admin-review-grid{margin-top:0}
+@media(max-width:1050px){.admin-command-grid{grid-template-columns:repeat(2,1fr)}.admin-kanban{grid-template-columns:repeat(3,220px)}}
+@media(max-width:760px){.admin-command-grid{grid-template-columns:1fr}.admin-chat-layout{grid-template-columns:1fr}.admin-chat-list{max-height:240px;border-right:0;border-bottom:1px solid #dce5ee}}
+
 /* ==========================================================
    POLISH PASS — CONTRAST, LIVE STATUS, CHAT & AGREEMENTS
    ========================================================== */
@@ -525,6 +579,18 @@ body{background:var(--bg);color:var(--text)}
 .route-summary{margin-top:12px;padding:12px;border-radius:13px;background:#fff;border:1px solid #e2e8f0;color:#475569;font-size:12px}
 @media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr}.location-picker{grid-template-columns:1fr}}
 @media(max-width:760px){.footer-grid{grid-template-columns:1fr}.footer-bottom{flex-direction:column;align-items:flex-start}.page-footer{padding-bottom:82px}}
+
+/* ADMIN + MOBILE POLISH */
+.admin-toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.admin-filter-tabs{display:flex;gap:7px;flex-wrap:wrap}.admin-filter{border:1px solid var(--line);background:#fff;color:#526174;border-radius:999px;padding:8px 12px;font-size:11px;font-weight:800}.admin-filter.active,.admin-filter:hover{background:#0b6bff;color:#fff;border-color:#0b6bff}.admin-search{width:min(330px,100%)}
+.admin-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 10px 28px rgba(15,23,42,.05)}
+.admin-person{display:flex;align-items:center;gap:10px}.admin-avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#edf4ff;color:#0b5bd3;font-weight:900;font-size:11px;flex:none}.admin-person strong{display:block;font-size:12px}.admin-person span{display:block;color:#718096;font-size:10px;margin-top:3px}.admin-status-pill{display:inline-flex;padding:5px 8px;border-radius:999px;background:#f1f5f9;color:#526174;font-size:10px;font-weight:900;text-transform:uppercase}.admin-status-pill.pending{background:#fff7e6;color:#9a6400}.admin-status-pill.verified,.admin-status-pill.approved,.admin-status-pill.completed{background:#eaf8f2;color:#16865b}.admin-status-pill.online{background:#eaf8f2;color:#16865b}.admin-status-pill.rejected,.admin-status-pill.cancelled{background:#fff0f1;color:#c5303b}.admin-status-pill.blue,.admin-status-pill.accepted,.admin-status-pill.coming,.admin-status-pill.arrived,.admin-status-pill.loading,.admin-status-pill.moving,.admin-status-pill.delivered{background:#edf4ff;color:#2563eb}
+.admin-mover-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.admin-mover-card{display:flex;flex-direction:column;gap:12px}.admin-mover-top{display:flex;justify-content:space-between;gap:10px}.admin-mover-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px}.admin-meta-box{background:#f8fafc;border:1px solid #e8eef4;border-radius:12px;padding:9px}.admin-meta-box span{display:block;color:#8491a1;font-size:9px;text-transform:uppercase;font-weight:800}.admin-meta-box strong{display:block;color:#102033;font-size:11px;margin-top:3px}
+.admin-job-columns{display:flex;gap:12px;overflow:auto;padding-bottom:6px}.admin-job-lane{min-width:245px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:10px}.admin-job-lane h4{font-size:10px;text-transform:uppercase;color:#526174;margin:2px 2px 10px;display:flex;justify-content:space-between}.admin-job-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:11px;margin-top:8px}.admin-job-card strong{font-size:11px;color:#102033;display:block;line-height:1.45}.admin-job-card span{display:block;color:#718096;font-size:10px;margin-top:4px}.admin-chat-layout{display:grid;grid-template-columns:310px minmax(0,1fr);height:min(680px,calc(100vh - 210px));min-height:430px;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#fff}.admin-chat-list{background:#f8fafc;border-right:1px solid var(--line);overflow:auto}.admin-chat-row{padding:12px;border-bottom:1px solid #e9eef3;cursor:pointer}.admin-chat-row:hover,.admin-chat-row.active{background:#eef5ff}.admin-chat-row strong{display:block;color:#102033;font-size:12px}.admin-chat-row span{display:block;color:#718096;font-size:10px;margin-top:4px}.admin-chat-row .pair{color:#0b5bd3;font-weight:800}.admin-chat-thread{display:flex;flex-direction:column;min-width:0;background:#fff}.admin-chat-head{padding:14px 16px;border-bottom:1px solid var(--line)}.admin-chat-head strong{font-size:14px}.admin-chat-head span{display:block;font-size:10px;color:#718096;margin-top:4px}.admin-chat-messages{flex:1;overflow:auto;padding:16px;background:linear-gradient(#fbfdff,#fff)}.admin-chat-msg{max-width:76%;padding:9px 11px;border:1px solid #e2e8f0;background:#fff;border-radius:13px;margin:7px 0;color:#102033;font-size:12px}.admin-chat-msg.mover{margin-left:auto;background:#edf4ff;border-color:#cfe0fb}.admin-chat-msg .who{font-size:9px;font-weight:900;color:#0b5bd3;margin-bottom:4px}.admin-chat-msg .time{font-size:9px;color:#94a3b8;margin-top:5px}.admin-empty-chat{flex:1;display:grid;place-items:center;color:#718096;font-size:12px;text-align:center;padding:30px}
+@media(max-width:900px){.admin-mover-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-chat-layout{grid-template-columns:260px minmax(0,1fr)}}
+@media(max-width:760px){
+  .auth-screen{padding:10px;display:block;overflow-y:auto}.auth-box{display:block;width:100%;max-width:520px;margin:0 auto;border-radius:20px}.auth-brand{min-height:auto;padding:24px 18px 20px}.auth-brand h1{font-size:39px;letter-spacing:-1.8px;margin-top:28px}.auth-brand p{font-size:13px;line-height:1.55}.feature-pills{gap:6px}.feature-pills span{font-size:10px;padding:7px 9px}.auth-card{padding:22px 16px 28px;background:#0a1017}.auth-inner{max-width:none}.auth-inner h2{font-size:26px}.auth-inner .sub{font-size:12px;margin-bottom:18px}.form-group label{font-size:13px;color:#d6dee8}.input{font-size:16px;min-height:48px;padding:12px 13px;background:#111923;color:#fff;border-color:#4b5a6b}.primary,.secondary{min-height:48px;font-size:13px}.text-btn{font-size:12px}.tabs button{font-size:12px}.admin-toolbar{align-items:stretch}.admin-search{width:100%}.admin-mover-grid{grid-template-columns:1fr}.admin-chat-layout{display:flex;flex-direction:column;height:calc(100vh - 180px);min-height:500px}.admin-chat-list{height:190px;min-height:190px;border-right:0;border-bottom:1px solid var(--line)}.admin-chat-thread{min-height:300px}.admin-chat-msg{max-width:88%}.admin-job-columns{margin-right:-4px}.admin-job-lane{min-width:220px}.page{padding-bottom:90px}.page-head h2{font-size:22px}.page-head p{font-size:11px;line-height:1.45}.mobile-bottom{height:70px}.mobile-bottom button{font-size:9px;gap:3px}.mobile-bottom .mi{font-size:18px}
+}
 </style>
 </head>
 
@@ -730,7 +796,7 @@ body{background:var(--bg);color:var(--text)}
       <!-- CUSTOMER HOME -->
       <section class="page" id="customerHome">
         <div class="hero">
-          <h1>Unahama?<br><span>Tunakuhamisha.</span></h1>
+          <h1>Unahama?<br><span>Tunakuhama.</span></h1>
           <p>
             Gari, wahamishaji na tracking — everything you need to move,
             from one simple request.
@@ -1055,7 +1121,16 @@ body{background:var(--bg);color:var(--text)}
         <div class="grid grid-4">
           <div class="card stat">
             <div class="label">Users</div>
-            <div class="value" id="adminUsers">0</div>
+            <div class="value" id="adminUsers">0</div></div>
+      <button class="secondary" style="width:auto;padding:8px 11px" onclick="loadAdminCommandCenter()">REFRESH</button></div>
+      <div id="adminCommandStats" class="admin-command-grid"></div>
+    </section>
+    <section class="admin-section"><div class="admin-section-head"><h3>Movers</h3></div><div id="adminMoversSmartList"></div></section>
+    <section class="admin-section"><div class="admin-section-head"><h3>Customers</h3></div><div id="adminCustomersSmartList"></div></section>
+    <section class="admin-section"><div class="admin-section-head"><h3>Jobs by live status</h3></div><div id="adminJobsBoard"></div></section>
+    <section class="admin-section"><div class="admin-section-head"><h3>Customer ↔ Mover chats</h3><div class="admin-live"><i class="admin-live-dot"></i> LIVE MONITOR</div></div>
+      <div class="admin-chat-layout"><div class="admin-chat-list" id="adminChatList"></div><div class="admin-chat-thread" id="adminChatThread"><div class="admin-empty-chat">Select a conversation to monitor messages.</div></div></div>
+    </section>0</div>
           </div>
           <div class="card stat">
             <div class="label">Pending requests</div>
@@ -1121,6 +1196,34 @@ body{background:var(--bg);color:var(--text)}
           </div>
         </div>
         <div id="adminRequestsList" class="list"></div>
+      </section>
+
+      <!-- ADMIN MOVERS -->
+      <section class="page" id="adminMoversPage">
+        <div class="page-head"><div><h2>Movers</h2><p>Verification, availability and mover details.</p></div><span class="status"><span class="online-dot"></span> LIVE</span></div>
+        <div class="admin-toolbar"><div class="admin-filter-tabs"><button class="admin-filter active" data-mover-filter="all">All</button><button class="admin-filter" data-mover-filter="pending">Pending</button><button class="admin-filter" data-mover-filter="verified">Verified</button><button class="admin-filter" data-mover-filter="online">Online</button></div><div class="admin-search"><input class="input" id="adminMoverSearch" placeholder="Search mover name, phone or email"></div></div>
+        <div id="adminMoversSmartList"></div>
+      </section>
+
+      <!-- ADMIN JOBS -->
+      <section class="page" id="adminJobsPage">
+        <div class="page-head"><div><h2>Jobs</h2><p>Every move, separated by live stage.</p></div><span class="status"><span class="online-dot"></span> LIVE</span></div>
+        <div id="adminJobsBoard"></div>
+      </section>
+
+      <!-- ADMIN MESSAGES -->
+      <section class="page" id="adminMessagesPage">
+        <div class="page-head"><div><h2>Messages</h2><p>Select a customer and mover conversation. New messages appear instantly.</p></div><span class="status"><span class="online-dot"></span> REALTIME</span></div>
+        <div class="admin-chat-layout">
+          <aside class="admin-chat-list" id="adminChatList"></aside>
+          <section class="admin-chat-thread" id="adminChatThread"><div class="admin-empty-chat">Select a conversation.</div></section>
+        </div>
+      </section>
+
+      <!-- ADMIN NOTIFICATIONS -->
+      <section class="page" id="adminNotificationsPage">
+        <div class="page-head"><div><h2>Notifications</h2><p>Admin alerts and system events.</p></div><span class="status"><span class="online-dot"></span> LIVE</span></div>
+        <div id="adminNotificationsList" class="list"></div>
       </section>
 
       <!-- PROFILE -->
@@ -1355,6 +1458,9 @@ const state = {
   conversations: [],
   messages: [],
   chatPeople: {},
+  adminData: {movers:[],customers:[],jobs:[],conversations:[],messages:{}},
+  adminActiveJobFilter: "all",
+  adminActiveConversationId: null,
   recoveryMode: false
 };
 
@@ -1814,12 +1920,16 @@ function moverNav(){
 
 function adminNav(){
   return `
-    <div class="nav-section">Operations</div>
+    <div class="nav-section">Overview</div>
     ${navButton("adminHome","◈","Dashboard")}
-    ${navButton("adminRequests","🚚","Moving requests")}
+    <div class="nav-section">Operations</div>
+    ${navButton("adminRequests","⚡","Moving requests")}
+    ${navButton("adminJobsPage","🚚","Jobs")}
+    ${navButton("adminMoversPage","✓","Movers")}
     ${navButton("adminUsersPage","👥","Users")}
-    ${navButton("chatPage","💬","Messages","navChatBadge")}
-    ${navButton("notificationsPage","🔔","Notifications","navNotifBadge")}
+    <div class="nav-section">Communication</div>
+    ${navButton("adminMessagesPage","💬","Messages","navChatBadge")}
+    ${navButton("adminNotificationsPage","🔔","Notifications","navNotifBadge")}
     <div class="nav-section">Account</div>
     ${navButton("profilePage","👤","Profile")}
   `;
@@ -1857,11 +1967,11 @@ function mobileMoverNav(){
 
 function mobileAdminNav(){
   return `
-    <button data-page="adminHome"><span class="mi">◈</span>Home</button>
-    <button data-page="adminRequests"><span class="mi">🚚</span>Jobs</button>
-    <button data-page="adminUsersPage"><span class="mi">👥</span>Users</button>
-    <button data-page="chatPage"><span class="mi">💬</span>Chat</button>
-    <button data-page="profilePage"><span class="mi">👤</span>Me</button>
+    <button data-page="adminHome"><span class="mi">◈</span><span>Home</span></button>
+    <button data-page="adminRequests"><span class="mi">⚡</span><span>Requests</span></button>
+    <button data-page="adminJobsPage"><span class="mi">🚚</span><span>Jobs</span></button>
+    <button data-page="adminMessagesPage"><span class="mi">💬</span><span>Chat</span></button>
+    <button data-page="adminMoversPage"><span class="mi">✓</span><span>Movers</span></button>
   `;
 }
 
@@ -1930,6 +2040,10 @@ function openPage(id){
   if(id==="adminHome")loadAdminDashboard();
   if(id==="adminUsersPage")loadAdminUsers();
   if(id==="adminRequests")loadAdminRequests();
+  if(id==="adminMoversPage")loadAdminMoversSmart();
+  if(id==="adminJobsPage")loadAdminJobsSmart();
+  if(id==="adminMessagesPage")loadAdminConversationsSmart();
+  if(id==="adminNotificationsPage")loadAdminNotificationsSmart();
 
   if(id==="profilePage")loadProfile();
 }
@@ -1969,6 +2083,7 @@ async function loadInitialData(){
       loadAdminRequests(),
       loadNotifications()
     ]);
+    bindAdminSmartFilters();
   }
 
   loadProfile();
@@ -3380,7 +3495,54 @@ function updateLiveMoverMarker(lat,lng,center=false){
    ADMIN
    ========================================================== */
 
+
+/* ADMIN SMART SECTIONS */
+function adminInitials(name){return String(name||"User").split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join("").toUpperCase()||"U"}
+function adminPill(status){const v=String(status||"unknown").replace(/_/g," ");const c=v.toLowerCase().replace(/\s+/g,"-");return `<span class="admin-status-pill ${c}">${escapeHTML(v)}</span>`}
+function adminPerson(name,email){return `<div class="admin-person"><div class="admin-avatar">${escapeHTML(adminInitials(name))}</div><div><strong>${escapeHTML(name||"Unnamed")}</strong><span>${escapeHTML(email||"")}</span></div></div>`}
+async function loadAdminMoversSmart(){
+ if(state.role!=="admin")return; const host=$("adminMoversSmartList"); if(!host)return;
+ const {data,error}=await supabaseClient.from("mover_profiles").select(`*,profiles(id,full_name,email,phone)`).order("created_at",{ascending:false}).limit(500);
+ if(error){host.innerHTML=`<div class="empty">${escapeHTML(error.message)}</div>`;return}
+ const q=($("adminMoverSearch")?.value||"").toLowerCase(); let rows=data||[];
+ const f=state.adminMoverFilter||"all";
+ rows=rows.filter(m=>{const st=String(m.verification_status||"pending").toLowerCase();if(f==="pending")return st==="pending";if(f==="verified")return st==="approved"||st==="verified";if(f==="online")return !!m.is_available;return true});
+ if(q)rows=rows.filter(m=>`${m.profiles?.full_name||""} ${m.profiles?.email||""} ${m.profiles?.phone||""}`.toLowerCase().includes(q));
+ host.innerHTML=rows.length?`<div class="admin-mover-grid">${rows.map(m=>`<article class="admin-card admin-mover-card"><div class="admin-mover-top"><div>${adminPerson(m.profiles?.full_name||"Mover",m.profiles?.email)}</div>${adminPill((m.verification_status||"pending")==="approved"?"verified":m.verification_status)}</div><div class="admin-mover-meta"><div class="admin-meta-box"><span>Phone</span><strong>${escapeHTML(m.profiles?.phone||"—")}</strong></div><div class="admin-meta-box"><span>Vehicle</span><strong>${escapeHTML(m.vehicle_type||m.preferred_vehicle||"—")}</strong></div><div class="admin-meta-box"><span>Plate</span><strong>${escapeHTML(m.plate_number||m.vehicle_plate||"—")}</strong></div><div class="admin-meta-box"><span>Availability</span><strong>${m.is_available?"ONLINE":"OFFLINE"}</strong></div></div><div style="display:flex;gap:8px"><button class="secondary" style="flex:1" onclick="reviewMover('${m.id}')">DETAILS</button>${String(m.verification_status||"").toLowerCase()==="pending"?`<button class="primary" style="flex:1" onclick="verifyMover('${m.id}',true)">VERIFY</button>`:""}</div></article>`).join("")}</div>`:`<div class="empty">No movers match this filter.</div>`;
+}
+async function loadAdminJobsSmart(){
+ if(state.role!=="admin")return; const host=$("adminJobsBoard"); if(!host)return;
+ const {data,error}=await supabaseClient.from("jobs").select(`*,moving_requests(pickup_address,destination_address,customer_id),profiles!jobs_customer_id_fkey(full_name)`).order("created_at",{ascending:false}).limit(500);
+ if(error){host.innerHTML=`<div class="empty">${escapeHTML(error.message)}</div>`;return}
+ const statuses=[["matching","MATCHING"],["accepted","SELECTED / ACCEPTED"],["coming","ON THE WAY"],["arrived","ARRIVED"],["loading","LOADING"],["moving","MOVING"],["delivered","DELIVERED"],["completed","COMPLETED"]];
+ host.innerHTML=`<div class="admin-job-columns">${statuses.map(([st,title])=>{const list=(data||[]).filter(j=>String(j.status||"").toLowerCase()===st);return `<div class="admin-job-lane"><h4><span>${title}</span><span>${list.length}</span></h4>${list.map(j=>`<div class="admin-job-card"><strong>${escapeHTML(j.moving_requests?.pickup_address||"Pickup")} → ${escapeHTML(j.moving_requests?.destination_address||"Destination")}</strong><span>${escapeHTML(j.profiles?.full_name||"Customer")} · ${money(j.agreed_price)}</span>${adminPill(j.status)}</div>`).join("")||`<div style="font-size:10px;color:#94a3b8;padding:8px">No jobs</div>`}</div>`}).join("")}</div>`;
+}
+async function loadAdminConversationsSmart(){
+ if(state.role!=="admin")return; const list=$("adminChatList"),thread=$("adminChatThread");if(!list||!thread)return;
+ const {data,error}=await supabaseClient.from("conversations").select("*").order("last_message_at",{ascending:false,nullsFirst:false}).limit(500);
+ if(error){list.innerHTML=`<div class="empty">${escapeHTML(error.message)}</div>`;return}
+ const ids=[...new Set((data||[]).flatMap(c=>[c.customer_id,c.mover_id]).filter(Boolean))];let people=[];if(ids.length){const r=await supabaseClient.from("profiles").select("id,full_name,email").in("id",ids);people=r.data||[]}
+ const pm=new Map(people.map(p=>[p.id,p])); state.adminConversations=(data||[]).map(c=>({...c,customer:pm.get(c.customer_id)||{},mover:pm.get(c.mover_id)||{}}));
+ if(!state.adminSelectedConversationId&&state.adminConversations[0])state.adminSelectedConversationId=state.adminConversations[0].id;
+ list.innerHTML=state.adminConversations.length?state.adminConversations.map(c=>`<div class="admin-chat-row ${state.adminSelectedConversationId===c.id?"active":""}" onclick="selectAdminConversation('${c.id}')"><strong>${escapeHTML(c.customer?.full_name||"Customer")} ↔ ${escapeHTML(c.mover?.full_name||"Mover")}</strong><span class="pair">CUSTOMER ↔ MOVER</span><span>${escapeHTML(c.last_message||"No messages yet")}</span></div>`).join(""):`<div class="empty">No conversations yet.</div>`;
+ if(state.adminSelectedConversationId)await selectAdminConversation(state.adminSelectedConversationId,true);
+}
+async function selectAdminConversation(id,silent=false){
+ state.adminSelectedConversationId=id;const c=(state.adminConversations||[]).find(x=>x.id===id);const thread=$("adminChatThread");if(!c||!thread)return;
+ document.querySelectorAll(".admin-chat-row").forEach(x=>x.classList.remove("active"));document.querySelectorAll('.admin-chat-row').forEach(x=>{if(x.getAttribute('onclick')?.includes(`'${id}'`))x.classList.add('active')});
+ thread.innerHTML=`<div class="admin-chat-head"><strong>${escapeHTML(c.customer?.full_name||"Customer")} ↔ ${escapeHTML(c.mover?.full_name||"Mover")}</strong><span>${escapeHTML(c.customer?.email||"")} · ${escapeHTML(c.mover?.email||"")} · Live conversation</span></div><div class="admin-chat-messages" id="adminAdminMessages"></div>`;
+ const box=$("adminAdminMessages");const {data,error}=await supabaseClient.from("messages").select("*").eq("conversation_id",id).order("created_at",{ascending:true}).limit(500);if(error){box.innerHTML=`<div class="empty">${escapeHTML(error.message)}</div>`;return}
+ state.adminConversationMessages[id]=data||[];renderAdminMessages(id);
+ if(state.adminSelectedConversationChannel)supabaseClient.removeChannel(state.adminSelectedConversationChannel);
+ state.adminSelectedConversationChannel=supabaseClient.channel(`admin-conversation-${id}`).on("postgres_changes",{event:"INSERT",schema:"public",table:"messages",filter:`conversation_id=eq.${id}`},async payload=>{if(!state.adminConversationMessages[id])state.adminConversationMessages[id]=[];if(!state.adminConversationMessages[id].some(m=>m.id===payload.new.id)){state.adminConversationMessages[id].push(payload.new);renderAdminMessages(id)} }).subscribe();
+}
+async function renderAdminMessages(id){const box=$("adminAdminMessages");if(!box)return;const msgs=state.adminConversationMessages[id]||[];const ids=[...new Set(msgs.map(m=>m.sender_id).filter(Boolean))];let people=[];if(ids.length){const r=await supabaseClient.from("profiles").select("id,full_name").in("id",ids);people=r.data||[]}const pm=new Map(people.map(p=>[p.id,p.full_name||"User"]));box.innerHTML=msgs.length?msgs.map(m=>`<div class="admin-chat-msg ${m.sender_id===state.adminConversations.find(c=>c.id===id)?.mover_id?"mover":""}"><div class="who">${escapeHTML(pm.get(m.sender_id)||"User")}</div><div>${escapeHTML(m.content||"")}</div><div class="time">${dateTime(m.created_at)}</div></div>`).join(""):`<div class="admin-empty-chat">No messages yet.</div>`;box.scrollTop=box.scrollHeight}
+async function loadAdminNotificationsSmart(){
+ if(state.role!=="admin")return;const host=$("adminNotificationsList");if(!host)return;const {data,error}=await supabaseClient.from("notifications").select("*").order("created_at",{ascending:false}).limit(200);if(error){host.innerHTML=`<div class="empty">${escapeHTML(error.message)}</div>`;return}host.innerHTML=(data||[]).map(n=>`<div class="list-item"><div class="list-main"><strong>${escapeHTML(n.title||"Notification")}</strong><span>${escapeHTML(n.body||n.message||"")} · ${dateTime(n.created_at)}</span></div><span class="status ${n.is_read?"":"blue"}">${n.is_read?"READ":"NEW"}</span></div>`).join("")||`<div class="empty">No notifications.</div>`}
+function bindAdminSmartFilters(){document.querySelectorAll("[data-mover-filter]").forEach(b=>b.onclick=()=>{state.adminMoverFilter=b.dataset.moverFilter;document.querySelectorAll("[data-mover-filter]").forEach(x=>x.classList.toggle("active",x===b));loadAdminMoversSmart()});const q=$("adminMoverSearch");if(q)q.oninput=()=>loadAdminMoversSmart()}
+
 async function loadAdminDashboard(){
+  loadAdminCommandCenter();
   if(state.role!=="admin")return;
 
   const [
@@ -3803,6 +3965,10 @@ function cleanupRealtime(){
     supabaseClient.removeChannel(state.currentConversationChannel);
     state.currentConversationChannel=null;
   }
+  if(state.adminSelectedConversationChannel){
+    supabaseClient.removeChannel(state.adminSelectedConversationChannel);
+    state.adminSelectedConversationChannel=null;
+  }
 }
 
 function setupRealtime(){
@@ -3837,6 +4003,29 @@ function setupRealtime(){
   if(state.role==="mover"){
     const moverProfileChannel=supabaseClient.channel(`mover-profile-live-${state.user.id}`).on("postgres_changes",{event:"UPDATE",schema:"public",table:"mover_profiles",filter:`id=eq.${state.user.id}`},payload=>{const next=String(payload.new?.verification_status||"pending").toLowerCase();const previous=String(state.lastVerificationStatus||payload.old?.verification_status||"pending").toLowerCase();state.lastVerificationStatus=next;loadMoverDashboard();loadMoverVerificationProfile();if(next==="approved"&&previous!=="approved"){toast("Hongera! Admin amekuthibitisha. Sasa wewe ni Verified Mover na unaweza kwenda online.","success","🎉 Ume-Verified!");openPage("moverHome");}}).subscribe();
     state.realtimeChannels.push(moverProfileChannel);
+  }
+
+
+  /* --------------------------------------------------------
+     ADMIN REALTIME — targeted refreshes
+     -------------------------------------------------------- */
+  if(state.role==="admin"){
+    ["mover_profiles","moving_requests","jobs","conversations"].forEach(table=>{
+      const ch=supabaseClient.channel(`admin-${table}-${state.user.id}`).on("postgres_changes",{event:"*",schema:"public",table},()=>{
+        loadAdminDashboard();
+        if($("adminMoversPage")?.classList.contains("active"))loadAdminMoversSmart();
+        if($("adminJobsPage")?.classList.contains("active"))loadAdminJobsSmart();
+        if($("adminMessagesPage")?.classList.contains("active"))loadAdminConversationsSmart();
+        if($("adminRequests")?.classList.contains("active"))loadAdminRequests();
+      }).subscribe();
+      state.realtimeChannels.push(ch);
+    });
+    const msgCh=supabaseClient.channel(`admin-messages-${state.user.id}`).on("postgres_changes",{event:"INSERT",schema:"public",table:"messages"},payload=>{
+      const id=payload.new?.conversation_id;
+      if(id&&state.adminSelectedConversationId===id){state.adminConversationMessages[id]=state.adminConversationMessages[id]||[];if(!state.adminConversationMessages[id].some(m=>m.id===payload.new.id)){state.adminConversationMessages[id].push(payload.new);renderAdminMessages(id)}}
+      if($("adminMessagesPage")?.classList.contains("active"))loadAdminConversationsSmart();
+    }).subscribe();
+    state.realtimeChannels.push(msgCh);
   }
 
   /* --------------------------------------------------------
