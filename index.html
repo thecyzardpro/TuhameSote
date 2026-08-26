@@ -591,6 +591,42 @@ body{background:var(--bg);color:var(--text)}
 @media(max-width:760px){
   .auth-screen{padding:10px;display:block;overflow-y:auto}.auth-box{display:block;width:100%;max-width:520px;margin:0 auto;border-radius:20px}.auth-brand{min-height:auto;padding:24px 18px 20px}.auth-brand h1{font-size:39px;letter-spacing:-1.8px;margin-top:28px}.auth-brand p{font-size:13px;line-height:1.55}.feature-pills{gap:6px}.feature-pills span{font-size:10px;padding:7px 9px}.auth-card{padding:22px 16px 28px;background:#0a1017}.auth-inner{max-width:none}.auth-inner h2{font-size:26px}.auth-inner .sub{font-size:12px;margin-bottom:18px}.form-group label{font-size:13px;color:#d6dee8}.input{font-size:16px;min-height:48px;padding:12px 13px;background:#111923;color:#fff;border-color:#4b5a6b}.primary,.secondary{min-height:48px;font-size:13px}.text-btn{font-size:12px}.tabs button{font-size:12px}.admin-toolbar{align-items:stretch}.admin-search{width:100%}.admin-mover-grid{grid-template-columns:1fr}.admin-chat-layout{display:flex;flex-direction:column;height:calc(100vh - 180px);min-height:500px}.admin-chat-list{height:190px;min-height:190px;border-right:0;border-bottom:1px solid var(--line)}.admin-chat-thread{min-height:300px}.admin-chat-msg{max-width:88%}.admin-job-columns{margin-right:-4px}.admin-job-lane{min-width:220px}.page{padding-bottom:90px}.page-head h2{font-size:22px}.page-head p{font-size:11px;line-height:1.45}.mobile-bottom{height:70px}.mobile-bottom button{font-size:9px;gap:3px}.mobile-bottom .mi{font-size:18px}
 }
+
+/* ADMIN ROLE SEPARATION + MOBILE POLISH */
+body.admin-mode .main{background:#f6f9fc}
+body.admin-mode .page{max-width:1180px;margin:0 auto}
+.admin-movers-shell{background:#fff;border:1px solid #dfe7ef;border-radius:20px;overflow:hidden;box-shadow:0 10px 30px rgba(16,32,51,.06)}
+.admin-mover-tabs{display:flex;gap:0;border-bottom:1px solid #e5ebf1;background:#fbfdff}
+.admin-mover-tab{appearance:none;border:0;background:transparent;padding:14px 18px;color:#64748b;font-weight:900;font-size:11px;letter-spacing:.03em;cursor:pointer;border-bottom:3px solid transparent}
+.admin-mover-tab.active{color:#0b63d8;background:#fff;border-bottom-color:#0b6bff}
+.admin-mover-tab .count{display:inline-grid;place-items:center;min-width:21px;height:21px;padding:0 6px;border-radius:999px;margin-left:6px;background:#edf3fa;color:#64748b}
+.admin-mover-tab.active .count{background:#e7f0ff;color:#0b63d8}
+.admin-mover-panel{padding:16px}
+.admin-mover-grid-clean{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.admin-mover-card-clean{border:1px solid #e1e8ef;border-radius:16px;padding:14px;background:#fff;transition:.18s box-shadow,.18s transform}
+.admin-mover-card-clean:hover{box-shadow:0 12px 28px rgba(16,32,51,.09);transform:translateY(-1px)}
+.admin-mover-card-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.admin-mover-card-name{display:flex;gap:9px;align-items:center;min-width:0}.admin-mover-card-name .admin-avatar{flex:none}
+.admin-mover-card-name strong{display:block;font-size:12px;color:#102033;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.admin-mover-card-name span{display:block;font-size:10px;color:#718096;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.admin-mover-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px}.admin-mover-detail-box{background:#f7fafc;border:1px solid #e8eef4;border-radius:10px;padding:9px}.admin-mover-detail-box span{display:block;font-size:9px;color:#8492a3;text-transform:uppercase;font-weight:800}.admin-mover-detail-box strong{display:block;font-size:11px;color:#243447;margin-top:3px;overflow:hidden;text-overflow:ellipsis}
+.admin-mover-actions{display:flex;gap:8px;margin-top:12px}.admin-mover-actions button{flex:1}
+.admin-verified-note{font-size:10px;color:#16865b;font-weight:900;display:flex;align-items:center;gap:5px;margin-top:10px}
+.admin-role-label{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;background:#eef4fb;color:#49617a;font-size:9px;font-weight:900;text-transform:uppercase}
+@media(max-width:900px){.admin-mover-grid-clean{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){
+ .admin-mover-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch}.admin-mover-tab{white-space:nowrap;padding:12px 13px}
+ .admin-mover-panel{padding:11px}.admin-mover-grid-clean{grid-template-columns:1fr}.admin-mover-detail-grid{grid-template-columns:1fr 1fr}
+ body.admin-mode .page{padding-left:10px;padding-right:10px}.admin-chat-layout{grid-template-columns:1fr!important;min-height:620px}.admin-chat-list{max-height:250px;border-right:0!important;border-bottom:1px solid #dce5ee}
+}
+/* Auth pages: keep role-specific application readable on phones */
+@media(max-width:640px){
+ .auth-card,.auth-panel,.login-card,.register-card{width:calc(100vw - 24px)!important;max-width:none!important;margin:12px auto!important;padding:18px!important}
+ .auth-card h1,.auth-panel h1,.login-card h1,.register-card h1{font-size:25px!important;line-height:1.15!important;color:#102033!important}
+ .auth-card label,.auth-panel label,.login-card label,.register-card label{color:#334155!important;font-size:12px!important;font-weight:800!important}
+ .auth-card .input,.auth-panel .input,.login-card .input,.register-card .input{min-height:48px!important;color:#102033!important;background:#fff!important;font-size:15px!important}
+ .auth-card p,.auth-panel p,.login-card p,.register-card p{color:#64748b!important}
+}
+
 </style>
 </head>
 
@@ -1200,9 +1236,24 @@ body{background:var(--bg);color:var(--text)}
 
       <!-- ADMIN MOVERS -->
       <section class="page" id="adminMoversPage">
-        <div class="page-head"><div><h2>Movers</h2><p>Verification, availability and mover details.</p></div><span class="status"><span class="online-dot"></span> LIVE</span></div>
-        <div class="admin-toolbar"><div class="admin-filter-tabs"><button class="admin-filter active" data-mover-filter="all">All</button><button class="admin-filter" data-mover-filter="pending">Pending</button><button class="admin-filter" data-mover-filter="verified">Verified</button><button class="admin-filter" data-mover-filter="online">Online</button></div><div class="admin-search"><input class="input" id="adminMoverSearch" placeholder="Search mover name, phone or email"></div></div>
-        <div id="adminMoversSmartList"></div>
+        <div class="page-head">
+          <div><h2>Movers</h2><p>Manage mover verification and view mover profiles.</p></div>
+          <span class="status"><span class="online-dot"></span> LIVE</span>
+        </div>
+        <div class="admin-movers-shell">
+          <div class="admin-mover-tabs" id="adminMoverTabs">
+            <button class="admin-mover-tab active" data-mover-filter="pending">Pending <span class="count" id="pendingMoverCount">0</span></button>
+            <button class="admin-mover-tab" data-mover-filter="verified">Verified <span class="count" id="verifiedMoverCount">0</span></button>
+            <button class="admin-mover-tab" data-mover-filter="online">Online <span class="count" id="onlineMoverCount">0</span></button>
+            <button class="admin-mover-tab" data-mover-filter="all">All <span class="count" id="allMoverCount">0</span></button>
+          </div>
+          <div class="admin-mover-panel">
+            <div class="admin-toolbar" style="margin-bottom:12px">
+              <div class="admin-search" style="flex:1"><input class="input" id="adminMoverSearch" placeholder="Search mover name, phone or email"></div>
+            </div>
+            <div id="adminMoversSmartList"></div>
+          </div>
+        </div>
       </section>
 
       <!-- ADMIN JOBS -->
@@ -2015,6 +2066,7 @@ function bindAccountMenu(){
 
 
 function openPage(id){
+  document.body.classList.toggle("admin-mode",state.role==="admin");
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
 
   const page=$(id);
@@ -3501,15 +3553,62 @@ function adminInitials(name){return String(name||"User").split(/\s+/).filter(Boo
 function adminPill(status){const v=String(status||"unknown").replace(/_/g," ");const c=v.toLowerCase().replace(/\s+/g,"-");return `<span class="admin-status-pill ${c}">${escapeHTML(v)}</span>`}
 function adminPerson(name,email){return `<div class="admin-person"><div class="admin-avatar">${escapeHTML(adminInitials(name))}</div><div><strong>${escapeHTML(name||"Unnamed")}</strong><span>${escapeHTML(email||"")}</span></div></div>`}
 async function loadAdminMoversSmart(){
- if(state.role!=="admin")return; const host=$("adminMoversSmartList"); if(!host)return;
- const {data,error}=await supabaseClient.from("mover_profiles").select(`*,profiles(id,full_name,email,phone)`).order("created_at",{ascending:false}).limit(500);
- if(error){host.innerHTML=`<div class="empty">${escapeHTML(error.message)}</div>`;return}
- const q=($("adminMoverSearch")?.value||"").toLowerCase(); let rows=data||[];
- const f=state.adminMoverFilter||"all";
- rows=rows.filter(m=>{const st=String(m.verification_status||"pending").toLowerCase();if(f==="pending")return st==="pending";if(f==="verified")return st==="approved"||st==="verified";if(f==="online")return !!m.is_available;return true});
- if(q)rows=rows.filter(m=>`${m.profiles?.full_name||""} ${m.profiles?.email||""} ${m.profiles?.phone||""}`.toLowerCase().includes(q));
- host.innerHTML=rows.length?`<div class="admin-mover-grid">${rows.map(m=>`<article class="admin-card admin-mover-card"><div class="admin-mover-top"><div>${adminPerson(m.profiles?.full_name||"Mover",m.profiles?.email)}</div>${adminPill((m.verification_status||"pending")==="approved"?"verified":m.verification_status)}</div><div class="admin-mover-meta"><div class="admin-meta-box"><span>Phone</span><strong>${escapeHTML(m.profiles?.phone||"—")}</strong></div><div class="admin-meta-box"><span>Vehicle</span><strong>${escapeHTML(m.vehicle_type||m.preferred_vehicle||"—")}</strong></div><div class="admin-meta-box"><span>Plate</span><strong>${escapeHTML(m.plate_number||m.vehicle_plate||"—")}</strong></div><div class="admin-meta-box"><span>Availability</span><strong>${m.is_available?"ONLINE":"OFFLINE"}</strong></div></div><div style="display:flex;gap:8px"><button class="secondary" style="flex:1" onclick="reviewMover('${m.id}')">DETAILS</button>${String(m.verification_status||"").toLowerCase()==="pending"?`<button class="primary" style="flex:1" onclick="verifyMover('${m.id}',true)">VERIFY</button>`:""}</div></article>`).join("")}</div>`:`<div class="empty">No movers match this filter.</div>`;
+  if(state.role!=="admin")return;
+  const host=$("adminMoversSmartList"); if(!host)return;
+  const {data,error}=await supabaseClient.from("mover_profiles").select(`*,profiles(id,full_name,email,phone)`).order("created_at",{ascending:false}).limit(500);
+  if(error){host.innerHTML=`<div class="empty">${escapeHTML(error.message)}</div>`;return}
+
+  const all=data||[];
+  const counts={all:all.length,pending:0,verified:0,online:0};
+  all.forEach(m=>{
+    const st=String(m.verification_status||"pending").toLowerCase();
+    if(st==="pending")counts.pending++;
+    if(st==="approved"||st==="verified")counts.verified++;
+    if(m.is_available===true)counts.online++;
+  });
+  if($("pendingMoverCount"))$("pendingMoverCount").textContent=counts.pending;
+  if($("verifiedMoverCount"))$("verifiedMoverCount").textContent=counts.verified;
+  if($("onlineMoverCount"))$("onlineMoverCount").textContent=counts.online;
+  if($("allMoverCount"))$("allMoverCount").textContent=counts.all;
+
+  const q=($("adminMoverSearch")?.value||"").trim().toLowerCase();
+  const f=state.adminMoverFilter||"pending";
+  let rows=all.filter(m=>{
+    const st=String(m.verification_status||"pending").toLowerCase();
+    if(f==="pending")return st==="pending";
+    if(f==="verified")return st==="approved"||st==="verified";
+    if(f==="online")return m.is_available===true;
+    return true;
+  });
+  if(q)rows=rows.filter(m=>`${m.profiles?.full_name||""} ${m.profiles?.email||""} ${m.profiles?.phone||""} ${m.vehicle_type||""} ${m.plate_number||""}`.toLowerCase().includes(q));
+
+  if(!rows.length){host.innerHTML=`<div class="empty" style="padding:35px">No movers found in <b>${escapeHTML(f)}</b>.</div>`;return;}
+
+  host.innerHTML=`<div class="admin-mover-grid-clean">${rows.map(m=>{
+    const verified=["approved","verified"].includes(String(m.verification_status||"").toLowerCase());
+    return `<article class="admin-mover-card-clean">
+      <div class="admin-mover-card-head">
+        <div class="admin-mover-card-name">
+          <div class="admin-avatar">${escapeHTML(adminInitials(m.profiles?.full_name||"Mover"))}</div>
+          <div><strong>${escapeHTML(m.profiles?.full_name||"Mover")}</strong><span>${escapeHTML(m.profiles?.email||m.profiles?.phone||"No contact")}</span></div>
+        </div>
+        ${adminPill(verified?"verified":"pending")}
+      </div>
+      <div class="admin-mover-detail-grid">
+        <div class="admin-mover-detail-box"><span>Phone</span><strong>${escapeHTML(m.profiles?.phone||"—")}</strong></div>
+        <div class="admin-mover-detail-box"><span>Vehicle</span><strong>${escapeHTML(m.vehicle_type||m.preferred_vehicle||"—")}</strong></div>
+        <div class="admin-mover-detail-box"><span>Plate</span><strong>${escapeHTML(m.plate_number||m.vehicle_plate||"—")}</strong></div>
+        <div class="admin-mover-detail-box"><span>Availability</span><strong>${m.is_available?"ONLINE":"OFFLINE"}</strong></div>
+      </div>
+      ${verified?`<div class="admin-verified-note">✓ Verified mover · details only</div>`:""}
+      <div class="admin-mover-actions">
+        <button class="secondary" onclick="reviewMover('${m.id}')">VIEW DETAILS</button>
+        ${!verified?`<button class="primary" onclick="event.stopPropagation();verifyMover('${m.id}',true)">VERIFY</button>`:""}
+      </div>
+    </article>`;
+  }).join("")}</div>`;
 }
+
 async function loadAdminJobsSmart(){
  if(state.role!=="admin")return; const host=$("adminJobsBoard"); if(!host)return;
  const {data,error}=await supabaseClient.from("jobs").select(`*,moving_requests(pickup_address,destination_address,customer_id),profiles!jobs_customer_id_fkey(full_name)`).order("created_at",{ascending:false}).limit(500);
@@ -3539,7 +3638,7 @@ async function selectAdminConversation(id,silent=false){
 async function renderAdminMessages(id){const box=$("adminAdminMessages");if(!box)return;const msgs=state.adminConversationMessages[id]||[];const ids=[...new Set(msgs.map(m=>m.sender_id).filter(Boolean))];let people=[];if(ids.length){const r=await supabaseClient.from("profiles").select("id,full_name").in("id",ids);people=r.data||[]}const pm=new Map(people.map(p=>[p.id,p.full_name||"User"]));box.innerHTML=msgs.length?msgs.map(m=>`<div class="admin-chat-msg ${m.sender_id===state.adminConversations.find(c=>c.id===id)?.mover_id?"mover":""}"><div class="who">${escapeHTML(pm.get(m.sender_id)||"User")}</div><div>${escapeHTML(m.content||"")}</div><div class="time">${dateTime(m.created_at)}</div></div>`).join(""):`<div class="admin-empty-chat">No messages yet.</div>`;box.scrollTop=box.scrollHeight}
 async function loadAdminNotificationsSmart(){
  if(state.role!=="admin")return;const host=$("adminNotificationsList");if(!host)return;const {data,error}=await supabaseClient.from("notifications").select("*").order("created_at",{ascending:false}).limit(200);if(error){host.innerHTML=`<div class="empty">${escapeHTML(error.message)}</div>`;return}host.innerHTML=(data||[]).map(n=>`<div class="list-item"><div class="list-main"><strong>${escapeHTML(n.title||"Notification")}</strong><span>${escapeHTML(n.body||n.message||"")} · ${dateTime(n.created_at)}</span></div><span class="status ${n.is_read?"":"blue"}">${n.is_read?"READ":"NEW"}</span></div>`).join("")||`<div class="empty">No notifications.</div>`}
-function bindAdminSmartFilters(){document.querySelectorAll("[data-mover-filter]").forEach(b=>b.onclick=()=>{state.adminMoverFilter=b.dataset.moverFilter;document.querySelectorAll("[data-mover-filter]").forEach(x=>x.classList.toggle("active",x===b));loadAdminMoversSmart()});const q=$("adminMoverSearch");if(q)q.oninput=()=>loadAdminMoversSmart()}
+function bindAdminSmartFilters(){state.adminMoverFilter=state.adminMoverFilter||"pending";document.querySelectorAll("[data-mover-filter]").forEach(b=>b.onclick=()=>{state.adminMoverFilter=b.dataset.moverFilter;document.querySelectorAll("[data-mover-filter]").forEach(x=>x.classList.toggle("active",x===b));loadAdminMoversSmart()});const q=$("adminMoverSearch");if(q)q.oninput=()=>loadAdminMoversSmart()}
 
 async function loadAdminDashboard(){
   loadAdminCommandCenter();
